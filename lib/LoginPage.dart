@@ -179,7 +179,10 @@ class _LoginPageState extends State<LoginPage> {
                         color: Colors.white
                       ),),
                   TextButton(
-                   onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (context) => SignUpPage())), // anonymous route
+                   onPressed: () => Navigator.push(context, 
+                            MaterialPageRoute(
+                              builder: (context) => SignUpPage())
+                              ), // anonymous route
                     child: Padding(
                     padding: const EdgeInsets.all(5.0),
                     child: Text('Sign up',
