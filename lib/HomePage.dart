@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:pawlorie/AddDogPage.dart';
 
 class HomePage extends StatelessWidget {
   @override
@@ -103,9 +104,10 @@ class HomePage extends StatelessWidget {
   right: 0,
   child: Center(
     child: ElevatedButton(
-      onPressed: () {
-        print('Add Dog button pressed');
-      },
+        onPressed: () => Navigator.push(context, 
+                            MaterialPageRoute(
+                              builder: (context) => AddDogPage())
+                              ), // anonymous route
       style: ElevatedButton.styleFrom(
         backgroundColor: const Color.fromARGB(255, 255, 202, 27),
         padding: const EdgeInsets.all(20),
