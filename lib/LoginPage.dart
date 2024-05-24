@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:pawlorie/SignupPage.dart'; 
+import 'package:pawlorie/constants/colors.dart'; 
 
 class LoginPage extends StatefulWidget {
   @override
@@ -59,7 +60,7 @@ class _LoginPageState extends State<LoginPage> {
                           child: Text("Welcome Back!",
                           style:
                             TextStyle(
-                              color:Color.fromARGB(255, 22, 21, 86),
+                              color:AppColor.darkBlue,
                               fontSize: 40,
                               fontWeight: FontWeight.w900,
                               fontFamily: 'Rubik'
@@ -149,6 +150,7 @@ class _LoginPageState extends State<LoginPage> {
               },
             ),
             SizedBox(height: 20),
+            
             ElevatedButton(
               onPressed: _login,
               
