@@ -3,6 +3,7 @@ import 'package:pawlorie/LoginPage.dart';
 import 'package:pawlorie/SignupPage.dart'; 
 import 'package:pawlorie/HomePage.dart'; 
 import 'package:pawlorie/AddDogPage.dart'; 
+import 'package:pawlorie/CalSuggestionPage.dart';
 
 void main() {
   runApp(MyApp());
@@ -16,7 +17,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: HomePage(),
+      home: CalSuggestionPage(),
     );
   }
 }
