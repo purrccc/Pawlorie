@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:pawlorie/LoginPage.dart'; 
-import 'package:pawlorie/SignupPage.dart'; 
-import 'package:pawlorie/HomePage.dart'; 
-import 'package:pawlorie/AddDogPage.dart'; 
+import 'package:pawlorie/LoginPage.dart';
+import 'package:pawlorie/SignupPage.dart';
+import 'package:pawlorie/HomePage.dart';
+import 'package:pawlorie/AddDogPage.dart';
 import 'package:pawlorie/CalSuggestionPage.dart';
-import 'package:pawlorie/CalTrackerPage.dart';
+import 'package:pawlorie/CalSuggestUpdatePage.dart';
+import 'package:pawlorie/InitialHomePage.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 void main() {
@@ -19,8 +20,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: CalTrackerPage(),
+      home: CalSuggestUpdatePage(),
     );
   }
 }
-
