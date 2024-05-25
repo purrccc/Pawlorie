@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:pawlorie/SignupPage.dart'; 
-import 'package:pawlorie/constants/colors.dart'; 
+import 'package:pawlorie/SignupPage.dart';
+import 'package:pawlorie/constants/colors.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class LoginPage extends StatefulWidget {
   @override
@@ -26,70 +27,59 @@ class _LoginPageState extends State<LoginPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Stack(
-        children: [Container(
-          height: double.infinity,
-          width: double.infinity,
-          decoration: const BoxDecoration(
-            color: Color.fromARGB(255, 22, 21, 86)
-          ),
-          
-        ),
-         Container(
-          margin: const EdgeInsets.all(50),
-          child: Image.asset('lib/assets/login.png',
-                width: 300,)
-        ),
-        Padding(
-          padding: const EdgeInsets.only(top: 320.0),
-          child: Container(
-            decoration: const BoxDecoration(
-            borderRadius: BorderRadius.only(
-              topLeft: Radius.circular(50),
-              topRight: Radius.circular(50)
-            ),
-            color: Color.fromARGB(255, 222, 152, 32),
-            ),
+        children: [
+          Container(
             height: double.infinity,
             width: double.infinity,
-            child: Center(
-                    child: 
-                    Column(
-                      children: [
-                        Container(
-                          margin: const EdgeInsets.only(top:30),
-                          child: Text("Welcome Back!",
-                          style:
-                            TextStyle(
-                              color:AppColor.darkBlue,
-                              fontSize: 40,
-                              fontWeight: FontWeight.w900,
-                              fontFamily: 'Rubik'
-                              
-                            )),
-                        ),
-                        Text("Login to your Account",
-                        style:
-                          TextStyle(
-                            color: Colors.white,
-                            fontSize: 18
-                          ),),
-                          buildForm()
-                      ],
-                    ),
-                    ),
-            
+            decoration:
+                const BoxDecoration(color: Color.fromARGB(255, 22, 21, 86)),
           ),
-        ),
-       
-
+          Container(
+              margin: const EdgeInsets.all(50),
+              child: Image.asset(
+                'lib/assets/login.png',
+                width: 300,
+              )),
+          Padding(
+            padding: const EdgeInsets.only(top: 320.0),
+            child: Container(
+              decoration: const BoxDecoration(
+                borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(50),
+                    topRight: Radius.circular(50)),
+                color: Color.fromARGB(255, 222, 152, 32),
+              ),
+              height: double.infinity,
+              width: double.infinity,
+              child: Center(
+                child: Column(
+                  children: [
+                    Container(
+                      margin: EdgeInsets.only(top: 30),
+                      child: Text(
+                        "Welcome Back!",
+                        style: GoogleFonts.rubik(
+                            fontSize: 40,
+                            fontWeight: FontWeight.w800,
+                            color: AppColor.darkBlue),
+                      ),
+                    ),
+                    Text("Login to your Account",
+                        style: GoogleFonts.ubuntu(
+                            fontSize: 20, color: Colors.white)),
+                    buildForm()
+                  ],
+                ),
+              ),
+            ),
+          ),
         ],
       ),
     );
   }
 
-
-  Widget buildForm(){
-  return Padding(
+  Widget buildForm() {
+    return Padding(
       padding: const EdgeInsets.all(30.0),
       child: Form(
         key: _formKey,
@@ -103,8 +93,7 @@ class _LoginPageState extends State<LoginPage> {
                 prefixIconColor: Color.fromARGB(255, 22, 21, 86),
                 hintText: 'Email',
                 hintStyle: TextStyle(
-                  color: Color.fromARGB(255, 22, 21, 86),
-                  fontSize: 15),
+                    color: Color.fromARGB(255, 22, 21, 86), fontSize: 15),
                 filled: true,
                 fillColor: Colors.white,
                 border: OutlineInputBorder(
@@ -132,8 +121,7 @@ class _LoginPageState extends State<LoginPage> {
                 prefixIconColor: Color.fromARGB(255, 22, 21, 86),
                 hintText: 'Password',
                 hintStyle: TextStyle(
-                  color:Color.fromARGB(255, 22, 21, 86),
-                  fontSize: 15),
+                    color: Color.fromARGB(255, 22, 21, 86), fontSize: 15),
                 filled: true,
                 fillColor: Colors.white,
                 border: OutlineInputBorder(
@@ -150,10 +138,8 @@ class _LoginPageState extends State<LoginPage> {
               },
             ),
             SizedBox(height: 20),
-            
             ElevatedButton(
               onPressed: _login,
-              
               style: ElevatedButton.styleFrom(
                 backgroundColor: Color.fromARGB(255, 22, 21, 86),
                 shape: RoundedRectangleBorder(
@@ -162,52 +148,53 @@ class _LoginPageState extends State<LoginPage> {
               ),
               child: Padding(
                 padding: const EdgeInsets.all(15.0),
-                child: Text('Login',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 15
-                        )
-                    ),
+                child: Text(
+                  'Login',
+                  style: GoogleFonts.ubuntu(
+                    fontSize: 20,
+                    fontWeight: FontWeight.w800,
+                    color: Colors.white,
+                  ),
+                ),
               ),
             ),
-
             Container(
               margin: const EdgeInsets.only(top: 15.0),
               child: Row(
-                mainAxisAlignment: MainAxisAlignment.center, 
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Text('New here?',
-                      style: TextStyle(
-                        color: Colors.white
-                      ),),
-                  TextButton(
-                   onPressed: () => Navigator.push(context, 
-                            MaterialPageRoute(
-                              builder: (context) => SignUpPage())
-                              ), // anonymous route
-                    child: Padding(
-                    padding: const EdgeInsets.all(5.0),
-                    child: Text('Sign up',
-                            style: TextStyle(
-                              color: Color.fromARGB(255, 22, 21, 86),
-                              fontWeight: FontWeight.bold
-                            )
-                        ),
-                                    ),
+                  Text(
+                    'New here?',
+                    style: GoogleFonts.ubuntu(
+                      fontSize: 18,
+                      fontWeight: FontWeight.w800,
+                      color: Colors.white,
+                    ),
                   ),
-              
-                ],),
+                  TextButton(
+                    onPressed: () => Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) =>
+                                SignUpPage())), // anonymous route
+                    child: Padding(
+                      padding: const EdgeInsets.all(5.0),
+                      child: Text(
+                        'Sign up',
+                        style: GoogleFonts.ubuntu(
+                          fontSize: 18,
+                          fontWeight: FontWeight.w800,
+                          color: AppColor.darkBlue,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
             )
-
-
-
-
-
-
           ],
         ),
       ),
     );
   }
 }
-
