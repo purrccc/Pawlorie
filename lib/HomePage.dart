@@ -8,6 +8,12 @@ import 'package:pawlorie/constants/colors.dart';
 import 'package:pawlorie/components/DogCard.dart';
 
 class HomePage extends StatelessWidget {
+
+
+  final String username;
+
+   HomePage({this.username = ''});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -39,7 +45,7 @@ class HomePage extends StatelessWidget {
                               color: Colors.white),
                         ),
                         Text(
-                          'User!',
+                          '$username!',
                           style: GoogleFonts.rubik(
                               fontSize: 34,
                               fontWeight: FontWeight.w800,

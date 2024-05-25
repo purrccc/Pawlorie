@@ -1,3 +1,4 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:pawlorie/LoginPage.dart';
 import 'package:pawlorie/SignupPage.dart';
@@ -7,8 +8,13 @@ import 'package:pawlorie/CalSuggestionPage.dart';
 import 'package:pawlorie/CalSuggestUpdatePage.dart';
 import 'package:pawlorie/InitialHomePage.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:pawlorie/firebase_options.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
   runApp(MyApp());
 }
 
@@ -20,7 +26,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: HomePage(),
+      home: SignUpPage(),
     );
   }
 }

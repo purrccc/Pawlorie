@@ -1,8 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:pawlorie/HomePage.dart';
 import 'package:pawlorie/components/LoginForm.dart';
 import 'package:pawlorie/constants/colors.dart';
 import 'package:google_fonts/google_fonts.dart';
+
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:pawlorie/user_auth/firebase_auth_services.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class LoginPage extends StatefulWidget {
   @override
@@ -10,18 +15,41 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
+
+  final FirebaseAuthService _auth = FirebaseAuthService();
+
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
-  void _login() {
-    if (_formKey.currentState!.validate()) {
+   void _login() async {
+  if (_formKey.currentState!.validate()) {
+    String email = _emailController.text;
+    String password = _passwordController.text;
 
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Logging in...')),
+    UserWithUsername? userWithUsername = await _auth.signInWithEmailAndPassword(email, password);
+
+    if (userWithUsername != null && userWithUsername.user != null) {
+      print("User logged in");
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => HomePage(username: userWithUsername.username ?? ""),
+        ),
       );
+    } else {
+      print("Failed to log in");
     }
   }
+}
+
+   @override
+  void dispose() {
+    _emailController.dispose();
+    _passwordController.dispose();
+    super.dispose();
+  }
+
 
   @override
   Widget build(BuildContext context) {
