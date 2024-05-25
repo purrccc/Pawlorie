@@ -72,7 +72,7 @@ class InitialHomePage extends StatelessWidget {
               Container(
                 margin: const EdgeInsets.only(top: 300, left: 90, right: 80),
                 child: Image.asset(
-                  'lib/assets/no_dog.png',
+                  'lib/assets/no_dog.png',  //picture of dog sleeping
                 ),
               ),
               Center(
