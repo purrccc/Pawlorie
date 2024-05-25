@@ -1,21 +1,49 @@
-import 'package:flutter/widgets.dart';
+import 'dart:async';
+import 'dart:core'; 
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:pawlorie/AddDogPage.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:pawlorie/AddDogPage.dart';
 import 'package:pawlorie/CalTrackerPage.dart';
 import 'package:pawlorie/constants/colors.dart';
 import 'package:pawlorie/components/DogCard.dart';
+import 'package:intl/intl.dart'; 
 
-class HomePage extends StatelessWidget {
-
-
+class HomePage extends StatefulWidget {
   final String username;
 
-   HomePage({this.username = ''});
+  HomePage({this.username = ''});
+
+  @override
+  _HomePageState createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
+  late DateTime _currentDate;
+  late Timer _timer;
+
+  @override
+  void initState() {
+    super.initState();
+    _currentDate = DateTime.now();
+    _timer = Timer.periodic(Duration(minutes: 1), (Timer t) {
+      setState(() {
+        _currentDate = DateTime.now();
+      });
+    });
+  }
+
+  @override
+  void dispose() {
+    _timer.cancel();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
+    var formatter = DateFormat('MMMM');
+    String formattedMonth = formatter.format(_currentDate);
+
     return Scaffold(
       body: Stack(
         children: [
@@ -39,25 +67,29 @@ class HomePage extends StatelessWidget {
                       children: [
                         Text(
                           'Hello, ',
-                          style: GoogleFonts.rubik(
-                              fontSize: 31,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.white),
+                          style: GoogleFonts.ubuntu(
+                            fontSize: 28,
+                            fontWeight: FontWeight.w500,
+                            color: Colors.white,
+                          ),
                         ),
                         Text(
-                          '$username!',
+                          '${widget.username}!',
                           style: GoogleFonts.rubik(
-                              fontSize: 34,
-                              fontWeight: FontWeight.w800,
-                              color: AppColor.yellowGold),
+                            fontSize: 32,
+                            fontWeight: FontWeight.w700,
+                            color: AppColor.yellowGold,
+                          ),
                         ),
                       ],
                     ),
                     SizedBox(height: 8),
                     Text(
-                      "Insert Date",
-                      style:
-                          GoogleFonts.ubuntu(fontSize: 16, color: Colors.white),
+                      "Today is $formattedMonth ${_currentDate.day}, ${_currentDate.year}",
+                      style: GoogleFonts.ubuntu(
+                        fontSize: 20,
+                        color: Colors.white,
+                      ),
                     ),
                   ],
                 ),
@@ -70,9 +102,10 @@ class HomePage extends StatelessWidget {
             child: Text(
               'Your dogs',
               style: GoogleFonts.rubik(
-                  fontSize: 22,
-                  fontWeight: FontWeight.w600,
-                  color: AppColor.darkBlue),
+                fontSize: 22,
+                fontWeight: FontWeight.w600,
+                color: AppColor.darkBlue,
+              ),
             ),
           ),
           Positioned(
@@ -109,22 +142,21 @@ class HomePage extends StatelessWidget {
             child: Center(
               child: ElevatedButton(
                 onPressed: () => Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => AddDogPage())), // anonymous route
+                  context,
+                  MaterialPageRoute(builder: (context) => AddDogPage()),
+                ),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: const Color.fromARGB(255, 255, 202, 27),
                   padding: const EdgeInsets.all(20),
                 ),
                 child: Row(
-                  mainAxisSize:
-                      MainAxisSize.min, // Ensure the button fits its content
+                  mainAxisSize: MainAxisSize.min,
                   children: [
                     Icon(
-                      Icons.add, // The plus icon
+                      Icons.add,
                       color: Color.fromARGB(255, 22, 21, 86),
                     ),
-                    SizedBox(width: 8), // Space between the icon and the text
+                    SizedBox(width: 8),
                     Text(
                       'Add Dog',
                       style: GoogleFonts.ubuntu(
@@ -143,4 +175,3 @@ class HomePage extends StatelessWidget {
     );
   }
 }
-
