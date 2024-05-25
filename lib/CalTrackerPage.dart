@@ -88,7 +88,7 @@ class _CalTrackerState extends State<CalTrackerPage> with SingleTickerProviderSt
               child: TabBar(
                 controller: _tabController,
                 tabs: const [
-                  Tab(text: 'Tracker',),
+                  // Tab(text: 'Tracker',),
                   Tab(text: 'Summary'),
                   Tab(text: 'Info'),
                 ],
@@ -109,7 +109,7 @@ class _CalTrackerState extends State<CalTrackerPage> with SingleTickerProviderSt
             child: TabBarView(
               controller: _tabController,
               children: [
-                TrackerTabContent(),
+                // TrackerTabContent(),
                  SummaryTabContent(),
                 PetInfoTabContent()
               ],
