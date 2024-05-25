@@ -4,8 +4,14 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:pawlorie/constants/colors.dart';
 import 'package:flutter/services.dart';
+import 'package:pawlorie/constants/colors.dart';
+import 'package:google_fonts/google_fonts.dart';
+
+enum Sex {
+  Male,
+  Female,
+}
 
 Future<List<Dog>> fetchDogs(String dogBreed) async {
   final response = await http.get(
@@ -72,10 +78,10 @@ class AddDogPage extends StatefulWidget {
 
 class _AddDogPageState extends State<AddDogPage> {
   final _formKey = GlobalKey<FormState>();
+  Sex? _selectedSex;
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _ageController = TextEditingController();
   final TextEditingController _breedController = TextEditingController();
-  final TextEditingController _sexController = TextEditingController();
   final TextEditingController _sizeOrWeightController = TextEditingController();
   File? _imageFile;
 
@@ -99,14 +105,13 @@ class _AddDogPageState extends State<AddDogPage> {
       String name = _nameController.text.trim();
       int age = int.parse(_ageController.text.trim());
       String breed = _breedController.text.trim();
-      String sex = _sexController.text.trim().toLowerCase();
       double sizeOrWeight = double.parse(_sizeOrWeightController.text.trim());
       
       double minWeight;
       double maxWeight;
 
       if (selectedDogData != null) {
-        if (sex == 'male') {
+        if (_selectedSex == Sex.Male) {
           minWeight = selectedDogData!.minWeightMale;
           maxWeight = selectedDogData!.maxWeightMale;
         } else {
@@ -115,19 +120,19 @@ class _AddDogPageState extends State<AddDogPage> {
         }
 
         // Log details to the console
-      print('Dog Details:');
-      print('Name: $name');
-      print('Age: $age');
-      print('Breed: $breed');
-      print('Sex: $sex');
-      print('Size or Weight: $sizeOrWeight');
-      print('Min Weight: $minWeight');
-      print('Max Weight: $maxWeight');
+        print('Dog Details:');
+        print('Name: $name');
+        print('Age: $age');
+        print('Breed: $breed');
+        print('Sex: ${_selectedSex == Sex.Male ? "Male" : "Female"}');
+        print('Size or Weight: $sizeOrWeight');
+        print('Min Weight: $minWeight');
+        print('Max Weight: $maxWeight');
 
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(
-              'Dog Details: \nName: $name\nAge: $age\nBreed: $breed\nSex: $sex\nSize or Weight: $sizeOrWeight\nMin Weight: $minWeight\nMax Weight: $maxWeight',
+              'Dog Details: \nName: $name\nAge: $age\nBreed: $breed\nSex: ${_selectedSex == Sex.Male ? "Male" : "Female"}\nSize or Weight: $sizeOrWeight\nMin Weight: $minWeight\nMax Weight: $maxWeight',
             ),
           ),
         );
@@ -189,7 +194,7 @@ class _AddDogPageState extends State<AddDogPage> {
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
-          icon: Icon(Icons.arrow_back_ios, color: AppColor.darkBlue),
+          icon: Icon(Icons.arrow_back_ios, color: AppColor.darkBlue,),
           onPressed: () {
             Navigator.pop(context);
           },
@@ -227,229 +232,242 @@ class _AddDogPageState extends State<AddDogPage> {
 
   Widget addDogForm() {
     return ListView(
-      children: [Container(
-        margin: const EdgeInsets.only(top: 10),
-        child: Padding(
-          padding: const EdgeInsets.all(30.0),
-          child: Form(
-            key: _formKey,
-            child: Column(
-              children: [
-                GestureDetector(
-                  onTap: () => _pickImage(ImageSource.gallery),
-                  child: CircleAvatar(
-                    radius: 120,
-                    backgroundColor: Colors.grey[300],
-                    backgroundImage: _imageFile != null
-                        ? FileImage(_imageFile!)
-                        : null,
-                    child: _imageFile == null
-                        ? Icon(
-                            Icons.add_a_photo,
-                            color: Colors.grey[800],
-                            size: 40,
-                          )
-                        : null,
-                  ),
-                ),
-                SizedBox(height: 20),
-                TextFormField(
-                  controller: _nameController,
-                  decoration: InputDecoration(
-                    prefixIcon: Icon(Icons.pets),
-                    prefixIconColor: AppColor.darkBlue,
-                    hintText: 'Name',
-                    hintStyle: const TextStyle(
-                      color: AppColor.darkBlue,
-                      fontSize: 15,
-                    ),
-                    filled: true,
-                    fillColor: Colors.white,
-                    border: OutlineInputBorder(
-                      borderSide: BorderSide.none,
-                      borderRadius: BorderRadius.circular(25),
+      children: [
+        Container(
+          margin: const EdgeInsets.only(top: 10),
+          child: Padding(
+            padding: const EdgeInsets.all(30.0),
+            child: Form(
+              key: _formKey,
+              child: Column(
+                children: [
+                  GestureDetector(
+                    onTap: () => _pickImage(ImageSource.gallery),
+                    child: CircleAvatar(
+                      radius: 120,
+                      backgroundColor: Colors.grey[300],
+                      backgroundImage: _imageFile != null
+                          ? FileImage(_imageFile!)
+                          : null,
+                      child: _imageFile == null
+                          ? Icon(
+                              Icons.add_a_photo,
+                              color: Colors.grey[800],
+                              size: 40,
+                            )
+                          : null,
                     ),
                   ),
-                  style: TextStyle(color: AppColor.darkBlue),
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Please enter a name';
-                    }
-                    return null;
-                  },
-                ),
-                SizedBox(height: 20),
-                TextFormField(
-                  controller: _ageController,
-                  keyboardType: TextInputType.number,
-                  inputFormatters: <TextInputFormatter>[
-                    FilteringTextInputFormatter.digitsOnly
-                  ],
-                  decoration: InputDecoration(
-                    prefixIcon: Icon(Icons.numbers),
-                    prefixIconColor: AppColor.darkBlue,
-                    hintText: 'Age',
-                    hintStyle: const TextStyle(
-                      color: AppColor.darkBlue,
-                      fontSize: 15,
-                    ),
-                    filled: true,
-                    fillColor: Colors.white,
-                    border: OutlineInputBorder(
-                      borderSide: BorderSide.none,
-                      borderRadius: BorderRadius.circular(25),
-                    ),
-                  ),
-                  style: TextStyle(color: AppColor.darkBlue),
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Please enter the age';
-                    }
-                    return null;
-                  },
-                ),
-                SizedBox(height: 20),
-                TextFormField(
-                  controller: _breedController,
-                  decoration: InputDecoration(
-                    prefixIcon: Icon(Icons.pets),
-                    prefixIconColor: AppColor.darkBlue,
-                    hintText: 'Breed',
-                    hintStyle: const TextStyle(
-                      color: AppColor.darkBlue,
-                      fontSize: 15,
-                    ),
-                    filled: true,
-                    fillColor: Colors.white,
-                    border: OutlineInputBorder(
-                      borderSide: BorderSide.none,
-                      borderRadius: BorderRadius.circular(25),
-                    ),
-                  ),
-                  style: TextStyle(color: AppColor.darkBlue),
-                  onChanged: (value) {
-                    _onSearchChanged();
-                  },
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Please enter the breed';
-                    }
-                    return null;
-                  },
-                ),
-                if (dogBreedSuggestions.isNotEmpty)
-                  Container(
-                    constraints: BoxConstraints(maxHeight: 200),
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(15),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black12,
-                          blurRadius: 10,
-                          offset: Offset(0, 5),
-                        ),
-                      ],
-                    ),
-                    child: ListView.builder(
-                      shrinkWrap: true,
-                      itemCount: dogBreedSuggestions.length,
-                      itemBuilder: (context, index) {
-                        return ListTile(
-                          title: Text(dogBreedSuggestions[index]),
-                          onTap: () {
-                            setState(() {
-                              selectedDogBreed = dogBreedSuggestions[index];
-                              _breedController.text = selectedDogBreed;
-                              dogBreedSuggestions = [];
-                              fetchDogData();
-                            });
-                          },
-                        );
-                      },
-                    ),
-                  ),
-                SizedBox(height: 20),
-                TextFormField(
-                  controller: _sexController,
-                  decoration: InputDecoration(
-                    prefixIcon: Icon(Icons.female),
-                    prefixIconColor: AppColor.darkBlue,
-                    hintText: 'Sex',
-                    hintStyle: const TextStyle(
-                      color: AppColor.darkBlue,
-                      fontSize: 15,
-                    ),
-                    filled: true,
-                    fillColor: Colors.white,
-                    border: OutlineInputBorder(
-                      borderSide: BorderSide.none,
-                      borderRadius: BorderRadius.circular(25),
-                    ),
-                  ),
-                  style: TextStyle(color: AppColor.darkBlue),
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Please enter the sex';
-                    }
-                    return null;
-                  },
-                ),
-                SizedBox(height: 20),
-                TextFormField(
-                  controller: _sizeOrWeightController,
-                  keyboardType: TextInputType.number,
-                  inputFormatters: <TextInputFormatter>[
-                    FilteringTextInputFormatter.digitsOnly
-                  ],
-                  decoration: InputDecoration(
-                    prefixIcon: Icon(Icons.monitor_weight),
-                    prefixIconColor: AppColor.darkBlue,
-                    hintText: 'Size or Weight',
-                    hintStyle: const TextStyle(
-                      color: AppColor.darkBlue,
-                      fontSize: 15,
-                    ),
-                    filled: true,
-                    fillColor: Colors.white,
-                    border: OutlineInputBorder(
-                      borderSide: BorderSide.none,
-                      borderRadius: BorderRadius.circular(25),
-                    ),
-                  ),
-                  style: TextStyle(color: AppColor.darkBlue),
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Please enter the size or weight';
-                    }
-                    return null;
-                  },
-                ),
-                const SizedBox(height: 20),
-                ElevatedButton(
-                  onPressed: _submitForm,
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: AppColor.yellowGold,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(15),
-                    ),
-                  ),
-                  child: Padding(
-                    padding: const EdgeInsets.all(15.0),
-                    child: Text(
-                      'Add Dog',
-                      style: TextStyle(
+                  SizedBox(height: 20),
+                  TextFormField(
+                    controller: _nameController,
+                    decoration: InputDecoration(
+                      prefixIcon: Icon(Icons.pets),
+                      prefixIconColor:  AppColor.darkBlue,
+                      hintText: 'Name',
+                      hintStyle: const TextStyle(
                         color: AppColor.darkBlue,
                         fontSize: 15,
                       ),
+                      filled: true,
+                      fillColor: Colors.white,
+                      border: OutlineInputBorder(
+                        borderSide: BorderSide.none,
+                        borderRadius: BorderRadius.circular(25),
+                      ),
+                    ),
+                    style: TextStyle(color:AppColor.darkBlue),
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Please enter a name';
+                      }
+                      return null;
+                    },
+                  ),
+                  SizedBox(height: 20),
+                  TextFormField(
+                    controller: _ageController,
+                    keyboardType: TextInputType.number,
+                    inputFormatters: <TextInputFormatter>[
+                      FilteringTextInputFormatter.digitsOnly
+                    ],
+                    decoration: InputDecoration(
+                      prefixIcon: Icon(Icons.numbers),
+                      prefixIconColor: AppColor.darkBlue,
+                      hintText: 'Age',
+                      hintStyle: const TextStyle(
+                        color: AppColor.darkBlue,
+                        fontSize: 15,
+                      ),
+                      filled: true,
+                      fillColor: Colors.white,
+                      border: OutlineInputBorder(
+                        borderSide: BorderSide.none,
+                        borderRadius: BorderRadius.circular(25),
+                      ),
+                    ),
+                    style: TextStyle(color: AppColor.darkBlue),
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Please enter the age';
+                      }
+                      return null;
+                    },
+                  ),
+                  SizedBox(height: 20),
+                  TextFormField(
+                    controller: _breedController,
+                    decoration: InputDecoration(
+                      prefixIcon: Icon(Icons.pets),
+                      prefixIconColor: AppColor.darkBlue,
+                      hintText: 'Breed',
+                      hintStyle: const TextStyle(
+                        color: AppColor.darkBlue,
+                        fontSize: 15,
+                      ),
+                      filled: true,
+                      fillColor: Colors.white,
+                      border: OutlineInputBorder(
+                        borderSide: BorderSide.none,
+                        borderRadius: BorderRadius.circular(25),
+                      ),
+                    ),
+                    style: TextStyle(color: AppColor.darkBlue),
+                    onChanged: (value) {
+                      _onSearchChanged();
+                    },
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Please enter the breed';
+                      }
+                      return null;
+                    },
+                  ),
+                  if (dogBreedSuggestions.isNotEmpty)
+                    Container(
+                      constraints: BoxConstraints(maxHeight: 200),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(15),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black12,
+                            blurRadius: 10,
+                            offset: Offset(0, 5),
+                          ),
+                        ],
+                      ),
+                      child: ListView.builder(
+                        shrinkWrap: true,
+                        itemCount: dogBreedSuggestions.length,
+                        itemBuilder: (context, index) {
+                          return ListTile(
+                            title: Text(dogBreedSuggestions[index]),
+                            onTap: () {
+                              setState(() {
+                                selectedDogBreed = dogBreedSuggestions[index];
+                                _breedController.text = selectedDogBreed;
+                                dogBreedSuggestions = [];
+                                fetchDogData();
+                              });
+                            },
+                          );
+                        },
+                      ),
+                    ),
+                  SizedBox(height: 20),
+                  DropdownButtonFormField<Sex>(
+                    value: _selectedSex,
+                    items: Sex.values.map((sex) {
+                      return DropdownMenuItem<Sex>(
+                        value: sex,
+                        child: Text(sex == Sex.Male ? "Male" : "Female"),
+                      );
+                    }).toList(),
+                    onChanged: (Sex? sex) {
+                      setState(() {
+                        _selectedSex = sex;
+                      });
+                    },
+                    decoration: InputDecoration(
+                      prefixIcon: Icon(Icons.female),
+                      prefixIconColor: AppColor.darkBlue,
+                      hintText: 'Sex',
+                      hintStyle: const TextStyle(
+                        color: AppColor.darkBlue,
+                        fontSize: 15,
+                      ),
+                      filled: true,
+                      fillColor: Colors.white,
+                      border: OutlineInputBorder(
+                        borderSide: BorderSide.none,
+                        borderRadius: BorderRadius.circular(25),
+                      ),
+                    ),
+                    validator: (value) {
+                      if (value == null) {
+                        return 'Please select the sex';
+                      }
+                      return null;
+                    },
+                  ),
+                  SizedBox(height: 20),
+                  TextFormField(
+                    controller: _sizeOrWeightController,
+                    keyboardType: TextInputType.number,
+                    inputFormatters: <TextInputFormatter>[
+                      FilteringTextInputFormatter.digitsOnly
+                    ],
+                    decoration: InputDecoration(
+                      prefixIcon: Icon(Icons.monitor_weight),
+                      prefixIconColor: AppColor.darkBlue,
+                      hintText: 'Size or Weight',
+                      hintStyle: const TextStyle(
+                        color: AppColor.darkBlue,
+                        fontSize: 15,
+                      ),
+                      filled: true,
+                      fillColor: Colors.white,
+                      border: OutlineInputBorder(
+                        borderSide: BorderSide.none,
+                        borderRadius: BorderRadius.circular(25),
+                      ),
+                    ),
+                    style: TextStyle(color: AppColor.darkBlue),
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Please enter the size or weight';
+                      }
+                      return null;
+                    },
+                  ),
+                  SizedBox(height: 20),
+                  ElevatedButton(
+                    onPressed: _submitForm,
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: AppColor.yellowGold,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(15),
+                      ),
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.all(15.0),
+                      child: Text(
+                        'Add Dog',
+                        style: GoogleFonts.ubuntu(
+                          color: AppColor.darkBlue,
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold
+                        ),
+                      ),
                     ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
         ),
-      ),
-    ]);
+      ],
+    );
   }
 }
