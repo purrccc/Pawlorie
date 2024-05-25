@@ -3,7 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:pawlorie/AddDogPage.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:pawlorie/CalTrackerPage.dart';
 import 'package:pawlorie/constants/colors.dart';
+import 'package:pawlorie/components/DogCard.dart';
 
 class HomePage extends StatelessWidget {
   @override
@@ -74,7 +76,7 @@ class HomePage extends StatelessWidget {
             child: Padding(
               padding: const EdgeInsets.all(8.0),
               child: Container(
-                child: buildDogContainer("name", "breed"),
+                child: DogCard(context, 'Una', 'Shih Tzu', CalTrackerPage()),
               ),
             ),
           ),
@@ -136,55 +138,3 @@ class HomePage extends StatelessWidget {
   }
 }
 
-// Function to display dogs
-Widget buildDogContainer(String name, String breed) {
-  return Container(
-    decoration: BoxDecoration(
-      color: Colors.white,
-      borderRadius: BorderRadius.circular(16),
-      boxShadow: [
-        BoxShadow(
-          color: Colors.grey.withOpacity(0.5),
-          spreadRadius: 2,
-          blurRadius: 5,
-          offset: Offset(0, 3),
-        ),
-      ],
-    ),
-    child: Row(
-      children: [
-        Container(
-          width: 180,
-          height: 180,
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(16),
-            color: Colors.black,
-          ),
-        ),
-        Padding(
-          padding: const EdgeInsets.all(12.0),
-          child: Column(
-            children: [
-              Text(
-                name,
-                style: TextStyle(
-                  fontSize: 24,
-                  fontWeight: FontWeight.w800,
-                  color: Color.fromARGB(255, 31, 104, 239),
-                ),
-              ),
-              Text(
-                breed,
-                style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.normal,
-                  color: Color.fromARGB(255, 22, 21, 86),
-                ),
-              ),
-            ],
-          ),
-        ),
-      ],
-    ),
-  );
-}

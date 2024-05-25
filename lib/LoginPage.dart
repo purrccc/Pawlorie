@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:pawlorie/SignupPage.dart';
+import 'package:pawlorie/components/LoginForm.dart';
 import 'package:pawlorie/constants/colors.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -16,7 +16,7 @@ class _LoginPageState extends State<LoginPage> {
 
   void _login() {
     if (_formKey.currentState!.validate()) {
-      // Handle login logic
+
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Logging in...')),
       );
@@ -32,7 +32,7 @@ class _LoginPageState extends State<LoginPage> {
             height: double.infinity,
             width: double.infinity,
             decoration:
-                const BoxDecoration(color: Color.fromARGB(255, 22, 21, 86)),
+                const BoxDecoration(color: AppColor.darkBlue),
           ),
           Container(
               margin: const EdgeInsets.all(50),
@@ -47,7 +47,7 @@ class _LoginPageState extends State<LoginPage> {
                 borderRadius: BorderRadius.only(
                     topLeft: Radius.circular(50),
                     topRight: Radius.circular(50)),
-                color: Color.fromARGB(255, 222, 152, 32),
+                color: AppColor.yellowGold,
               ),
               height: double.infinity,
               width: double.infinity,
@@ -59,15 +59,22 @@ class _LoginPageState extends State<LoginPage> {
                       child: Text(
                         "Welcome Back!",
                         style: GoogleFonts.rubik(
-                            fontSize: 40,
-                            fontWeight: FontWeight.w800,
+                            fontSize: 45,
+                            fontWeight: FontWeight.w600,
                             color: AppColor.darkBlue),
                       ),
                     ),
                     Text("Login to your Account",
                         style: GoogleFonts.ubuntu(
-                            fontSize: 20, color: Colors.white)),
-                    buildForm()
+                            fontSize: 20, 
+                            color: Colors.white,
+                            fontWeight: FontWeight.w500)),
+                    LoginForm(
+                        formKey: _formKey,
+                        emailController: _emailController,
+                        passwordController: _passwordController,
+                        loginCallback: _login,
+                      )
                   ],
                 ),
               ),
@@ -77,124 +84,5 @@ class _LoginPageState extends State<LoginPage> {
       ),
     );
   }
-
-  Widget buildForm() {
-    return Padding(
-      padding: const EdgeInsets.all(30.0),
-      child: Form(
-        key: _formKey,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            TextFormField(
-              controller: _emailController,
-              decoration: InputDecoration(
-                prefixIcon: Icon(Icons.mail),
-                prefixIconColor: Color.fromARGB(255, 22, 21, 86),
-                hintText: 'Email',
-                hintStyle: TextStyle(
-                    color: Color.fromARGB(255, 22, 21, 86), fontSize: 15),
-                filled: true,
-                fillColor: Colors.white,
-                border: OutlineInputBorder(
-                  borderSide: BorderSide.none,
-                  borderRadius: BorderRadius.circular(10),
-                ),
-              ),
-              style: TextStyle(color: Color.fromARGB(255, 22, 21, 86)),
-              validator: (value) {
-                if (value == null || value.isEmpty) {
-                  return 'Please enter your email';
-                }
-                if (!RegExp(r'^[^@]+@[^@]+\.[^@]+').hasMatch(value)) {
-                  return 'Please enter a valid email address';
-                }
-                return null;
-              },
-            ),
-            SizedBox(height: 20),
-            TextFormField(
-              controller: _passwordController,
-              obscureText: true,
-              decoration: InputDecoration(
-                prefixIcon: Icon(Icons.lock),
-                prefixIconColor: Color.fromARGB(255, 22, 21, 86),
-                hintText: 'Password',
-                hintStyle: TextStyle(
-                    color: Color.fromARGB(255, 22, 21, 86), fontSize: 15),
-                filled: true,
-                fillColor: Colors.white,
-                border: OutlineInputBorder(
-                  borderSide: BorderSide.none,
-                  borderRadius: BorderRadius.circular(15),
-                ),
-              ),
-              style: TextStyle(color: Color.fromARGB(255, 22, 21, 86)),
-              validator: (value) {
-                if (value == null || value.isEmpty) {
-                  return 'Please enter your password';
-                }
-                return null;
-              },
-            ),
-            SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: _login,
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Color.fromARGB(255, 22, 21, 86),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(15),
-                ),
-              ),
-              child: Padding(
-                padding: const EdgeInsets.all(15.0),
-                child: Text(
-                  'Login',
-                  style: GoogleFonts.ubuntu(
-                    fontSize: 20,
-                    fontWeight: FontWeight.w800,
-                    color: Colors.white,
-                  ),
-                ),
-              ),
-            ),
-            Container(
-              margin: const EdgeInsets.only(top: 15.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    'New here?',
-                    style: GoogleFonts.ubuntu(
-                      fontSize: 18,
-                      fontWeight: FontWeight.w800,
-                      color: Colors.white,
-                    ),
-                  ),
-                  TextButton(
-                    onPressed: () => Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) =>
-                                SignUpPage())), // anonymous route
-                    child: Padding(
-                      padding: const EdgeInsets.all(5.0),
-                      child: Text(
-                        'Sign up',
-                        style: GoogleFonts.ubuntu(
-                          fontSize: 18,
-                          fontWeight: FontWeight.w800,
-                          color: AppColor.darkBlue,
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            )
-          ],
-        ),
-      ),
-    );
-  }
 }
+ 

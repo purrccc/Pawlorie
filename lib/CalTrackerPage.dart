@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:intl/intl.dart';
+import 'package:pawlorie/HomePage.dart';
 import 'package:pawlorie/constants/colors.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-import 'package:pawlorie/SummaryTabPage.dart';
-import 'package:pawlorie/PetInfoTabPage.dart';
-import 'package:pawlorie/TrackerTab.dart';
-import 'package:pawlorie/CustomTabIndicator.dart';
+import 'package:pawlorie/components/SummaryTabPage.dart';
+import 'package:pawlorie/components/PetInfoTabPage.dart';
+import 'package:pawlorie/components/TrackerTab.dart';
+import 'package:pawlorie/components/CustomTabIndicator.dart';
 
 
 
@@ -38,9 +39,10 @@ class _CalTrackerState extends State<CalTrackerPage> with SingleTickerProviderSt
       appBar: AppBar(
         leading: IconButton(
           icon: Icon(Icons.arrow_back_ios, color: AppColor.darkBlue),
-          onPressed: (){
-            Navigator.pop(context);
-          },
+          onPressed: () => Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => HomePage()))
         ),
 
       ),

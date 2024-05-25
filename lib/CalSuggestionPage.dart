@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:pawlorie/constants/colors.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:pawlorie/CalTrackerPage.dart';
 
 class CalSuggestionPage extends StatelessWidget {
   @override
@@ -59,7 +60,10 @@ class CalSuggestionPage extends StatelessWidget {
                   ),
                   const SizedBox(height: 30),
                   ElevatedButton(
-                    onPressed: () {},
+                    onPressed: () => Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => CalTrackerPage())),
                     style: ElevatedButton.styleFrom(
                         backgroundColor: AppColor.yellowGold,
                         padding: const EdgeInsets.all(20)),
