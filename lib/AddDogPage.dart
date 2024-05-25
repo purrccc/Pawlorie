@@ -5,6 +5,7 @@ import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:pawlorie/constants/colors.dart';
+import 'package:flutter/services.dart';
 
 Future<List<Dog>> fetchDogs(String dogBreed) async {
   final response = await http.get(
@@ -81,6 +82,7 @@ class _AddDogPageState extends State<AddDogPage> {
   Future<List<Dog>>? futureDogs;
   List<String> dogBreedSuggestions = [];
   String selectedDogBreed = "";
+  Dog? selectedDogData;
 
   Future<void> _pickImage(ImageSource source) async {
     final pickedFile = await ImagePicker().pickImage(source: source);
@@ -95,18 +97,47 @@ class _AddDogPageState extends State<AddDogPage> {
   void _submitForm() {
     if (_formKey.currentState!.validate()) {
       String name = _nameController.text.trim();
-      String age = _ageController.text.trim();
+      int age = int.parse(_ageController.text.trim());
       String breed = _breedController.text.trim();
-      String sex = _sexController.text.trim();
-      String sizeOrWeight = _sizeOrWeightController.text.trim();
+      String sex = _sexController.text.trim().toLowerCase();
+      double sizeOrWeight = double.parse(_sizeOrWeightController.text.trim());
+      
+      double minWeight;
+      double maxWeight;
 
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(
-            'Dog Details: \nName: $name\nAge: $age\nBreed: $breed\nSex: $sex\nSize or Weight: $sizeOrWeight',
+      if (selectedDogData != null) {
+        if (sex == 'male') {
+          minWeight = selectedDogData!.minWeightMale;
+          maxWeight = selectedDogData!.maxWeightMale;
+        } else {
+          minWeight = selectedDogData!.minWeightFemale;
+          maxWeight = selectedDogData!.maxWeightFemale;
+        }
+
+        // Log details to the console
+      print('Dog Details:');
+      print('Name: $name');
+      print('Age: $age');
+      print('Breed: $breed');
+      print('Sex: $sex');
+      print('Size or Weight: $sizeOrWeight');
+      print('Min Weight: $minWeight');
+      print('Max Weight: $maxWeight');
+
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              'Dog Details: \nName: $name\nAge: $age\nBreed: $breed\nSex: $sex\nSize or Weight: $sizeOrWeight\nMin Weight: $minWeight\nMax Weight: $maxWeight',
+            ),
           ),
-        ),
-      );
+        );
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Error: Could not fetch breed data. Please try again.'),
+          ),
+        );
+      }
     }
   }
 
@@ -142,8 +173,14 @@ class _AddDogPageState extends State<AddDogPage> {
   }
 
   void fetchDogData() {
-    setState(() {
-      futureDogs = fetchDogs(selectedDogBreed);
+    fetchDogs(selectedDogBreed).then((dogs) {
+      setState(() {
+        if (dogs.isNotEmpty) {
+          selectedDogData = dogs.first;
+        }
+      });
+    }).catchError((error) {
+      print("Error fetching dog data: $error");
     });
   }
 
@@ -244,6 +281,10 @@ class _AddDogPageState extends State<AddDogPage> {
                 SizedBox(height: 20),
                 TextFormField(
                   controller: _ageController,
+                  keyboardType: TextInputType.number,
+                  inputFormatters: <TextInputFormatter>[
+                    FilteringTextInputFormatter.digitsOnly
+                  ],
                   decoration: InputDecoration(
                     prefixIcon: Icon(Icons.numbers),
                     prefixIconColor: AppColor.darkBlue,
@@ -357,6 +398,10 @@ class _AddDogPageState extends State<AddDogPage> {
                 SizedBox(height: 20),
                 TextFormField(
                   controller: _sizeOrWeightController,
+                  keyboardType: TextInputType.number,
+                  inputFormatters: <TextInputFormatter>[
+                    FilteringTextInputFormatter.digitsOnly
+                  ],
                   decoration: InputDecoration(
                     prefixIcon: Icon(Icons.monitor_weight),
                     prefixIconColor: AppColor.darkBlue,
@@ -405,6 +450,6 @@ class _AddDogPageState extends State<AddDogPage> {
           ),
         ),
       ),
-]    );
+    ]);
   }
 }
