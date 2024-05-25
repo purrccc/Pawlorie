@@ -12,6 +12,7 @@ dependencies:
   google_fonts: ^6.2.1
   image_picker: ^1.1.1
   intl: ^0.17.0
+  
 
 
 dev_dependencies:
@@ -24,6 +25,7 @@ flutter:
   assets:
     - lib/assets/login.png
     - lib/assets/signup.png
+    - lib/assets/no_dog.png
 
 fonts:
   - family: Rubik
