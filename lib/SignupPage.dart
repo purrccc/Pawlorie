@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:pawlorie/LoginPage.dart'; 
+import 'package:pawlorie/LoginPage.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:pawlorie/constants/colors.dart';
 
 class SignUpPage extends StatefulWidget {
   @override
@@ -12,7 +14,8 @@ class _SignUpPageState extends State<SignUpPage> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
-  final TextEditingController _retypePasswordController = TextEditingController();
+  final TextEditingController _retypePasswordController =
+      TextEditingController();
 
   void _signUp() {
     if (_formKey.currentState!.validate()) {
@@ -36,9 +39,9 @@ class _SignUpPageState extends State<SignUpPage> {
             ),
           ),
           Container(
-            margin: const EdgeInsets.only(top:50, left: 70),
+            margin: const EdgeInsets.only(top: 50, left: 70),
             child: Image.asset(
-              'lib/assets/signup.png', 
+              'lib/assets/signup.png',
               width: 250,
             ),
           ),
@@ -59,20 +62,17 @@ class _SignUpPageState extends State<SignUpPage> {
                   children: [
                     Container(
                       margin: const EdgeInsets.only(top: 30),
-                      child: Text("New here?",
-                          style: TextStyle(
-                            color: Color.fromARGB(255, 22, 21, 86),
+                      child: Text(
+                        "New here?",
+                        style: GoogleFonts.rubik(
                             fontSize: 40,
-                            fontWeight: FontWeight.w900,
-                          )),
-                    ),
-                    Text(
-                      "Sign up to get started",
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 18,
+                            fontWeight: FontWeight.w800,
+                            color: AppColor.darkBlue),
                       ),
                     ),
+                    Text("Sign up to get started",
+                        style: GoogleFonts.ubuntu(
+                            fontSize: 18, color: Colors.white)),
                     buildForm()
                   ],
                 ),
@@ -99,8 +99,7 @@ class _SignUpPageState extends State<SignUpPage> {
                 prefixIconColor: Color.fromARGB(255, 22, 21, 86),
                 hintText: 'Email',
                 hintStyle: TextStyle(
-                  color: Color.fromARGB(255, 22, 21, 86),
-                  fontSize: 15),
+                    color: Color.fromARGB(255, 22, 21, 86), fontSize: 15),
                 filled: true,
                 fillColor: Colors.white,
                 border: OutlineInputBorder(
@@ -127,8 +126,7 @@ class _SignUpPageState extends State<SignUpPage> {
                 prefixIconColor: Color.fromARGB(255, 22, 21, 86),
                 hintText: 'Name',
                 hintStyle: TextStyle(
-                  color: Color.fromARGB(255, 22, 21, 86),
-                  fontSize: 15),
+                    color: Color.fromARGB(255, 22, 21, 86), fontSize: 15),
                 filled: true,
                 fillColor: Colors.white,
                 border: OutlineInputBorder(
@@ -153,8 +151,7 @@ class _SignUpPageState extends State<SignUpPage> {
                 prefixIconColor: Color.fromARGB(255, 22, 21, 86),
                 hintText: 'Password',
                 hintStyle: TextStyle(
-                  color: Color.fromARGB(255, 22, 21, 86),
-                  fontSize: 15),
+                    color: Color.fromARGB(255, 22, 21, 86), fontSize: 15),
                 filled: true,
                 fillColor: Colors.white,
                 border: OutlineInputBorder(
@@ -179,8 +176,7 @@ class _SignUpPageState extends State<SignUpPage> {
                 prefixIconColor: Color.fromARGB(255, 22, 21, 86),
                 hintText: 'Retype Password',
                 hintStyle: TextStyle(
-                  color: Color.fromARGB(255, 22, 21, 86),
-                  fontSize: 15),
+                    color: Color.fromARGB(255, 22, 21, 86), fontSize: 15),
                 filled: true,
                 fillColor: Colors.white,
                 border: OutlineInputBorder(
@@ -210,41 +206,50 @@ class _SignUpPageState extends State<SignUpPage> {
               ),
               child: Padding(
                 padding: const EdgeInsets.all(15.0),
-                child: Text('Sign Up',
-                    style: TextStyle(color: Colors.white,
-                     fontSize: 15)),
+                child: Text(
+                  'Sign Up',
+                  style: GoogleFonts.ubuntu(
+                    fontSize: 20,
+                    fontWeight: FontWeight.w800,
+                    color: Colors.white,
+                  ),
+                ),
               ),
             ),
-
             Container(
               margin: const EdgeInsets.only(top: 15.0),
               child: Row(
-                mainAxisAlignment: MainAxisAlignment.center, 
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Text('Already have an account?',
-                      style: TextStyle(
-                        color: Colors.white
-                      ),),
-                  TextButton(
-                   onPressed: () => Navigator.push(context, 
-                            MaterialPageRoute(
-                              builder: (context) => LoginPage())
-                              ), // anonymous route
-                    child: Padding(
-                    padding: const EdgeInsets.all(5.0),
-                    child: Text('Login',
-                            style: TextStyle(
-                              color: Color.fromARGB(255, 22, 21, 86),
-                              fontWeight: FontWeight.bold
-                            )
-                        ),
-                                    ),
+                  Text(
+                    'Already have an account?',
+                    style: GoogleFonts.ubuntu(
+                      fontSize: 18,
+                      fontWeight: FontWeight.w800,
+                      color: Colors.white,
+                    ),
                   ),
-              
-                ],),
+                  TextButton(
+                    onPressed: () => Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) =>
+                                LoginPage())), // anonymous route
+                    child: Padding(
+                      padding: const EdgeInsets.all(5.0),
+                      child: Text(
+                        'Login',
+                        style: GoogleFonts.ubuntu(
+                          fontSize: 18,
+                          fontWeight: FontWeight.w800,
+                          color: AppColor.darkBlue,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
             )
-
-
           ],
         ),
       ),
