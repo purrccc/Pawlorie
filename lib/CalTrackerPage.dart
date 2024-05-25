@@ -9,6 +9,7 @@ import 'package:pawlorie/components/SummaryTabPage.dart';
 import 'package:pawlorie/components/PetInfoTabPage.dart';
 import 'package:pawlorie/components/TrackerTab.dart';
 import 'package:pawlorie/components/CustomTabIndicator.dart';
+import 'package:pawlorie/user_auth/firebase_auth_services.dart';
 
 
 
@@ -19,6 +20,7 @@ class CalTrackerPage extends StatefulWidget {
 }
 
 class _CalTrackerState extends State<CalTrackerPage> with SingleTickerProviderStateMixin {
+  final FirebaseAuthService _auth = FirebaseAuthService();
   late TabController _tabController;
 
   @override
@@ -39,10 +41,9 @@ class _CalTrackerState extends State<CalTrackerPage> with SingleTickerProviderSt
       appBar: AppBar(
         leading: IconButton(
           icon: Icon(Icons.arrow_back_ios, color: AppColor.darkBlue),
-          onPressed: () => Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => HomePage()))
+          onPressed: () => 
+          Navigator.pop(context)
+        
         ),
 
       ),

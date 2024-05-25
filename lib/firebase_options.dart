@@ -85,4 +85,5 @@ class DefaultFirebaseOptions {
     storageBucket: 'pawlorie.appspot.com',
     measurementId: 'G-WVYFL4YNRQ',
   );
+
 }
