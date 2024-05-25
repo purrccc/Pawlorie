@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "348362999929",
+    "project_id": "pawlorie",
+    "storage_bucket": "pawlorie.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:348362999929:android:1341cd4a01680eea93aca8",
+        "android_client_info": {
+          "package_name": "com.example.pawlorie"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyArRoskgvO2gjw-OTdwSB0UA9W4Nf_kS-0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
