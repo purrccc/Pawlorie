@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:intl/intl.dart';
@@ -12,21 +13,35 @@ import 'package:pawlorie/components/CustomTabIndicator.dart';
 import 'package:pawlorie/user_auth/firebase_auth_services.dart';
 
 
-
-
 class CalTrackerPage extends StatefulWidget {
+  final String petId; // Accept petId
+  final String petName;
+
+  CalTrackerPage({this.petId ='', this.petName=''}); // Update constructor
+
   @override
   _CalTrackerState createState() => _CalTrackerState();
 }
 
 class _CalTrackerState extends State<CalTrackerPage> with SingleTickerProviderStateMixin {
-  final FirebaseAuthService _auth = FirebaseAuthService();
   late TabController _tabController;
+  Map<String, dynamic>? petInfo;
 
   @override
   void initState() {
     super.initState();
     _tabController = TabController(length: 3, vsync: this);
+    _fetchPetInfo();
+  }
+
+  Future<void> _fetchPetInfo() async {
+    DocumentSnapshot doc = await FirebaseFirestore.instance
+        .collection('dogs')
+        .doc(widget.petId)
+        .get();
+    setState(() {
+      petInfo = doc.data() as Map<String, dynamic>?;
+    });
   }
 
   @override
@@ -41,11 +56,8 @@ class _CalTrackerState extends State<CalTrackerPage> with SingleTickerProviderSt
       appBar: AppBar(
         leading: IconButton(
           icon: Icon(Icons.arrow_back_ios, color: AppColor.darkBlue),
-          onPressed: () => 
-          Navigator.pop(context)
-        
+          onPressed: () => Navigator.pop(context)
         ),
-
       ),
       body: Column(
         children: [
@@ -58,21 +70,20 @@ class _CalTrackerState extends State<CalTrackerPage> with SingleTickerProviderSt
                 color: AppColor.yellowGold,
               ),
               width: double.infinity,
-              child:  Column(
+              child: Column(
                 children: [
                   CircleAvatar(
                     radius: 60,
-                    backgroundImage: AssetImage('assets/pet_image.jpg'), // Replace with your pet image asset
+                    backgroundImage: AssetImage('assets/pet_image.jpg'), 
                   ),
                   Padding(
                     padding: EdgeInsets.only(top: 10.0),
                     child: Text(
-                      'Pet Name',
+                      widget.petName,
                       style: GoogleFonts.rubik(
                         color: AppColor.darkBlue,
                         fontSize: 35,
                         fontWeight: FontWeight.bold
-                        
                       ),
                     ),
                   ),
@@ -84,14 +95,13 @@ class _CalTrackerState extends State<CalTrackerPage> with SingleTickerProviderSt
             padding: const EdgeInsets.only(left: 30.0, right: 30.0),
             child: Container(
               decoration: BoxDecoration(
-                  color: AppColor.darkBlue, 
-                  borderRadius: BorderRadius.circular(10)
+                color: AppColor.darkBlue, 
+                borderRadius: BorderRadius.circular(10)
               ),
-             // Set the background color of the TabBar
               child: TabBar(
                 controller: _tabController,
                 tabs: const [
-                  Tab(text: 'Tracker',),
+                  Tab(text: 'Tracker'),
                   Tab(text: 'Summary'),
                   Tab(text: 'Info'),
                 ],
@@ -99,7 +109,7 @@ class _CalTrackerState extends State<CalTrackerPage> with SingleTickerProviderSt
                 labelStyle: GoogleFonts.ubuntu(
                   fontSize: 18,
                   fontWeight: FontWeight.w500
-                ), // Color of the selected tab text
+                ), 
                 unselectedLabelColor: Colors.white, 
                 indicator: CustomTabIndicator(
                   indicatorWidth: 125, 
@@ -113,8 +123,8 @@ class _CalTrackerState extends State<CalTrackerPage> with SingleTickerProviderSt
               controller: _tabController,
               children: [
                 TrackerTabContent(),
-                 SummaryTabContent(),
-                PetInfoTabContent()
+                SummaryTabContent(),
+                PetInfoTabContent(petInfo: petInfo) // Pass petInfo to the tab
               ],
             ),
           ),

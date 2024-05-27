@@ -7,7 +7,6 @@ import 'package:google_fonts/google_fonts.dart';
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:pawlorie/user_auth/firebase_auth_services.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 
 class LoginPage extends StatefulWidget {
   @override

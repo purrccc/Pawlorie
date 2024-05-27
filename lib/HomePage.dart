@@ -1,5 +1,7 @@
 import 'dart:async';
 import 'dart:core'; 
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -8,6 +10,7 @@ import 'package:pawlorie/CalTrackerPage.dart';
 import 'package:pawlorie/constants/colors.dart';
 import 'package:pawlorie/components/DogCard.dart';
 import 'package:intl/intl.dart'; 
+import 'package:pawlorie/user_auth/firebase_auth_services.dart';
 
 class HomePage extends StatefulWidget {
   final String username;
@@ -21,6 +24,8 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   late DateTime _currentDate;
   late Timer _timer;
+  // final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  final FirebaseService _firebaseService = FirebaseService();
 
   @override
   void initState() {
@@ -38,6 +43,8 @@ class _HomePageState extends State<HomePage> {
     _timer.cancel();
     super.dispose();
   }
+
+  
 
   @override
   Widget build(BuildContext context) {
@@ -96,26 +103,62 @@ class _HomePageState extends State<HomePage> {
               ),
             ],
           ),
-          Positioned(
-            top: 180,
-            left: 16,
-            child: Text(
-              'Your dogs',
-              style: GoogleFonts.rubik(
-                fontSize: 22,
-                fontWeight: FontWeight.w600,
-                color: AppColor.darkBlue,
+          Padding(
+            padding: const EdgeInsets.all(20.0),
+            child: Container(
+              margin: const EdgeInsets.only(top: 150),
+              child: Text(
+                'Your dogs',
+                style: GoogleFonts.rubik(
+                  fontSize: 25,
+                  fontWeight: FontWeight.w600,
+                  color: AppColor.darkBlue,
+                ),
               ),
             ),
           ),
-          Positioned(
-            top: 230,
-            left: 16,
-            right: 16,
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Container(
-                child: DogCard(context, 'Una', 'Shih Tzu', CalTrackerPage()),
+          Padding(
+            padding: const EdgeInsets.all(20.0),
+            child: Container(
+              height: 580,
+              margin: const EdgeInsets.only(top: 200),
+              child: SingleChildScrollView(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    StreamBuilder<List<Dog>>(
+                      stream: _firebaseService.getDogs(),
+                      builder: (context, snapshot) {
+                        if (snapshot.connectionState == ConnectionState.waiting) {
+                          return Center(child: CircularProgressIndicator());
+                        }
+                        if (snapshot.hasError) {
+                          return Center(child: Text('Error: ${snapshot.error}'));
+                        }
+                        if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                          return Center(child: Text('No dogs found'));
+                        }
+                        final dogs = snapshot.data!;
+                        return ListView.builder(
+                          shrinkWrap: true, // Important to set shrinkWrap to true
+                          physics: NeverScrollableScrollPhysics(), // Disable scrolling of ListView itself
+                          itemCount: dogs.length,
+                          itemBuilder: (context, index) {
+                            final dog = dogs[index];
+                            return Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: DogCard(
+                                context, 
+                                dog.name, 
+                                dog.breed, 
+                                CalTrackerPage(petId: dog.id, petName: dog.name)),
+                            );
+                          },
+                        );
+                      },
+                    ),
+                  ],
+                ),
               ),
             ),
           ),
@@ -172,6 +215,32 @@ class _HomePageState extends State<HomePage> {
           ),
         ],
       ),
+    );
+  }
+}
+
+class FirebaseService {
+  final FirebaseFirestore _db = FirebaseFirestore.instance;
+
+  Stream<List<Dog>> getDogs() {
+    return _db.collection('dogs').snapshots().map((snapshot) =>
+        snapshot.docs.map((doc) => Dog.fromFirestore(doc)).toList());
+  }
+}
+
+class Dog {
+  final String id; // Add id field
+  final String name;
+  final String breed;
+
+  Dog({required this.id, required this.name, required this.breed});
+
+  factory Dog.fromFirestore(DocumentSnapshot doc) {
+    Map data = doc.data() as Map<String, dynamic>;
+    return Dog(
+      id: doc.id, // Use doc.id for the document ID
+      name: data['name'] ?? '',
+      breed: data['breed'] ?? '',
     );
   }
 }

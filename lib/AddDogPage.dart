@@ -1,12 +1,17 @@
 import 'dart:io';
 import 'dart:async';
 import 'dart:convert';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:flutter/services.dart';
 import 'package:pawlorie/constants/colors.dart';
 import 'package:google_fonts/google_fonts.dart';
+
+import 'package:pawlorie/user_auth/firebase_auth_services.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 
 enum Sex {
   Male,
@@ -85,22 +90,28 @@ class _AddDogPageState extends State<AddDogPage> {
   final TextEditingController _sizeOrWeightController = TextEditingController();
   File? _imageFile;
 
+
+
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+
   Future<List<Dog>>? futureDogs;
   List<String> dogBreedSuggestions = [];
   String selectedDogBreed = "";
   Dog? selectedDogData;
 
-  Future<void> _pickImage(ImageSource source) async {
-    final pickedFile = await ImagePicker().pickImage(source: source);
-    if (pickedFile != null) {
-      final imageFile = File(pickedFile.path);
-      setState(() {
-        _imageFile = imageFile;
-      });
-    }
-  }
+  final ImagePicker _picker = ImagePicker();
 
-  void _submitForm() {
+
+  Future<void> _pickImage(ImageSource source) async {
+  final pickedFile = await _picker.pickImage(source: source);
+  if (pickedFile != null) {
+    setState(() {
+      _imageFile = File(pickedFile.path);
+    });
+  }
+}
+
+  void _submitForm() async {
     if (_formKey.currentState!.validate()) {
       String name = _nameController.text.trim();
       int age = int.parse(_ageController.text.trim());
@@ -118,45 +129,86 @@ class _AddDogPageState extends State<AddDogPage> {
           minWeight = selectedDogData!.minWeightFemale;
           maxWeight = selectedDogData!.maxWeightFemale;
         }
-
-        // Log details to the console
-        print('Dog Details:');
-        print('Name: $name');
-        print('Age: $age');
-        print('Breed: $breed');
-        print('Sex: ${_selectedSex == Sex.Male ? "Male" : "Female"}');
-        print('Size or Weight: $sizeOrWeight');
-        print('Min Weight: $minWeight');
-        print('Max Weight: $maxWeight');
-
+      
+      try {
+        await _firestore.collection('dogs').add({
+          'name': name,
+          'age' : age,
+          'breed' : breed,
+          'sex': _selectedSex == Sex.Male ? 'Male' : 'Female',
+          'sizeOrWeight': sizeOrWeight,
+          'minWeight': minWeight,
+          'maxWeight': maxWeight,
+        });
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text(
-              'Dog Details: \nName: $name\nAge: $age\nBreed: $breed\nSex: ${_selectedSex == Sex.Male ? "Male" : "Female"}\nSize or Weight: $sizeOrWeight\nMin Weight: $minWeight\nMax Weight: $maxWeight',
+            content: Text('Dog added successfully'),
             ),
-          ),
         );
-      } else {
+        _clearForm();
+      } catch (e){
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Failed to add dog: $e'),
+          ),
+          );
+        }
+      }else{
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text('Error: Could not fetch breed data. Please try again.'),
           ),
         );
       }
+      }
     }
-  }
 
-  @override
-  void dispose() {
-    _breedController.dispose();
-    super.dispose();
-  }
+
+  //       // Log details to the console
+  //       print('Dog Details:');
+  //       print('Name: $name');
+  //       print('Age: $age');
+  //       print('Breed: $breed');
+  //       print('Sex: ${_selectedSex == Sex.Male ? "Male" : "Female"}');
+  //       print('Size or Weight: $sizeOrWeight');
+  //       print('Min Weight: $minWeight');
+  //       print('Max Weight: $maxWeight');
+
+  //       ScaffoldMessenger.of(context).showSnackBar(
+  //         SnackBar(
+  //           content: Text(
+  //             'Dog Details: \nName: $name\nAge: $age\nBreed: $breed\nSex: ${_selectedSex == Sex.Male ? "Male" : "Female"}\nSize or Weight: $sizeOrWeight\nMin Weight: $minWeight\nMax Weight: $maxWeight',
+  //           ),
+  //         ),
+  //       );
+  //     } else {
+  //       ScaffoldMessenger.of(context).showSnackBar(
+  //         SnackBar(
+  //           content: Text('Error: Could not fetch breed data. Please try again.'),
+  //         ),
+  //       );
+  //     }
+  //   }
+  // }
+
+ @override
+void dispose() {
+  _nameController.dispose();
+  _ageController.dispose();
+  _breedController.dispose();
+  _sizeOrWeightController.dispose();
+  super.dispose();
+}
+
+
 
   @override
   void initState() {
     super.initState();
     _breedController.addListener(_onSearchChanged);
   }
+
+  
 
   void _onSearchChanged() {
     if (_breedController.text.isNotEmpty) {
@@ -470,4 +522,20 @@ class _AddDogPageState extends State<AddDogPage> {
       ],
     );
   }
+  void _clearForm() {
+  _nameController.clear();
+  _ageController.clear();
+  _breedController.clear();
+  _sizeOrWeightController.clear();
+  setState(() {
+    _selectedSex = null;
+    _imageFile = null;
+    selectedDogBreed = '';
+    selectedDogData = null;
+    dogBreedSuggestions = [];
+  });
+  Navigator.pop(context); 
 }
+
+}
+

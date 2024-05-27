@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:pawlorie/Dog.dart' as dog_model;
 
 class FirebaseAuthService {
   final FirebaseAuth _auth = FirebaseAuth.instance;
@@ -69,4 +70,29 @@ class UserWithUsername {
   final String? username;
 
   UserWithUsername({required this.user, required this.username});
+}
+
+
+class FirebaseService {
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+
+  Stream<List<dog_model.Dog>> getDogs() {
+    return _firestore.collection('dogs').snapshots().map((snapshot) =>
+        snapshot.docs.map((doc) => dog_model.Dog.fromMap(doc.data() as Map<String, dynamic>)).toList());
+  }
+}
+
+class Dog {
+  final String name;
+  final String breed;
+
+  Dog({required this.name, required this.breed});
+
+  factory Dog.fromFirestore(DocumentSnapshot doc) {
+    Map data = doc.data() as Map<String, dynamic>;
+    return Dog(
+      name: data['name'] ?? '',
+      breed: data['breed'] ?? '',
+    );
+  }
 }
