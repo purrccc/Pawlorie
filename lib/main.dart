@@ -13,7 +13,7 @@ import 'package:pawlorie/CalSuggestUpdatePage.dart';
 import 'package:pawlorie/InitialHomePage.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:pawlorie/firebase_options.dart';
+import 'package:pawlorie/firebase_options.dart';  
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
