@@ -7,8 +7,14 @@ class CalSuggestionPage extends StatelessWidget {
   final String dogId;
   final String dogName;
   final double requiredCalories;
+  final String imageUrl;
 
-  CalSuggestionPage({this.dogId='', this.dogName="", required this.requiredCalories});
+  CalSuggestionPage({
+    required this.dogId,
+    required this.dogName,
+    required this.requiredCalories,
+    required this.imageUrl,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -27,50 +33,61 @@ class CalSuggestionPage extends StatelessWidget {
                   Text(
                     "You've successfully added",
                     style: GoogleFonts.ubuntu(
-                        fontSize: 23,
-                        color: Colors.white),
+                      fontSize: 23,
+                      color: Colors.white,
+                    ),
                   ),
                   Text(
                     dogName,
                     style: GoogleFonts.rubik(
-                        fontSize: 50,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.lightBlueAccent),
+                      fontSize: 50,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.lightBlueAccent,
+                    ),
                   ),
                   const SizedBox(height: 10),
                   Text(
-                    "Based on the size and weight, the daily minimum calorie goal of your dog is:",
+                    "Based on the size and weight, the required calorie goal of your dog is:",
                     textAlign: TextAlign.center,
                     style: GoogleFonts.ubuntu(
-                        fontSize: 18,     
-                        color: Colors.white),
+                      fontSize: 18,
+                      color: Colors.white,
+                    ),
                   ),
                   const SizedBox(height: 30),
                   Text(
-                     requiredCalories.toString(),
+                    requiredCalories.toString(),
                     style: GoogleFonts.rubik(
-                        fontSize: 60,
-                        fontWeight: FontWeight.bold,
-                        color: AppColor.yellowGold),
+                      fontSize: 60,
+                      fontWeight: FontWeight.bold,
+                      color: AppColor.yellowGold,
+                    ),
                   ),
                   Text(
                     "Calories",
                     style: GoogleFonts.ubuntu(
-                        fontSize: 25,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.lightBlueAccent),
+                      fontSize: 25,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.lightBlueAccent,
+                    ),
                   ),
                   const SizedBox(height: 30),
                   ElevatedButton(
                     onPressed: () => Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => CalTrackerPage(petId: dogId, petName: dogName),
+                        builder: (context) => CalTrackerPage(
+                          petId: dogId,
+                          petName: dogName,
+                          username: '', // Pass the username if needed
+                          imageURL: imageUrl,
+                        ),
                       ),
                     ),
                     style: ElevatedButton.styleFrom(
-                        backgroundColor: AppColor.yellowGold,
-                        padding: const EdgeInsets.all(20)),
+                      backgroundColor: AppColor.yellowGold,
+                      padding: const EdgeInsets.all(20),
+                    ),
                     child: Text(
                       'Continue',
                       style: GoogleFonts.ubuntu(

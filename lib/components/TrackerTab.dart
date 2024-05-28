@@ -44,7 +44,8 @@ class _TrackerTabContentState extends State<TrackerTabContent> {
   void _handleFoodIntakeSubmission(int calories) {
     setState(() {
       totalIntake += calories;
-      remainingCalories = (widget.petInfo?['requiredCalories'] ?? 0) - totalIntake;
+      remainingCalories =
+          (widget.petInfo?['requiredCalories'] ?? 0).toInt() - totalIntake;
     });
 
     FirebaseFirestore.instance.collection('dogs').doc(widget.petId).update({

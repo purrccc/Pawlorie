@@ -15,13 +15,12 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:pawlorie/user_auth/firebase_auth_services.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
+import 'package:pawlorie/utils.dart';
 
 enum Sex {
   Male,
   Female,
 }
-
-
 
 Future<List<Dog>> fetchDogs(String dogBreed) async {
   final response = await http.get(
@@ -120,13 +119,13 @@ class _AddDogPageState extends State<AddDogPage> {
   }
 }
 
-void _submitForm() async {
+Future<void> _submitForm() async {
   if (_formKey.currentState!.validate()) {
     String name = _nameController.text.trim();
     int age = int.parse(_ageController.text.trim());
     String breed = _breedController.text.trim();
     double sizeOrWeight = double.parse(_sizeOrWeightController.text.trim());
-    
+
     double minWeight;
     double maxWeight;
     double requiredCalories = pow(sizeOrWeight, 0.75) * 70;
@@ -141,8 +140,13 @@ void _submitForm() async {
         minWeight = selectedDogData!.minWeightFemale * 0.45359237;
         maxWeight = selectedDogData!.maxWeightFemale * 0.45359237;
       }
-    
+
       try {
+        String? imageUrl;
+        if (_imageFile != null) {
+          imageUrl = await _uploadImageToStorage(_imageFile!);
+        }
+
         DocumentReference docRef = await _firestore.collection('dogs').add({
           'name': name,
           'age': age,
@@ -152,15 +156,17 @@ void _submitForm() async {
           'minWeight': minWeight,
           'maxWeight': maxWeight,
           'requiredCalories': requiredCalories.round().toDouble(),
-          'userId' : userId
+          'userId': userId,
+          'imageUrl': imageUrl,
         });
-        
+
         // Fetching the added dog's data
         DocumentSnapshot doc = await docRef.get();
         String dogId = doc.id;
         String dogName = doc['name'];
         double requiredCal = doc['requiredCalories'];
-        
+        String imageURL = doc['imageUrl'];
+
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text('Dog added successfully'),
@@ -175,6 +181,7 @@ void _submitForm() async {
               dogId: dogId,
               dogName: dogName,
               requiredCalories: requiredCal,
+              imageUrl: imageURL,
             ),
           ),
         );
@@ -196,33 +203,26 @@ void _submitForm() async {
 }
 
 
+Future<String> _uploadImageToStorage(File imageFile) async {
+  firebase_storage.FirebaseStorage storage = firebase_storage.FirebaseStorage.instance;
 
-  //       // Log details to the console
-  //       print('Dog Details:');
-  //       print('Name: $name');
-  //       print('Age: $age');
-  //       print('Breed: $breed');
-  //       print('Sex: ${_selectedSex == Sex.Male ? "Male" : "Female"}');
-  //       print('Size or Weight: $sizeOrWeight');
-  //       print('Min Weight: $minWeight');
-  //       print('Max Weight: $maxWeight');
+  try {
+    // Create a unique file name
+    String fileName = 'dogs/${DateTime.now().millisecondsSinceEpoch}_${imageFile.path.split('/').last}';
+    firebase_storage.Reference ref = storage.ref().child(fileName);
 
-  //       ScaffoldMessenger.of(context).showSnackBar(
-  //         SnackBar(
-  //           content: Text(
-  //             'Dog Details: \nName: $name\nAge: $age\nBreed: $breed\nSex: ${_selectedSex == Sex.Male ? "Male" : "Female"}\nSize or Weight: $sizeOrWeight\nMin Weight: $minWeight\nMax Weight: $maxWeight',
-  //           ),
-  //         ),
-  //       );
-  //     } else {
-  //       ScaffoldMessenger.of(context).showSnackBar(
-  //         SnackBar(
-  //           content: Text('Error: Could not fetch breed data. Please try again.'),
-  //         ),
-  //       );
-  //     }
-  //   }
-  // }
+    // Upload the file to Firebase Storage
+    await ref.putFile(imageFile);
+
+    // Get the download URL
+    String downloadURL = await ref.getDownloadURL();
+    return downloadURL;
+  } catch (e) {
+    print('Failed to upload image: $e');
+    throw Exception('Failed to upload image');
+  }
+}
+
 
  @override
 void dispose() {

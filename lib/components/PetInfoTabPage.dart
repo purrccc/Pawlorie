@@ -1,31 +1,146 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
-import 'package:intl/intl.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:pawlorie/constants/colors.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-class PetInfoTabContent extends StatelessWidget {
+class PetInfoTabContent extends StatefulWidget {
   final Map<String, dynamic>? petInfo;
+  final String? petId;
 
-  PetInfoTabContent({this.petInfo});
+  PetInfoTabContent({this.petInfo, this.petId});
+
+  @override
+  _PetInfoTabContentState createState() => _PetInfoTabContentState();
+}
+
+class _PetInfoTabContentState extends State<PetInfoTabContent> {
+  final TextEditingController _nameController = TextEditingController();
+  final TextEditingController _ageController = TextEditingController();
+  final TextEditingController _sexController = TextEditingController();
+  final TextEditingController _sizeOrWeightController = TextEditingController();
+  final TextEditingController _breedController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    // Initialize text editing controllers with current values
+    _nameController.text = widget.petInfo?['name'] ?? '';
+    _ageController.text = widget.petInfo?['age'].toString() ?? '';
+    _sexController.text = widget.petInfo?['sex'] ?? '';
+    _sizeOrWeightController.text = widget.petInfo?['sizeOrWeight'].toString() ?? '';
+    _breedController.text = widget.petInfo?['breed'] ?? '';
+  }
 
   @override
   Widget build(BuildContext context) {
-    return petInfo == null
-      ? Center(child: CircularProgressIndicator())
-      : GridView.count(
-          primary: false,
-          padding: const EdgeInsets.all(30),
-          crossAxisSpacing: 20,
-          mainAxisSpacing: 20,
-          crossAxisCount: 2,
-          children: <Widget>[
-            buildInfoCard('Age', petInfo!['age'].toString(), AppColor.darkBlue),
-            buildInfoCard('Sex', petInfo!['sex'], AppColor.blue),
-            buildInfoCard('Size or Weight', petInfo!['sizeOrWeight'].toString(), Color.fromARGB(255, 92, 184, 255)),
-            buildInfoCard('Breed', petInfo!['breed'], AppColor.yellowGold),
-          ],
-        );
+    return widget.petInfo == null
+        ? Center(child: CircularProgressIndicator())
+        : SingleChildScrollView(
+            child: Column(
+              children: [
+                SizedBox(
+                  height: 700,
+                  width: 700,
+                  child: GridView.count(
+                    primary: false,
+                    padding: const EdgeInsets.all(15),
+                    crossAxisSpacing: 20,
+                    mainAxisSpacing: 10,
+                    crossAxisCount: 2,
+                    children: <Widget>[
+                      buildInfoCard(
+                          'Age', widget.petInfo!['age'].toString(), Colors.blue),
+                      buildInfoCard(
+                          'Sex', widget.petInfo!['sex'], Colors.green),
+                      buildInfoCard(
+                          'Size or Weight', widget.petInfo!['sizeOrWeight'].toString(), Colors.orange),
+                      buildInfoCard(
+                          'Breed', widget.petInfo!['breed'], Colors.purple),
+                    ],
+                  ),
+                ),
+                Container(
+                  child: SizedBox(
+                    width: 200,
+                    height: 50,
+                    child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: AppColor.yellowGold, 
+                        
+                      ),
+                      onPressed: () {
+                        showDialog(
+                          context: context,
+                          builder: (BuildContext context) {
+                            return AlertDialog(
+                              title: Text('Edit Information'),
+                              content: Column(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  TextField(
+                                    controller: _nameController,
+                                    decoration: InputDecoration(labelText: 'Name'),
+                                  ),
+                                  TextField(
+                                    controller: _ageController,
+                                    keyboardType: TextInputType.number,
+                                    decoration: InputDecoration(labelText: 'Age'),
+                                  ),
+                                  TextField(
+                                    controller: _sexController,
+                                    decoration: InputDecoration(labelText: 'Sex'),
+                                  ),
+                                  TextField(
+                                    controller: _sizeOrWeightController,
+                                    keyboardType: TextInputType.number,
+                                    decoration: InputDecoration(labelText: 'Size or Weight'),
+                                  ),
+                                  TextField(
+                                    controller: _breedController,
+                                    decoration: InputDecoration(labelText: 'Breed'),
+                                  ),
+                                ],
+                              ),
+                              actions: <Widget>[
+                                TextButton(
+                                  onPressed: () {
+                                    Navigator.pop(context);
+                                  },
+                                  child: Text('Cancel'),
+                                ),
+                                ElevatedButton(
+                                  onPressed: () {
+                                    // Update information in Firestore
+                                    updatePetInfo(widget.petId!, {
+                                      'name': _nameController.text,
+                                      'age': _ageController.text,
+                                      'sex': _sexController.text,
+                                      'sizeOrWeight': _sizeOrWeightController.text,
+                                      'breed': _breedController.text,
+                                    });
+                                    Navigator.pop(context);
+                                  },
+                                  child: Text('Save'),
+                                ),
+                              ],
+                            );
+                          },
+                        );
+                      },
+                      child: Text(
+                        "Edit",
+                        style: TextStyle(
+                          fontWeight: FontWeight.w900,
+                          fontSize: 25,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          );
   }
 
   Widget buildInfoCard(String title, String value, Color color) {
@@ -40,17 +155,17 @@ class PetInfoTabContent extends StatelessWidget {
         children: [
           Text(
             value,
-            style: GoogleFonts.ubuntu(
+            style: TextStyle(
               color: Colors.white,
               fontSize: 30,
-              fontWeight: FontWeight.bold
+              fontWeight: FontWeight.bold,
             ),
           ),
           Padding(
             padding: const EdgeInsets.only(top: 20.0),
             child: Text(
               title,
-              style: GoogleFonts.ubuntu(
+              style: TextStyle(
                 color: Colors.white,
                 fontSize: 20,
               ),
@@ -59,5 +174,39 @@ class PetInfoTabContent extends StatelessWidget {
         ],
       ),
     );
+  }
+
+  // Function to update pet information in Firestore
+  Future<void> updatePetInfo(String dogId, Map<String, dynamic> newData) async {
+    // Get the current user
+    User? user = FirebaseAuth.instance.currentUser;
+    if (user != null) {
+      // Get the existing data of the dog from Firestore
+      DocumentSnapshot documentSnapshot = await FirebaseFirestore.instance
+          .collection('dogs')
+          .doc(dogId)
+          .get();
+      
+      // Merge the existing data with the new data
+      Map<String, dynamic> currentData = documentSnapshot.data() as Map<String, dynamic>;
+      Map<String, dynamic> mergedData = {...currentData, ...newData};
+      
+      // Update the document in the "dogs" collection with the merged data
+      await FirebaseFirestore.instance
+          .collection('dogs')
+          .doc(dogId)
+          .update(mergedData);
+    }
+  }
+
+  @override
+  void dispose() {
+    // Clean up the controllers when the widget is disposed
+    _nameController.dispose();
+    _ageController.dispose();
+    _sexController.dispose();
+    _sizeOrWeightController.dispose();
+    _breedController.dispose();
+    super.dispose();
   }
 }

@@ -29,7 +29,7 @@ class _HomePageState extends State<HomePage> {
   late DateTime _currentDate;
   late Timer _timer;
   late String _currentUserDocumentId;
-  // final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+
   final FirebaseService _firebaseService = FirebaseService();
 
   @override
@@ -155,7 +155,37 @@ class _HomePageState extends State<HomePage> {
                         final dogs = snapshot.data!.where((dog) => dog.userId == _currentUserDocumentId).toList();
 
                         if (dogs.isEmpty) {
-                          return Center(child: Text('No dogs found for this user'));
+                          return Column(
+                              children: [
+                                Center(
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(30.0),
+                                    child: Image.asset(
+                                      'lib/assets/no_dog.png',  //picture of dog sleeping
+                                    ),
+                                  ),
+                                ),
+                                Center(
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(40),
+                                    child: Column(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      children: [
+                                        Text(
+                                          "You haven't added any dogs yet. Add one now!",
+                                          textAlign: TextAlign.center,
+                                          style: GoogleFonts.rubik(
+                                            fontSize: 22,
+                                            fontWeight: FontWeight.w600,
+                                            color: AppColor.darkBlue,
+                                          ),
+                                        )
+                                      ],
+                                    ),
+                                  ),
+                                )
+                              ],
+                            );
                         }
 
                         return ListView.builder(
@@ -166,11 +196,16 @@ class _HomePageState extends State<HomePage> {
                             final dog = dogs[index];
                             return Padding(
                               padding: const EdgeInsets.all(8.0),
-                              child: DogCard(
+                              child: dogCard(
                                 context,
                                 dog.name,
                                 dog.breed,
-                                CalTrackerPage(petId: dog.id, petName: dog.name),
+                                dog.imageUrl,
+                                CalTrackerPage(
+                                  petId: dog.id, 
+                                  petName: dog.name, 
+                                  username: widget.username, 
+                                  imageURL: dog.imageUrl,),
                               ),
                             );
                           },
@@ -272,20 +307,29 @@ class FirebaseService {
 }
 
 class Dog {
-  final String id; // Add id field
+  final String id;
   final String name;
   final String breed;
   final String userId;
+  final String imageUrl; // Add imageUrl field
 
-  Dog({required this.id, required this.name, required this.breed, required this.userId});
+  Dog({
+    required this.id,
+    required this.name,
+    required this.breed,
+    required this.userId,
+    required this.imageUrl, // Initialize the imageUrl field
+  });
 
   factory Dog.fromFirestore(DocumentSnapshot doc) {
     Map data = doc.data() as Map<String, dynamic>;
     return Dog(
-      id: doc.id, // Use doc.id for the document ID
+      id: doc.id,
       name: data['name'] ?? '',
       breed: data['breed'] ?? '',
-      userId: data['userId'] ?? ''
+      userId: data['userId'] ?? '',
+      imageUrl: data['imageUrl'] ?? '', // Assign the value of imageUrl from Firestore
     );
   }
 }
+
