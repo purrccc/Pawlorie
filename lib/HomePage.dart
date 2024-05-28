@@ -151,24 +151,31 @@ class _HomePageState extends State<HomePage> {
                         if (!snapshot.hasData || snapshot.data!.isEmpty) {
                           return Center(child: Text('No dogs found'));
                         }
-                        final dogs = snapshot.data!;
+
+                        final dogs = snapshot.data!.where((dog) => dog.userId == _currentUserDocumentId).toList();
+
+                        if (dogs.isEmpty) {
+                          return Center(child: Text('No dogs found for this user'));
+                        }
+
                         return ListView.builder(
-                          shrinkWrap: true, 
-                          physics: NeverScrollableScrollPhysics(), 
+                          shrinkWrap: true,
+                          physics: NeverScrollableScrollPhysics(),
                           itemCount: dogs.length,
                           itemBuilder: (context, index) {
                             final dog = dogs[index];
                             return Padding(
                               padding: const EdgeInsets.all(8.0),
                               child: DogCard(
-                                context, 
-                                dog.name, 
-                                dog.breed, 
-                                CalTrackerPage(petId: dog.id, petName: dog.name)),
+                                context,
+                                dog.name,
+                                dog.breed,
+                                CalTrackerPage(petId: dog.id, petName: dog.name),
+                              ),
                             );
                           },
                         );
-                      },
+                      }
                     ),
                   ],
                 ),
@@ -199,7 +206,7 @@ class _HomePageState extends State<HomePage> {
               child: ElevatedButton(
                 onPressed: () => Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => AddDogPage()),
+                  MaterialPageRoute(builder: (context) => AddDogPage(userId:_currentUserDocumentId)),
                 ),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: const Color.fromARGB(255, 255, 202, 27),
@@ -260,8 +267,9 @@ class Dog {
   final String id; // Add id field
   final String name;
   final String breed;
+  final String userId;
 
-  Dog({required this.id, required this.name, required this.breed});
+  Dog({required this.id, required this.name, required this.breed, required this.userId});
 
   factory Dog.fromFirestore(DocumentSnapshot doc) {
     Map data = doc.data() as Map<String, dynamic>;
@@ -269,6 +277,7 @@ class Dog {
       id: doc.id, // Use doc.id for the document ID
       name: data['name'] ?? '',
       breed: data['breed'] ?? '',
+      userId: data['userId'] ?? ''
     );
   }
 }

@@ -80,6 +80,10 @@ class Dog {
 }
 
 class AddDogPage extends StatefulWidget {
+  final String? userId;
+
+  AddDogPage({this.userId});
+
   @override
   _AddDogPageState createState() => _AddDogPageState();
 }
@@ -125,6 +129,8 @@ void _submitForm() async {
     double maxWeight;
     double requiredCalories = pow(sizeOrWeight, 0.75) * 70;
 
+    String? userId = widget.userId;
+
     if (selectedDogData != null) {
       if (_selectedSex == Sex.Male) {
         minWeight = selectedDogData!.minWeightMale * 0.45359237;
@@ -143,7 +149,8 @@ void _submitForm() async {
           'sizeOrWeight': sizeOrWeight,
           'minWeight': minWeight,
           'maxWeight': maxWeight,
-          'requiredCalories': requiredCalories.round().toDouble()
+          'requiredCalories': requiredCalories.round().toDouble(),
+          'userId' : userId
         });
         
         // Fetching the added dog's data
