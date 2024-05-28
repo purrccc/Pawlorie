@@ -1,5 +1,9 @@
-import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:pawlorie/HomePage.dart';
+import 'package:pawlorie/LoginPage.dart';
+import 'package:pawlorie/firebase_options.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:pawlorie/LoginPage.dart';
 import 'package:pawlorie/SignupPage.dart';
 import 'package:pawlorie/HomePage.dart';
@@ -8,6 +12,7 @@ import 'package:pawlorie/CalSuggestionPage.dart';
 import 'package:pawlorie/CalSuggestUpdatePage.dart';
 import 'package:pawlorie/InitialHomePage.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:pawlorie/firebase_options.dart';
 
 void main() async {
@@ -26,7 +31,25 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: LoginPage(),
+      home: AuthWrapper(),
+    );
+  }
+}
+
+class AuthWrapper extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return StreamBuilder<User?>(
+      stream: FirebaseAuth.instance.authStateChanges(),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return CircularProgressIndicator(); // Or any loading indicator
+        } else if (snapshot.hasData) {
+          return HomePage();
+        } else {
+          return LoginPage();
+        }
+      },
     );
   }
 }

@@ -21,6 +21,8 @@ enum Sex {
   Female,
 }
 
+
+
 Future<List<Dog>> fetchDogs(String dogBreed) async {
   final response = await http.get(
     Uri.parse('https://api.api-ninjas.com/v1/dogs?name=${dogBreed}'),

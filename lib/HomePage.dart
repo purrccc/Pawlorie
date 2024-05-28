@@ -261,6 +261,14 @@ class FirebaseService {
     return _db.collection('dogs').snapshots().map((snapshot) =>
         snapshot.docs.map((doc) => Dog.fromFirestore(doc)).toList());
   }
+
+  Future<void> signOut() async {
+    try {
+      await _auth.signOut();
+    } catch (error) {
+      print("Error signing out: $error");
+    }
+  }
 }
 
 class Dog {
