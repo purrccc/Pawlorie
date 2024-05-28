@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:core'; 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -11,6 +12,9 @@ import 'package:pawlorie/constants/colors.dart';
 import 'package:pawlorie/components/DogCard.dart';
 import 'package:intl/intl.dart'; 
 import 'package:pawlorie/user_auth/firebase_auth_services.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
+
 
 class HomePage extends StatefulWidget {
   final String username;
@@ -24,6 +28,7 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   late DateTime _currentDate;
   late Timer _timer;
+  late String _currentUserDocumentId;
   // final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final FirebaseService _firebaseService = FirebaseService();
 
@@ -36,15 +41,23 @@ class _HomePageState extends State<HomePage> {
         _currentDate = DateTime.now();
       });
     });
+    
+    _firebaseService.getCurrentUserDocumentId().then((documentId)
+    {
+      setState(() {
+        _currentUserDocumentId = documentId ?? '';
+        print("Current user document ID: $_currentUserDocumentId");
+      });
+    });
   }
+
+  
 
   @override
   void dispose() {
     _timer.cancel();
     super.dispose();
   }
-
-  
 
   @override
   Widget build(BuildContext context) {
@@ -221,6 +234,21 @@ class _HomePageState extends State<HomePage> {
 
 class FirebaseService {
   final FirebaseFirestore _db = FirebaseFirestore.instance;
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+
+  Future<String?> getCurrentUserDocumentId() async {
+    try {
+      User? user = _auth.currentUser;
+      if (user != null) {
+        DocumentSnapshot snapshot =
+            await _db.collection('users').doc(user.uid).get();
+        return snapshot.id;
+      }
+    } catch (error) {
+      print("Error getting current user document ID: $error");
+    }
+    return null;
+  }
 
   Stream<List<Dog>> getDogs() {
     return _db.collection('dogs').snapshots().map((snapshot) =>
