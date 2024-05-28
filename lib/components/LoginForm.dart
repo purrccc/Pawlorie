@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:pawlorie/SignupPage.dart'; // Adjust this import based on your file structure
+import 'package:pawlorie/SignupPage.dart'; 
 
 class LoginForm extends StatelessWidget {
   final GlobalKey<FormState> formKey;
