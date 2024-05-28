@@ -1,11 +1,15 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
-import 'package:pawlorie/constants/colors.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:pawlorie/constants/colors.dart';
 import 'package:pawlorie/CalTrackerPage.dart';
 
 class CalSuggestionPage extends StatelessWidget {
+  final String dogId;
+  final String dogName;
+  final double requiredCalories;
+
+  CalSuggestionPage({this.dogId='', this.dogName="", required this.requiredCalories});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -24,11 +28,10 @@ class CalSuggestionPage extends StatelessWidget {
                     "You've successfully added",
                     style: GoogleFonts.ubuntu(
                         fontSize: 23,
-                        // fontWeight: FontWeight.bold,
                         color: Colors.white),
                   ),
                   Text(
-                    "Pet Name",
+                    dogName,
                     style: GoogleFonts.rubik(
                         fontSize: 50,
                         fontWeight: FontWeight.bold,
@@ -39,13 +42,12 @@ class CalSuggestionPage extends StatelessWidget {
                     "Based on the size and weight, the daily minimum calorie goal of your dog is:",
                     textAlign: TextAlign.center,
                     style: GoogleFonts.ubuntu(
-                        fontSize: 18,
-                        // fontWeight: FontWeight.bold,
+                        fontSize: 18,     
                         color: Colors.white),
                   ),
                   const SizedBox(height: 30),
                   Text(
-                    "1234",
+                     requiredCalories.toString(),
                     style: GoogleFonts.rubik(
                         fontSize: 60,
                         fontWeight: FontWeight.bold,
@@ -61,9 +63,11 @@ class CalSuggestionPage extends StatelessWidget {
                   const SizedBox(height: 30),
                   ElevatedButton(
                     onPressed: () => Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => CalTrackerPage())),
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => CalTrackerPage(petId: dogId, petName: dogName),
+                      ),
+                    ),
                     style: ElevatedButton.styleFrom(
                         backgroundColor: AppColor.yellowGold,
                         padding: const EdgeInsets.all(20)),
