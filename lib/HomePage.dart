@@ -153,8 +153,8 @@ class _HomePageState extends State<HomePage> {
                         }
                         final dogs = snapshot.data!;
                         return ListView.builder(
-                          shrinkWrap: true, // Important to set shrinkWrap to true
-                          physics: NeverScrollableScrollPhysics(), // Disable scrolling of ListView itself
+                          shrinkWrap: true, 
+                          physics: NeverScrollableScrollPhysics(), 
                           itemCount: dogs.length,
                           itemBuilder: (context, index) {
                             final dog = dogs[index];

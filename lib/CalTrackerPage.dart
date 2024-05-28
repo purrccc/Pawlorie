@@ -5,19 +5,17 @@ import 'package:intl/intl.dart';
 import 'package:pawlorie/HomePage.dart';
 import 'package:pawlorie/constants/colors.dart';
 import 'package:google_fonts/google_fonts.dart';
-
 import 'package:pawlorie/components/SummaryTabPage.dart';
 import 'package:pawlorie/components/PetInfoTabPage.dart';
 import 'package:pawlorie/components/TrackerTab.dart';
 import 'package:pawlorie/components/CustomTabIndicator.dart';
 import 'package:pawlorie/user_auth/firebase_auth_services.dart';
 
-
 class CalTrackerPage extends StatefulWidget {
-  final String petId; // Accept petId
+  final String petId; 
   final String petName;
 
-  CalTrackerPage({this.petId ='', this.petName=''}); // Update constructor
+  CalTrackerPage({this.petId ='', this.petName=''}); 
 
   @override
   _CalTrackerState createState() => _CalTrackerState();
@@ -122,9 +120,9 @@ class _CalTrackerState extends State<CalTrackerPage> with SingleTickerProviderSt
             child: TabBarView(
               controller: _tabController,
               children: [
-                TrackerTabContent(),
+                TrackerTabContent(petInfo: petInfo, petId: widget.petId),
                 SummaryTabContent(),
-                PetInfoTabContent(petInfo: petInfo) // Pass petInfo to the tab
+                PetInfoTabContent(petInfo: petInfo) 
               ],
             ),
           ),

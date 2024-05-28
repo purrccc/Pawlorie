@@ -8,6 +8,7 @@ import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:flutter/services.dart';
+import 'package:pawlorie/CalSuggestionPage.dart';
 import 'package:pawlorie/constants/colors.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -113,60 +114,78 @@ class _AddDogPageState extends State<AddDogPage> {
   }
 }
 
-  void _submitForm() async {
-    if (_formKey.currentState!.validate()) {
-      String name = _nameController.text.trim();
-      int age = int.parse(_ageController.text.trim());
-      String breed = _breedController.text.trim();
-      double sizeOrWeight = double.parse(_sizeOrWeightController.text.trim());
-      
-      double minWeight;
-      double maxWeight;
+void _submitForm() async {
+  if (_formKey.currentState!.validate()) {
+    String name = _nameController.text.trim();
+    int age = int.parse(_ageController.text.trim());
+    String breed = _breedController.text.trim();
+    double sizeOrWeight = double.parse(_sizeOrWeightController.text.trim());
+    
+    double minWeight;
+    double maxWeight;
+    double requiredCalories = pow(sizeOrWeight, 0.75) * 70;
 
-      double requiredCalories = pow(sizeOrWeight,0.75) * 70;
-
-      if (selectedDogData != null) {
-        if (_selectedSex == Sex.Male) {
-          minWeight = selectedDogData!.minWeightMale * 0.45359237;
-          maxWeight = selectedDogData!.maxWeightMale * 0.45359237;
-        } else {
-          minWeight = selectedDogData!.minWeightFemale * 0.45359237;
-          maxWeight = selectedDogData!.maxWeightFemale * 0.45359237;
-        }
-      
+    if (selectedDogData != null) {
+      if (_selectedSex == Sex.Male) {
+        minWeight = selectedDogData!.minWeightMale * 0.45359237;
+        maxWeight = selectedDogData!.maxWeightMale * 0.45359237;
+      } else {
+        minWeight = selectedDogData!.minWeightFemale * 0.45359237;
+        maxWeight = selectedDogData!.maxWeightFemale * 0.45359237;
+      }
+    
       try {
-        await _firestore.collection('dogs').add({
+        DocumentReference docRef = await _firestore.collection('dogs').add({
           'name': name,
-          'age' : age,
-          'breed' : breed,
+          'age': age,
+          'breed': breed,
           'sex': _selectedSex == Sex.Male ? 'Male' : 'Female',
           'sizeOrWeight': sizeOrWeight,
           'minWeight': minWeight,
           'maxWeight': maxWeight,
           'requiredCalories': requiredCalories.round().toDouble()
         });
+        
+        // Fetching the added dog's data
+        DocumentSnapshot doc = await docRef.get();
+        String dogId = doc.id;
+        String dogName = doc['name'];
+        double requiredCal = doc['requiredCalories'];
+        
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text('Dog added successfully'),
-            ),
+          ),
         );
         _clearForm();
-      } catch (e){
+
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => CalSuggestionPage(
+              dogId: dogId,
+              dogName: dogName,
+              requiredCalories: requiredCal,
+            ),
+          ),
+        );
+      } catch (e) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text('Failed to add dog: $e'),
           ),
-          );
-        }
-      }else{
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('Error: Could not fetch breed data. Please try again.'),
-          ),
         );
       }
-      }
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Error: Could not fetch breed data. Please try again.'),
+        ),
+      );
     }
+  }
+}
+
 
 
   //       // Log details to the console
@@ -525,7 +544,7 @@ void dispose() {
       ],
     );
   }
-  void _clearForm() {
+void _clearForm() {
   _nameController.clear();
   _ageController.clear();
   _breedController.clear();
@@ -537,8 +556,6 @@ void dispose() {
     selectedDogData = null;
     dogBreedSuggestions = [];
   });
-  Navigator.pop(context); 
 }
-
 }
 

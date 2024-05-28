@@ -2,8 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:pawlorie/constants/colors.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class TrackerTabContent extends StatefulWidget {
+  final Map<String, dynamic>? petInfo;
+  final String petId;
+
+  TrackerTabContent({this.petInfo, required this.petId});
+
   @override
   _TrackerTabContentState createState() => _TrackerTabContentState();
 }
@@ -13,12 +19,32 @@ class _TrackerTabContentState extends State<TrackerTabContent> {
   final TextEditingController _caloriesController = TextEditingController();
   final TextEditingController _timeController = TextEditingController();
   TimeOfDay selectedTime = TimeOfDay.now();
+  int remainingCalories = 0;
 
   @override
   void dispose() {
     _caloriesController.dispose();
     _timeController.dispose();
     super.dispose();
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    fetchRemainingCalories();
+  }
+
+  Future<void> fetchRemainingCalories() async {
+    final docRef = FirebaseFirestore.instance.collection('dogs').doc(widget.petId);
+    final docSnapshot = await docRef.get();
+
+    if (docSnapshot.exists) {
+      setState(() {
+        remainingCalories = docSnapshot.data()?['remainingCalories'] ?? 0;
+      });
+    } else {
+      print('Document does not exist');
+    }
   }
 
   Future<void> _selectTime(BuildContext context) async {
@@ -36,6 +62,8 @@ class _TrackerTabContentState extends State<TrackerTabContent> {
 
   @override
   Widget build(BuildContext context) {
+    final int requiredCalories = widget.petInfo?['requiredCalories'] ?? 0;
+
     return SingleChildScrollView(
       child: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -89,7 +117,7 @@ class _TrackerTabContentState extends State<TrackerTabContent> {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Text(
-                              "0",
+                              "0", 
                               textAlign: TextAlign.left,
                               style: GoogleFonts.rubik(
                                 fontSize: 35,
@@ -98,7 +126,7 @@ class _TrackerTabContentState extends State<TrackerTabContent> {
                               ),
                             ),
                             Text(
-                              "123",
+                              requiredCalories.toString(),
                               textAlign: TextAlign.right,
                               style: GoogleFonts.rubik(
                                 fontSize: 35,
@@ -121,7 +149,7 @@ class _TrackerTabContentState extends State<TrackerTabContent> {
                               ),
                             ),
                             Text(
-                              "123",
+                              requiredCalories.toString(),
                               textAlign: TextAlign.right,
                               style: GoogleFonts.ubuntu(
                                 fontSize: 18,
@@ -231,7 +259,11 @@ class _TrackerTabContentState extends State<TrackerTabContent> {
                       SizedBox(height: 20),
                       Center(
                         child: ElevatedButton(
-                          onPressed: () {},
+                          onPressed: () {
+                            if (_formKey.currentState!.validate()) {
+                              // Handle the form submission here
+                            }
+                          },
                           style: ElevatedButton.styleFrom(
                             backgroundColor: AppColor.yellowGold,
                             shape: RoundedRectangleBorder(
