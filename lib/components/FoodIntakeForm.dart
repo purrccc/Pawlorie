@@ -45,7 +45,15 @@ class _FoodIntakeFormState extends State<FoodIntakeForm> {
   void submitForm() {
     if (_formKey.currentState!.validate()) {
       final calories = int.parse(_caloriesController.text.trim());
+      final foodName = _nameController.text.trim();
       widget.onSubmit(calories);
+
+      // SnackBar
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Successfully added $foodName!'),
+        ),
+      );
 
       // Clear form fields
       _nameController.clear();
