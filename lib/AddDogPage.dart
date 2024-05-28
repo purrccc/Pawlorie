@@ -1,7 +1,9 @@
 import 'dart:io';
 import 'dart:async';
 import 'dart:convert';
+import 'dart:math';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
@@ -121,13 +123,15 @@ class _AddDogPageState extends State<AddDogPage> {
       double minWeight;
       double maxWeight;
 
+      double requiredCalories = pow(sizeOrWeight,0.75) * 70;
+
       if (selectedDogData != null) {
         if (_selectedSex == Sex.Male) {
-          minWeight = selectedDogData!.minWeightMale;
-          maxWeight = selectedDogData!.maxWeightMale;
+          minWeight = selectedDogData!.minWeightMale * 0.45359237;
+          maxWeight = selectedDogData!.maxWeightMale * 0.45359237;
         } else {
-          minWeight = selectedDogData!.minWeightFemale;
-          maxWeight = selectedDogData!.maxWeightFemale;
+          minWeight = selectedDogData!.minWeightFemale * 0.45359237;
+          maxWeight = selectedDogData!.maxWeightFemale * 0.45359237;
         }
       
       try {
@@ -139,6 +143,7 @@ class _AddDogPageState extends State<AddDogPage> {
           'sizeOrWeight': sizeOrWeight,
           'minWeight': minWeight,
           'maxWeight': maxWeight,
+          'requiredCalories': requiredCalories.round().toDouble()
         });
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
@@ -207,8 +212,6 @@ void dispose() {
     super.initState();
     _breedController.addListener(_onSearchChanged);
   }
-
-  
 
   void _onSearchChanged() {
     if (_breedController.text.isNotEmpty) {
@@ -473,7 +476,7 @@ void dispose() {
                     decoration: InputDecoration(
                       prefixIcon: Icon(Icons.monitor_weight),
                       prefixIconColor: AppColor.darkBlue,
-                      hintText: 'Size or Weight',
+                      hintText: 'Weight (in kg)',
                       hintStyle: const TextStyle(
                         color: AppColor.darkBlue,
                         fontSize: 15,
