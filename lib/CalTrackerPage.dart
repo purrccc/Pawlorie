@@ -10,12 +10,20 @@ import 'package:pawlorie/components/PetInfoTabPage.dart';
 import 'package:pawlorie/components/TrackerTab.dart';
 import 'package:pawlorie/components/CustomTabIndicator.dart';
 import 'package:pawlorie/user_auth/firebase_auth_services.dart';
+import 'package:pawlorie/components/TrackerDogCard.dart';
 
 class CalTrackerPage extends StatefulWidget {
   final String petId; 
   final String petName;
+  final String username;
+  final String imageURL;
 
-  CalTrackerPage({this.petId ='', this.petName=''}); 
+  CalTrackerPage({
+    required this.petId,
+    required this.petName,
+    required this.username,
+    required this.imageURL,
+  });
 
   @override
   _CalTrackerState createState() => _CalTrackerState();
@@ -59,36 +67,7 @@ class _CalTrackerState extends State<CalTrackerPage> with SingleTickerProviderSt
       ),
       body: Column(
         children: [
-          Padding(
-            padding: const EdgeInsets.all(20.0),
-            child: Container(
-              padding: const EdgeInsets.all(16),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(10),
-                color: AppColor.yellowGold,
-              ),
-              width: double.infinity,
-              child: Column(
-                children: [
-                  CircleAvatar(
-                    radius: 60,
-                    backgroundImage: AssetImage('assets/pet_image.jpg'), 
-                  ),
-                  Padding(
-                    padding: EdgeInsets.only(top: 10.0),
-                    child: Text(
-                      widget.petName,
-                      style: GoogleFonts.rubik(
-                        color: AppColor.darkBlue,
-                        fontSize: 35,
-                        fontWeight: FontWeight.bold
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
+          trackerDogCard(context, widget.petName, widget.imageURL),
           Padding(
             padding: const EdgeInsets.only(left: 30.0, right: 30.0),
             child: Container(
@@ -122,7 +101,7 @@ class _CalTrackerState extends State<CalTrackerPage> with SingleTickerProviderSt
               children: [
                 TrackerTabContent(petInfo: petInfo, petId: widget.petId),
                 SummaryTabContent(),
-                PetInfoTabContent(petInfo: petInfo) 
+                PetInfoTabContent(petInfo: petInfo,) 
               ],
             ),
           ),

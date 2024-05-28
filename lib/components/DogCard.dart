@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
-// Function to display dogs
-Widget DogCard(BuildContext context, String name, String breed, Widget destinationPage) {
+Widget dogCard (BuildContext context, String name, String breed, String imageUrl, Widget destinationPage) {
   return GestureDetector(
     onTap: () {
       Navigator.push(
@@ -29,8 +28,20 @@ Widget DogCard(BuildContext context, String name, String breed, Widget destinati
             height: 180,
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(16),
-              color: Colors.black,
+              image: imageUrl.isNotEmpty
+                  ? DecorationImage(
+                      image: NetworkImage(imageUrl), 
+                      fit: BoxFit.cover,
+                    )
+                  : null,
             ),
+            child: imageUrl.isEmpty
+                ? Icon(
+                    Icons.add_a_photo,
+                    color: Colors.grey[800],
+                    size: 40,
+                  )
+                : null,
           ),
           Padding(
             padding: const EdgeInsets.all(12.0),
