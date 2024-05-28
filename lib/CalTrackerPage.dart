@@ -12,16 +12,17 @@ import 'package:pawlorie/components/CustomTabIndicator.dart';
 import 'package:pawlorie/user_auth/firebase_auth_services.dart';
 
 class CalTrackerPage extends StatefulWidget {
-  final String petId; 
+  final String petId;
   final String petName;
 
-  CalTrackerPage({this.petId ='', this.petName=''}); 
+  CalTrackerPage({this.petId = '', this.petName = ''});
 
   @override
   _CalTrackerState createState() => _CalTrackerState();
 }
 
-class _CalTrackerState extends State<CalTrackerPage> with SingleTickerProviderStateMixin {
+class _CalTrackerState extends State<CalTrackerPage>
+    with SingleTickerProviderStateMixin {
   late TabController _tabController;
   Map<String, dynamic>? petInfo;
 
@@ -53,9 +54,8 @@ class _CalTrackerState extends State<CalTrackerPage> with SingleTickerProviderSt
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
-          icon: Icon(Icons.arrow_back_ios, color: AppColor.darkBlue),
-          onPressed: () => Navigator.pop(context)
-        ),
+            icon: Icon(Icons.arrow_back_ios, color: AppColor.darkBlue),
+            onPressed: () => Navigator.pop(context)),
       ),
       body: Column(
         children: [
@@ -72,17 +72,16 @@ class _CalTrackerState extends State<CalTrackerPage> with SingleTickerProviderSt
                 children: [
                   CircleAvatar(
                     radius: 60,
-                    backgroundImage: AssetImage('assets/pet_image.jpg'), 
+                    backgroundImage: AssetImage('assets/pet_image.jpg'),
                   ),
                   Padding(
                     padding: EdgeInsets.only(top: 10.0),
                     child: Text(
                       widget.petName,
                       style: GoogleFonts.rubik(
-                        color: AppColor.darkBlue,
-                        fontSize: 35,
-                        fontWeight: FontWeight.bold
-                      ),
+                          color: AppColor.darkBlue,
+                          fontSize: 35,
+                          fontWeight: FontWeight.bold),
                     ),
                   ),
                 ],
@@ -93,9 +92,8 @@ class _CalTrackerState extends State<CalTrackerPage> with SingleTickerProviderSt
             padding: const EdgeInsets.only(left: 30.0, right: 30.0),
             child: Container(
               decoration: BoxDecoration(
-                color: AppColor.darkBlue, 
-                borderRadius: BorderRadius.circular(10)
-              ),
+                  color: AppColor.darkBlue,
+                  borderRadius: BorderRadius.circular(10)),
               child: TabBar(
                 controller: _tabController,
                 tabs: const [
@@ -105,12 +103,10 @@ class _CalTrackerState extends State<CalTrackerPage> with SingleTickerProviderSt
                 ],
                 labelColor: Colors.white,
                 labelStyle: GoogleFonts.ubuntu(
-                  fontSize: 18,
-                  fontWeight: FontWeight.w500
-                ), 
-                unselectedLabelColor: Colors.white, 
+                    fontSize: 18, fontWeight: FontWeight.w500),
+                unselectedLabelColor: Colors.white,
                 indicator: CustomTabIndicator(
-                  indicatorWidth: 125, 
+                  indicatorWidth: 125,
                   color: AppColor.lightBlue,
                 ),
               ),
@@ -121,8 +117,9 @@ class _CalTrackerState extends State<CalTrackerPage> with SingleTickerProviderSt
               controller: _tabController,
               children: [
                 TrackerTabContent(petInfo: petInfo, petId: widget.petId),
-                SummaryTabContent(),
-                PetInfoTabContent(petInfo: petInfo) 
+                SummaryTabContent(
+                    petId: widget.petId), // Pass petId to SummaryTabContent
+                PetInfoTabContent(petInfo: petInfo)
               ],
             ),
           ),

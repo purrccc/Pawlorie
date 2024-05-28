@@ -4,6 +4,9 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:pawlorie/constants/colors.dart';
 
 class SummaryPage extends StatelessWidget {
+  final String date;
+  SummaryPage({required this.date});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
