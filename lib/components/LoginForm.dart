@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:pawlorie/SignupPage.dart'; 
+import 'package:pawlorie/SignupPage.dart'; // Adjust this import based on your file structure
 
 class LoginForm extends StatelessWidget {
   final GlobalKey<FormState> formKey;
@@ -81,7 +81,19 @@ class LoginForm extends StatelessWidget {
             ),
             SizedBox(height: 20),
             ElevatedButton(
-              onPressed: loginCallback,
+              onPressed: () {
+                if (formKey.currentState!.validate()) {
+                  // Call the login callback
+                  loginCallback();
+
+                  // Show the SnackBar
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text('Logged in successfully!'),
+                    ),
+                  );
+                }
+              },
               style: ElevatedButton.styleFrom(
                 backgroundColor: Color.fromARGB(255, 22, 21, 86),
                 shape: RoundedRectangleBorder(

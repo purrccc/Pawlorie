@@ -101,7 +101,8 @@ class _CalTrackerState extends State<CalTrackerPage> with SingleTickerProviderSt
               children: [
                 TrackerTabContent(petInfo: petInfo, petId: widget.petId),
                 SummaryTabContent(),
-                PetInfoTabContent(petInfo: petInfo,) 
+                PetInfoTabContent(petInfo: petInfo, petId: widget.petId) 
+
               ],
             ),
           ),

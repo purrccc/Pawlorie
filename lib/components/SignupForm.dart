@@ -141,7 +141,19 @@ class SignUpForm extends StatelessWidget {
             ),
             SizedBox(height: 20),
             ElevatedButton(
-              onPressed: signUpCallback,
+              onPressed: () {
+                if (formKey.currentState!.validate()) {
+                  // Call the sign-up callback
+                  signUpCallback();
+
+                  // Show the SnackBar
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text('Signed in successfully!'),
+                    ),
+                  );
+                }
+              },
               style: ElevatedButton.styleFrom(
                 backgroundColor: Color.fromARGB(255, 22, 21, 86),
                 shape: RoundedRectangleBorder(
