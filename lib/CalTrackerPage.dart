@@ -97,7 +97,7 @@ class _CalTrackerState extends State<CalTrackerPage>
               controller: _tabController,
               children: [
                 TrackerTabContent(petInfo: petInfo, petId: widget.petId),
-                SummaryTabContent(),
+                SummaryTabContent(petId: widget.petId),
                 PetInfoTabContent(petInfo: petInfo, petId: widget.petId)
               ],
             ),
