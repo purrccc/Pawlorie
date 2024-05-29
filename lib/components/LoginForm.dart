@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:pawlorie/SignupPage.dart'; // Adjust this import based on your file structure
+import 'package:pawlorie/SignupPage.dart';
+import 'package:pawlorie/constants/colors.dart'; // Adjust this import based on your file structure
 
 class LoginForm extends StatelessWidget {
   final GlobalKey<FormState> formKey;
@@ -86,11 +87,58 @@ class LoginForm extends StatelessWidget {
                   // Call the login callback
                   loginCallback();
 
-                  // Show the SnackBar
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: Text('Logged in successfully!'),
-                    ),
+                  // Show the AlertDialog
+                  showDialog(
+                    context: context,
+                    builder: (context) {
+                      return AlertDialog(
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(15),
+                        ),
+                        title: Row(
+                          children: [
+                            Icon(
+                              Icons.check_box,
+                              color: Colors.green,
+                            ),
+                            SizedBox(width: 10),
+                            Text(
+                              "Success",
+                              style: GoogleFonts.rubik(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 20,
+                              ),
+                            ),
+                          ],
+                        ),
+                        content: Text(
+                          "Logged in successfully!",
+                          style: GoogleFonts.rubik(
+                            fontSize: 16,
+                          ),
+                        ),
+                        actions: [
+                          TextButton(
+                            style: TextButton.styleFrom(
+                              backgroundColor: AppColor.darkBlue,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                            ),
+                            onPressed: () {
+                              Navigator.of(context).pop();
+                            },
+                            child: Text(
+                              "OK",
+                              style: GoogleFonts.rubik(
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                        ],
+                      );
+                    },
                   );
                 }
               },
