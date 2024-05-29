@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:pawlorie/Loginpage.dart';
+import 'package:pawlorie/LoginPage.dart';
 import 'package:pawlorie/constants/colors.dart'; // Adjust this import based on your file structure
 
 class SignUpForm extends StatelessWidget {
@@ -22,8 +22,13 @@ class SignUpForm extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(30.0),
+    return SingleChildScrollView(
+      padding: EdgeInsets.only(
+        left: 30.0,
+        right: 30.0,
+        top: 30.0,
+        bottom: MediaQuery.of(context).viewInsets.bottom + 30.0,
+      ),
       child: Form(
         key: formKey,
         child: Column(
@@ -144,10 +149,7 @@ class SignUpForm extends StatelessWidget {
             ElevatedButton(
               onPressed: () {
                 if (formKey.currentState!.validate()) {
-                  // Call the sign-up callback
                   signUpCallback();
-
-                  // Show the AlertDialog
                   showDialog(
                     context: context,
                     builder: (context) {
@@ -228,7 +230,7 @@ class SignUpForm extends StatelessWidget {
                   Text(
                     'Already have an account?',
                     style: GoogleFonts.ubuntu(
-                      fontSize: 18,
+                      fontSize: 17,
                       fontWeight: FontWeight.w500,
                       color: Colors.white,
                     ),
@@ -245,7 +247,7 @@ class SignUpForm extends StatelessWidget {
                       child: Text(
                         'Login',
                         style: GoogleFonts.ubuntu(
-                          fontSize: 18,
+                          fontSize: 17,
                           fontWeight: FontWeight.w500,
                           color: Color.fromARGB(255, 22, 21, 86),
                         ),
