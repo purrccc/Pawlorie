@@ -60,109 +60,114 @@ class _PetInfoTabContentState extends State<PetInfoTabContent> {
                     ],
                   ),
                 ),
-                Container(
-                  padding: EdgeInsets.all(5),
-                  child: SizedBox(
-                    width: 100,
-                    height: 30,
-                    child: ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: AppColor.blue, 
-                        
-                      ),
-                      onPressed: () {
-                        showDialog(
-                          context: context,
-                          builder: (BuildContext context) {
-                            return AlertDialog(
-                              title: Text('Edit Information'),
-                              content: Column(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  TextField(
-                                    controller: _nameController,
-                                    decoration: InputDecoration(labelText: 'Name'),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Container(
+                      padding: EdgeInsets.all(5),
+                      child: SizedBox(
+                        width: 100,
+                        height: 30,
+                        child: ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: AppColor.blue, 
+                            
+                          ),
+                          onPressed: () {
+                            showDialog(
+                              context: context,
+                              builder: (BuildContext context) {
+                                return AlertDialog(
+                                  title: Text('Edit Information'),
+                                  content: Column(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      TextField(
+                                        controller: _nameController,
+                                        decoration: InputDecoration(labelText: 'Name'),
+                                      ),
+                                      TextField(
+                                        controller: _ageController,
+                                        keyboardType: TextInputType.number,
+                                        decoration: InputDecoration(labelText: 'Age'),
+                                      ),
+                                      TextField(
+                                        controller: _sexController,
+                                        decoration: InputDecoration(labelText: 'Sex'),
+                                      ),
+                                      TextField(
+                                        controller: _sizeOrWeightController,
+                                        keyboardType: TextInputType.number,
+                                        decoration: InputDecoration(labelText: 'Size or Weight'),
+                                      ),
+                                      TextField(
+                                        controller: _breedController,
+                                        decoration: InputDecoration(labelText: 'Breed'),
+                                      ),
+                                    ],
                                   ),
-                                  TextField(
-                                    controller: _ageController,
-                                    keyboardType: TextInputType.number,
-                                    decoration: InputDecoration(labelText: 'Age'),
-                                  ),
-                                  TextField(
-                                    controller: _sexController,
-                                    decoration: InputDecoration(labelText: 'Sex'),
-                                  ),
-                                  TextField(
-                                    controller: _sizeOrWeightController,
-                                    keyboardType: TextInputType.number,
-                                    decoration: InputDecoration(labelText: 'Size or Weight'),
-                                  ),
-                                  TextField(
-                                    controller: _breedController,
-                                    decoration: InputDecoration(labelText: 'Breed'),
-                                  ),
-                                ],
-                              ),
-                              actions: <Widget>[
-                                TextButton(
-                                  onPressed: () {
-                                    Navigator.pop(context);
-                                  },
-                                  child: Text('Cancel'),
-                                ),
-                                ElevatedButton(
-                                  onPressed: () {
-                                    // Update information in Firestore
-                                    updatePetInfo(widget.petId!, {
-                                      'name': _nameController.text,
-                                      'age': _ageController.text,
-                                      'sex': _sexController.text,
-                                      'sizeOrWeight': _sizeOrWeightController.text,
-                                      'breed': _breedController.text,
-                                    });
-                                    Navigator.pop(context);
-                                  },
-                                  child: Text('Save'),
-                                ),
-                              ],
+                                  actions: <Widget>[
+                                    TextButton(
+                                      onPressed: () {
+                                        Navigator.pop(context);
+                                      },
+                                      child: Text('Cancel'),
+                                    ),
+                                    ElevatedButton(
+                                      onPressed: () {
+                                        // Update information in Firestore
+                                        updatePetInfo(widget.petId!, {
+                                          'name': _nameController.text,
+                                          'age': _ageController.text,
+                                          'sex': _sexController.text,
+                                          'sizeOrWeight': _sizeOrWeightController.text,
+                                          'breed': _breedController.text,
+                                        });
+                                        Navigator.pop(context);
+                                      },
+                                      child: Text('Save'),
+                                    ),
+                                  ],
+                                );
+                              },
                             );
                           },
-                        );
-                      },
-                      child: Text(
-                        "Edit",
-                        style: GoogleFonts.ubuntu(
-                          color: Colors.white,
-                          fontWeight: FontWeight.w500,
-                          fontSize: 20,
+                          child: Text(
+                            "Edit",
+                            style: GoogleFonts.ubuntu(
+                              color: Colors.white,
+                              fontWeight: FontWeight.w500,
+                              fontSize: 16,
+                            ),
+                          ),
                         ),
                       ),
                     ),
-                  ),
-                ),
-                Container(
-                  child: SizedBox(
-                    height: 30,
-                    width: 100,
-                    child: ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.red, 
-                        
-                      ),
-                      onPressed: (){
-                         deletePet(widget.petId!);
-                         Navigator.pop(context);
-                      } ,
-                      child: 
-                        Text(
-                          "Delete",
-                          style: GoogleFonts.ubuntu(
-                            color: Colors.white,
-                            fontWeight: FontWeight.w500,
-                            fontSize: 16,
+                    Container(
+                      child: SizedBox(
+                        height: 30,
+                        width: 100,
+                        child: ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.red, 
+                            
                           ),
-                        ),),
-                  ),
+                          onPressed: (){
+                             deletePet(widget.petId!);
+                             Navigator.pop(context);
+                          } ,
+                          child: 
+                            Text(
+                              "Delete",
+                              style: GoogleFonts.ubuntu(
+                                color: Colors.white,
+                                fontWeight: FontWeight.w500,
+                                fontSize: 16,
+                              ),
+                            ),),
+                      ),
+                    ),
+                  ],
                 ),
               ],
             ),

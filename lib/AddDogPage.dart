@@ -22,6 +22,8 @@ enum Sex {
   Female,
 }
 
+const String defaultImageUrl = 'https://mir-s3-cdn-cf.behance.net/project_modules/max_1200/65761296352685.5eac4787a4720.jpg'; 
+
 Future<List<Dog>> fetchDogs(String dogBreed) async {
   final response = await http.get(
     Uri.parse('https://api.api-ninjas.com/v1/dogs?name=${dogBreed}'),
@@ -145,6 +147,8 @@ Future<void> _submitForm() async {
         String? imageUrl;
         if (_imageFile != null) {
           imageUrl = await _uploadImageToStorage(_imageFile!);
+        }else{
+          imageUrl = defaultImageUrl;
         }
 
         DocumentReference docRef = await _firestore.collection('dogs').add({
@@ -331,11 +335,11 @@ void dispose() {
                       backgroundColor: Colors.grey[300],
                       backgroundImage: _imageFile != null
                           ? FileImage(_imageFile!)
-                          : null,
+                          : NetworkImage(defaultImageUrl) as ImageProvider,
                       child: _imageFile == null
                           ? Icon(
                               Icons.add_a_photo,
-                              color: Colors.grey[800],
+                              color: AppColor.darkBlue,
                               size: 40,
                             )
                           : null,
