@@ -12,36 +12,44 @@ class SignUpPage extends StatefulWidget {
 }
 
 class _SignUpPageState extends State<SignUpPage> {
+  // Initialize the FirebaseAuthService instance
   final FirebaseAuthService _authService = FirebaseAuthService();
+  // Key to identify the form and validate it
   final _formKey = GlobalKey<FormState>();
+  // Controllers for the text fields
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _retypePasswordController = TextEditingController();
 
+  // Function to handle sign-up logic
   void _signUp() async {
+    // Validate the form fields
     if (_formKey.currentState!.validate()) {
       String email = _emailController.text;
       String password = _passwordController.text;
       String name = _nameController.text;
 
-      // Call the sign up method in FirebaseAuthService
+      // Call the sign-up method in FirebaseAuthService
       User? user = await _authService.signUpWithEmailAndPassword(email, password, name);
 
       if (user != null) {
+        // If user is created, navigate to LoginPage
         print("User created");
         Navigator.push(
           context,
           MaterialPageRoute(builder: (context) => LoginPage()),
         );
       } else {
-        print("dipota indi ka sign up");
+        // Print error message if sign-up fails
+        print("Sign-up failed");
       }
     }
   }
 
   @override
   void dispose() {
+    // Dispose the controllers when the widget is removed
     _emailController.dispose();
     _nameController.dispose();
     _passwordController.dispose();
@@ -54,6 +62,8 @@ class _SignUpPageState extends State<SignUpPage> {
     return Scaffold(
       body: Stack(
         children: [
+          
+          // Background container with dark blue color
           Container(
             height: double.infinity,
             width: double.infinity,
@@ -61,6 +71,8 @@ class _SignUpPageState extends State<SignUpPage> {
               color: AppColor.darkBlue,
             ),
           ),
+          
+          // Image at the top of the screen
           Container(
             margin: const EdgeInsets.only(top: 50, left: 70),
             child: Image.asset(
@@ -68,6 +80,8 @@ class _SignUpPageState extends State<SignUpPage> {
               width: 250,
             ),
           ),
+          
+          // Main container with sign-up form
           Padding(
             padding: const EdgeInsets.only(top: 250.0),
             child: Container(
@@ -83,6 +97,7 @@ class _SignUpPageState extends State<SignUpPage> {
               child: Center(
                 child: Column(
                   children: [
+                    // Title text "New here?"
                     Container(
                       margin: const EdgeInsets.only(top: 30),
                       child: Text(
@@ -94,6 +109,7 @@ class _SignUpPageState extends State<SignUpPage> {
                         ),
                       ),
                     ),
+                    // Subtitle text "Sign up to get started"
                     Text(
                       "Sign up to get started",
                       style: GoogleFonts.ubuntu(
@@ -101,6 +117,7 @@ class _SignUpPageState extends State<SignUpPage> {
                         color: Colors.white,
                       ),
                     ),
+                    // Sign-up form component
                     SignUpForm(
                       formKey: _formKey,
                       emailController: _emailController,
