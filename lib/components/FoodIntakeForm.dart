@@ -5,7 +5,7 @@ import 'package:google_fonts/google_fonts.dart';
 
 class FoodIntakeForm extends StatefulWidget {
   final String petId;
-  final Function(int, String, TimeOfDay) onSubmit;
+  final Function(double, String, TimeOfDay) onSubmit;
 
   FoodIntakeForm({required this.petId, required this.onSubmit});
 
@@ -43,65 +43,15 @@ class _FoodIntakeFormState extends State<FoodIntakeForm> {
 
   void submitForm() {
     if (_formKey.currentState!.validate()) {
-      final calories = int.parse(_caloriesController.text.trim());
+      final calories = double.parse(_caloriesController.text.trim());
       final foodName = _nameController.text.trim();
       final time = selectedTime;
 
       widget.onSubmit(calories, foodName, time);
 
       // Show the AlertDialog
-      showDialog(
-        context: context,
-        builder: (context) {
-          return AlertDialog(
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(15),
-            ),
-            title: Row(
-              children: [
-                Icon(
-                  Icons.check_box,
-                  color: Colors.green,
-                ),
-                SizedBox(width: 10),
-                Text(
-                  "Food added!",
-                  style: GoogleFonts.rubik(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 20,
-                  ),
-                ),
-              ],
-            ),
-            content: Text(
-              "Successfully added $foodName!",
-              style: GoogleFonts.rubik(
-                fontSize: 16,
-              ),
-            ),
-            actions: [
-              TextButton(
-                style: TextButton.styleFrom(
-                  backgroundColor: AppColor.darkBlue,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                ),
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-                child: Text(
-                  "OK",
-                  style: GoogleFonts.rubik(
-                    color: Colors.white,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ),
-            ],
-          );
-        },
-      );
+      
+      
 
       // Clear form fields
       _nameController.clear();

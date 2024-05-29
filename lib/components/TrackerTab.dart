@@ -44,7 +44,7 @@ class _TrackerTabContentState extends State<TrackerTabContent> {
   }
 
   void _handleFoodIntakeSubmission(
-    int calories, String foodName, TimeOfDay time) async {
+    double calories, String foodName, TimeOfDay time) async {
   setState(() {
     totalIntake += calories;
     remainingCalories =
@@ -56,7 +56,7 @@ class _TrackerTabContentState extends State<TrackerTabContent> {
 
   if (totalIntake >= requiredCalories) {
     setState(() {
-      remainingCalories = double.infinity; // Use a special value to represent "Max Reached"
+      remainingCalories = double.infinity;
     });
 
     // Show alert dialog
@@ -64,53 +64,107 @@ class _TrackerTabContentState extends State<TrackerTabContent> {
       context: context,
       builder: (context) {
         return AlertDialog(
-  shape: RoundedRectangleBorder(
-    borderRadius: BorderRadius.circular(15),
-  ),
-  title: Row(
-    children: [
-      Icon(
-        Icons.warning,
-        color: Colors.red,
-      ),
-      SizedBox(width: 10),
-      Text(
-        "Calorie Limit Reached",
-        style: GoogleFonts.rubik(
-          fontWeight: FontWeight.bold,
-          fontSize: 20,
-        ),
-      ),
-    ],
-  ),
-  content: Text(
-    "The maximum calorie intake for the day has been reached.",
-    style: GoogleFonts.rubik(
-      fontSize: 16,
-    ),
-  ),
-  actions: [
-    TextButton(
-      style: TextButton.styleFrom(
-        backgroundColor: AppColor.darkBlue,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(10),
-        ),
-      ),
-      onPressed: () {
-        Navigator.of(context).pop();
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(15),
+              ),
+              title: Row(
+                children: [
+                  Icon(
+                    Icons.warning,
+                    color: Colors.red,
+                  ),
+                  SizedBox(width: 10),
+                  Text(
+                    "Calorie Limit Reached",
+                    style: GoogleFonts.rubik(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 20,
+                    ),
+                  ),
+                ],
+              ),
+              content: Text(
+                "The maximum calorie intake for the day has been reached.",
+                style: GoogleFonts.rubik(
+                  fontSize: 16,
+                ),
+              ),
+              actions: [
+                TextButton(
+                  style: TextButton.styleFrom(
+                    backgroundColor: AppColor.darkBlue,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                  ),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                  child: Text(
+                    "OK",
+                    style: GoogleFonts.rubik(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+              ],
+            );
+
+
+
+
+
       },
-      child: Text(
-        "OK",
-        style: GoogleFonts.rubik(
-          color: Colors.white,
-          fontWeight: FontWeight.bold,
-        ),
-      ),
-    ),
-  ],
-);
-      },
+    );
+  }else{
+    showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(15),
+            ),
+            title: Row(
+              children: [
+                SizedBox(width: 10),
+                Text(
+                  "Food added!",
+                  style: GoogleFonts.rubik(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 20,
+                  ),
+                ),
+              ],
+            ),
+            content: Text(
+              "Successfully added $foodName!",
+              style: GoogleFonts.rubik(
+                fontSize: 16,
+              ),
+            ),
+            actions: [
+              TextButton(
+                style: TextButton.styleFrom(
+                  backgroundColor: AppColor.darkBlue,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                ),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                child: Text(
+                  "OK",
+                  style: GoogleFonts.rubik(
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+            ],
+          );
+        }
     );
   }
 
