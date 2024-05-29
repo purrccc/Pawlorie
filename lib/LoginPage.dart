@@ -22,8 +22,9 @@ class _LoginPageState extends State<LoginPage> {
   final TextEditingController _passwordController = TextEditingController();
 
   void login() async {
-    if (_formKey.currentState!.validate()) {      // validate form on login
-      String email = _emailController.text;       // get email from input
+    if (_formKey.currentState!.validate()) {
+      // validate form on login
+      String email = _emailController.text; // get email from input
       String password = _passwordController.text; // get password from input
 
       // Call authentication to sign in
@@ -83,10 +84,10 @@ class _LoginPageState extends State<LoginPage> {
         // navigate to home page
         Navigator.push(
           context,
-          MaterialPageRoute(
-            builder: (context) => HomePage()),
+          MaterialPageRoute(builder: (context) => HomePage()),
         );
-      } else { // Show alert box if login is not successful
+      } else {
+        // Show alert box if login is not successful
         showDialog(
           context: context,
           builder: (context) {
@@ -139,7 +140,7 @@ class _LoginPageState extends State<LoginPage> {
     }
   }
 
-  // clean up controllers 
+  // clean up controllers
   @override
   void dispose() {
     _emailController.dispose();
@@ -149,25 +150,20 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
-    if (_isLoggedIn) {
-      // If the user is logged in, navigate to the HomePage
-      return HomePage();
-    } else {
-      // If the user is not logged in, display the login UI
-      return Scaffold(
-        body: Stack(
-          children: [
-            Container(
-              height: double.infinity,
-              width: double.infinity,
-              decoration: const BoxDecoration(color: AppColor.darkBlue),
+    return Scaffold(
+      body: Stack(
+        children: [
+          Container(
+            height: double.infinity,
+            width: double.infinity,
+            decoration: const BoxDecoration(color: AppColor.darkBlue),
+          ),
+          Container(
+            margin: const EdgeInsets.all(50),
+            child: Image.asset(
+              'lib/assets/login.png',
+              width: 300,
             ),
-            Container(
-              margin: const EdgeInsets.all(50),
-              child: Image.asset(
-                'lib/assets/login.png',
-                width: 300,
-              )
           ),
           // Login form container
           Padding(
@@ -175,8 +171,8 @@ class _LoginPageState extends State<LoginPage> {
             child: Container(
               decoration: const BoxDecoration(
                 borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(50),
-                    topRight: Radius.circular(50)
+                  topLeft: Radius.circular(50),
+                  topRight: Radius.circular(50),
                 ),
                 color: AppColor.yellowGold,
               ),
@@ -191,26 +187,26 @@ class _LoginPageState extends State<LoginPage> {
                         child: Text(
                           "Welcome Back!",
                           style: GoogleFonts.rubik(
-                              fontSize: 45,
-                              fontWeight: FontWeight.w600,
-                              color: AppColor.darkBlue,
-                            ),
+                            fontSize: 45,
+                            fontWeight: FontWeight.w600,
+                            color: AppColor.darkBlue,
                           ),
                         ),
-                        Text(
-                          "Login to your Account",
-                          style: GoogleFonts.ubuntu(
-                              fontSize: 20,
-                              color: Colors.white,
-                              fontWeight: FontWeight.w500)
                       ),
-                      // Login Form
+                      Text(
+                        "Login to your Account",
+                        style: GoogleFonts.ubuntu(
+                          fontSize: 20,
+                          color: Colors.white,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
                       LoginForm(
                         formKey: _formKey,
                         emailController: _emailController,
                         passwordController: _passwordController,
                         loginCallback: login,
-                      )
+                      ),
                     ],
                   ),
                 ),
