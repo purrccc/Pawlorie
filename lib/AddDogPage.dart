@@ -26,6 +26,7 @@ enum Sex {
 const String defaultImageUrl =
     'https://mir-s3-cdn-cf.behance.net/project_modules/max_1200/65761296352685.5eac4787a4720.jpg';
 
+// fetch dog information from api 
 Future<List<Dog>> fetchDogs(String dogBreed) async {
   final response = await http.get(
     Uri.parse('https://api.api-ninjas.com/v1/dogs?name=${dogBreed}'),
@@ -40,6 +41,7 @@ Future<List<Dog>> fetchDogs(String dogBreed) async {
   }
 }
 
+// fetch api for breed suggestions (while typing in form)
 Future<List<String>> fetchDogBreeds(String query) async {
   final response = await http.get(
     Uri.parse('https://api.api-ninjas.com/v1/dogs?name=${query}'),
@@ -54,6 +56,7 @@ Future<List<String>> fetchDogBreeds(String query) async {
   }
 }
 
+//dog class to store values from api
 class Dog {
   final double maxWeightMale;
   final double maxWeightFemale;
@@ -107,6 +110,7 @@ class _AddDogPageState extends State<AddDogPage> {
 
   final ImagePicker _picker = ImagePicker();
 
+  // image picker
   Future<void> _pickImage(ImageSource source) async {
     final pickedFile = await _picker.pickImage(source: source);
     if (pickedFile != null) {
@@ -125,11 +129,13 @@ class _AddDogPageState extends State<AddDogPage> {
 
       double minWeight;
       double maxWeight;
-      double requiredCalories = pow(sizeOrWeight, 0.75) * 70;
+      double requiredCalories = pow(sizeOrWeight, 0.75) * 70; //formula for determining dog daily calorie intake
       double minCalories = requiredCalories * 0.8;
 
       String? userId = widget.userId;
 
+      // determine min/max weight depending on breed and sex
+      // weight is converted to kg from lbs (api provides weight in lbs)
       if (selectedDogData != null) {
         if (_selectedSex == Sex.Male) {
           minWeight = selectedDogData!.minWeightMale * 0.45359237;
@@ -147,7 +153,8 @@ class _AddDogPageState extends State<AddDogPage> {
             imageUrl = defaultImageUrl;
           }
 
-          DocumentReference docRef = await _firestore.collection('dogs').add({
+          // adding dog information to database
+          DocumentReference docRef = await _firestore.collection('dogs').add({  
             'name': name,
             'age': age,
             'breed': breed,
@@ -175,6 +182,7 @@ class _AddDogPageState extends State<AddDogPage> {
           );
           _clearForm();
 
+          //pop up navigator page after adding dog
           Navigator.push(
             context,
             MaterialPageRoute(
@@ -205,6 +213,7 @@ class _AddDogPageState extends State<AddDogPage> {
     }
   }
 
+  // function to add image to database
   Future<String> _uploadImageToStorage(File imageFile) async {
     firebase_storage.FirebaseStorage storage =
         firebase_storage.FirebaseStorage.instance;
@@ -239,12 +248,13 @@ class _AddDogPageState extends State<AddDogPage> {
   @override
   void initState() {
     super.initState();
-    _breedController.addListener(_onSearchChanged);
+    _breedController.addListener(_onSearchChanged); // add listener to breed controller to handle changes while user types dog breed (for search suggestions)
   }
 
+  // function that displays dog breed suggestions depending on user input
   void _onSearchChanged() {
     if (_breedController.text.isNotEmpty) {
-      fetchDogBreeds(_breedController.text).then((suggestions) {
+      fetchDogBreeds(_breedController.text).then((suggestions) {  
         setState(() {
           dogBreedSuggestions = suggestions;
         });
@@ -261,6 +271,7 @@ class _AddDogPageState extends State<AddDogPage> {
     }
   }
 
+  // fetch data of dog breed that has been selected by user
   void fetchDogData() {
     fetchDogs(selectedDogBreed).then((dogs) {
       setState(() {
@@ -431,7 +442,7 @@ class _AddDogPageState extends State<AddDogPage> {
                       return null;
                     },
                   ),
-                  if (dogBreedSuggestions.isNotEmpty)
+                  if (dogBreedSuggestions.isNotEmpty) // if condition for dog breed suggestions dropdown
                     Container(
                       constraints: BoxConstraints(maxHeight: 200),
                       decoration: BoxDecoration(

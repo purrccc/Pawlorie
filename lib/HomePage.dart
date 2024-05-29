@@ -159,6 +159,7 @@ class _HomePageState extends State<HomePage> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
+                    // stream builder for realtime updates from database
                     StreamBuilder<List<Dog>>(
                         stream: _firebaseService.getDogs(),
                         builder: (context, snapshot) {
@@ -179,6 +180,7 @@ class _HomePageState extends State<HomePage> {
                                   (dog) => dog.userId == _currentUserDocumentId)
                               .toList();
 
+                          // default display if user has not added any dog
                           if (dogs.isEmpty) {
                             return Column(
                               children: [
@@ -214,6 +216,7 @@ class _HomePageState extends State<HomePage> {
                             );
                           }
 
+                          // display dogs of user in home page
                           return ListView.builder(
                             shrinkWrap: true,
                             physics: NeverScrollableScrollPhysics(),
@@ -306,6 +309,7 @@ class FirebaseService {
   final FirebaseFirestore _db = FirebaseFirestore.instance;
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
+  // extract id of current user from database to show only dogs added by user
   Future<String?> getCurrentUserDocumentId() async {
     try {
       User? user = _auth.currentUser;
@@ -320,6 +324,7 @@ class FirebaseService {
     return null;
   }
 
+  
   Future<String?> getCurrentUsername(String? documentId) async {
     if (documentId != null) {
       try {
@@ -332,6 +337,7 @@ class FirebaseService {
     }
     return null;
   }
+
 
   Stream<List<Dog>> getDogs() {
     return _db.collection('dogs').snapshots().map((snapshot) =>
@@ -346,6 +352,8 @@ class FirebaseService {
     }
   }
 }
+
+// create dog class to store info to be fetched from database
 
 class Dog {
   final String id;

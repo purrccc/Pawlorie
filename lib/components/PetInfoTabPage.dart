@@ -13,7 +13,7 @@ class PetInfoTabContent extends StatefulWidget {
   @override
   _PetInfoTabContentState createState() => _PetInfoTabContentState();
 }
-
+// add controllers for edit
 class _PetInfoTabContentState extends State<PetInfoTabContent> {
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _ageController = TextEditingController();
@@ -76,7 +76,7 @@ class _PetInfoTabContentState extends State<PetInfoTabContent> {
                           style: ElevatedButton.styleFrom(
                             backgroundColor: AppColor.blue,
                           ),
-                          onPressed: () {
+                          onPressed: () { // when user opts to edit dog data
                             showDialog(
                               context: context,
                               builder: (BuildContext context) {
@@ -217,6 +217,7 @@ class _PetInfoTabContentState extends State<PetInfoTabContent> {
           );
   }
 
+  // custom widget for specific info card
   Widget buildInfoCard(String title, String value, Color color) {
     return Container(
       decoration: BoxDecoration(
@@ -250,21 +251,21 @@ class _PetInfoTabContentState extends State<PetInfoTabContent> {
     );
   }
 
-  // Function to update pet information in Firestore
+  // function to update pet information in Firestore
   Future<void> updatePetInfo(String dogId, Map<String, dynamic> newData) async {
-    // Get the current user
+    // get the current user
     User? user = FirebaseAuth.instance.currentUser;
     if (user != null) {
-      // Get the existing data of the dog from Firestore
+      // get the existing data of the dog from Firestore
       DocumentSnapshot documentSnapshot =
           await FirebaseFirestore.instance.collection('dogs').doc(dogId).get();
 
-      // Merge the existing data with the new data
+      // merge the existing data with the new data
       Map<String, dynamic> currentData =
           documentSnapshot.data() as Map<String, dynamic>;
-      Map<String, dynamic> mergedData = {...currentData, ...newData};
+      Map<String, dynamic> mergedData = {...currentData, ...newData}; // update current data with new values from new data
 
-      // Update the document in the "dogs" collection with the merged data
+      // update the document in the "dogs" collection with the merged data
       await FirebaseFirestore.instance
           .collection('dogs')
           .doc(dogId)

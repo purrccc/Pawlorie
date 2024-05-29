@@ -17,7 +17,7 @@ class CalTrackerPage extends StatefulWidget {
   final String username;
   final String imageURL;
 
-  CalTrackerPage({
+  CalTrackerPage({  
     required this.petId,
     required this.petName,
     required this.username,
@@ -40,6 +40,7 @@ class _CalTrackerState extends State<CalTrackerPage>
     _fetchPetInfo();
   }
 
+  // function to fetch pet info from database
   Future<void> _fetchPetInfo() async {
     DocumentSnapshot doc = await FirebaseFirestore.instance
         .collection('dogs')
@@ -102,7 +103,7 @@ class _CalTrackerState extends State<CalTrackerPage>
           Expanded(
             child: TabBarView(
               controller: _tabController,
-              children: [
+              children: [ // pass parameters to different tabs
                 TrackerTabContent(petInfo: petInfo, petId: widget.petId),
                 SummaryTabContent(petId: widget.petId),
                 PetInfoTabContent(petInfo: petInfo, petId: widget.petId)

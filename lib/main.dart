@@ -44,7 +44,7 @@ class AuthWrapper extends StatelessWidget {
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return CircularProgressIndicator(); // Or any loading indicator
-        } else if (snapshot.hasData) {
+        } else if (snapshot.hasData) {  //if user is logged in, every refresh will return to homepage
           return HomePage();
         } else {
           return LoginPage();
