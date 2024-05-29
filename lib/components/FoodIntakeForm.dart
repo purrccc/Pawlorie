@@ -23,6 +23,7 @@ class _FoodIntakeFormState extends State<FoodIntakeForm> {
 
   @override
   void dispose() {
+    // Dispose the controllers when the widget is removed
     _nameController.dispose();
     _caloriesController.dispose();
     _timeController.dispose();
