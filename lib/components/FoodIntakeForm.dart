@@ -49,11 +49,58 @@ class _FoodIntakeFormState extends State<FoodIntakeForm> {
 
       widget.onSubmit(calories, foodName, time);
 
-      // SnackBar
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Successfully added $foodName!'),
-        ),
+      // Show the AlertDialog
+      showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(15),
+            ),
+            title: Row(
+              children: [
+                Icon(
+                  Icons.check_box,
+                  color: Colors.green,
+                ),
+                SizedBox(width: 10),
+                Text(
+                  "Food added!",
+                  style: GoogleFonts.rubik(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 20,
+                  ),
+                ),
+              ],
+            ),
+            content: Text(
+              "Successfully added $foodName!",
+              style: GoogleFonts.rubik(
+                fontSize: 16,
+              ),
+            ),
+            actions: [
+              TextButton(
+                style: TextButton.styleFrom(
+                  backgroundColor: AppColor.darkBlue,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                ),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                child: Text(
+                  "OK",
+                  style: GoogleFonts.rubik(
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+            ],
+          );
+        },
       );
 
       // Clear form fields
