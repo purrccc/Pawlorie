@@ -15,8 +15,8 @@ Widget trackerDogCard(BuildContext context, String petName, String imageUrl) {
       child: Column(
         children: [
           Container(
-            width: 150,
-            height: 150,
+            width: 120,
+            height: 120,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
               // borderRadius: BorderRadius.circular(16),
@@ -27,13 +27,6 @@ Widget trackerDogCard(BuildContext context, String petName, String imageUrl) {
                     )
                   : null,
             ),
-            child: imageUrl.isEmpty
-                ? Icon(
-                    Icons.add_a_photo,
-                    color: Colors.grey[800],
-                    size: 40,
-                  )
-                : null,
           ),
           Padding(
             padding: EdgeInsets.only(top: 10.0),
@@ -41,7 +34,7 @@ Widget trackerDogCard(BuildContext context, String petName, String imageUrl) {
               petName,
               style: GoogleFonts.rubik(
                 color: AppColor.darkBlue,
-                fontSize: 35,
+                fontSize: 30,
                 fontWeight: FontWeight.bold,
               ),
             ),

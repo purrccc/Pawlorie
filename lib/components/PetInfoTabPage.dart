@@ -36,142 +36,143 @@ class _PetInfoTabContentState extends State<PetInfoTabContent> {
   Widget build(BuildContext context) {
     return widget.petInfo == null
         ? Center(child: CircularProgressIndicator())
-        : Container(
-            child: Column(
-              children: [
-                SizedBox(
-                  height: 400,
-                  width: 400,
-                  child: GridView.count(
-                    primary: false,
-                    padding: const EdgeInsets.all(10),
-                    crossAxisSpacing: 20,
-                    mainAxisSpacing: 10,
-                    crossAxisCount: 2,
-                    children: <Widget>[
-                      buildInfoCard(
-                          'Age', widget.petInfo!['age'].toString(), AppColor.darkBlue),
-                      buildInfoCard(
-                          'Sex', widget.petInfo!['sex'], AppColor.blue),
-                      buildInfoCard(
-                          'Size or Weight', widget.petInfo!['sizeOrWeight'].toString(), Color.fromARGB(255, 35, 156, 255)),
-                      buildInfoCard(
-                          'Breed', widget.petInfo!['breed'], AppColor.yellowGold),
-                    ],
-                  ),
+        : Padding(
+          padding: const EdgeInsets.only(top:8.0),
+          child: Column(
+            children: [
+              SizedBox(
+                height: 400,
+                width: 400,
+                child: GridView.count(
+                  primary: false,
+                  padding: const EdgeInsets.all(10),
+                  crossAxisSpacing: 20,
+                  mainAxisSpacing: 20,
+                  crossAxisCount: 2,
+                  children: <Widget>[
+                    buildInfoCard(
+                        'Age', widget.petInfo!['age'].toString(), AppColor.darkBlue),
+                    buildInfoCard(
+                        'Sex', widget.petInfo!['sex'], AppColor.blue),
+                    buildInfoCard(
+                        'Size or Weight', widget.petInfo!['sizeOrWeight'].toString(), Color.fromARGB(255, 35, 156, 255)),
+                    buildInfoCard(
+                        'Breed', widget.petInfo!['breed'], AppColor.yellowGold),
+                  ],
                 ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Container(
-                      padding: EdgeInsets.all(5),
-                      child: SizedBox(
-                        width: 100,
-                        height: 30,
-                        child: ElevatedButton(
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: AppColor.blue, 
-                            
-                          ),
-                          onPressed: () {
-                            showDialog(
-                              context: context,
-                              builder: (BuildContext context) {
-                                return AlertDialog(
-                                  title: Text('Edit Information'),
-                                  content: Column(
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: [
-                                      TextField(
-                                        controller: _nameController,
-                                        decoration: InputDecoration(labelText: 'Name'),
-                                      ),
-                                      TextField(
-                                        controller: _ageController,
-                                        keyboardType: TextInputType.number,
-                                        decoration: InputDecoration(labelText: 'Age'),
-                                      ),
-                                      TextField(
-                                        controller: _sexController,
-                                        decoration: InputDecoration(labelText: 'Sex'),
-                                      ),
-                                      TextField(
-                                        controller: _sizeOrWeightController,
-                                        keyboardType: TextInputType.number,
-                                        decoration: InputDecoration(labelText: 'Size or Weight'),
-                                      ),
-                                      TextField(
-                                        controller: _breedController,
-                                        decoration: InputDecoration(labelText: 'Breed'),
-                                      ),
-                                    ],
-                                  ),
-                                  actions: <Widget>[
-                                    TextButton(
-                                      onPressed: () {
-                                        Navigator.pop(context);
-                                      },
-                                      child: Text('Cancel'),
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Container(
+                    padding: EdgeInsets.all(5),
+                    child: SizedBox(
+                      width: 100,
+                      height: 30,
+                      child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: AppColor.blue, 
+                          
+                        ),
+                        onPressed: () {
+                          showDialog(
+                            context: context,
+                            builder: (BuildContext context) {
+                              return AlertDialog(
+                                title: Text('Edit Information'),
+                                content: Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    TextField(
+                                      controller: _nameController,
+                                      decoration: InputDecoration(labelText: 'Name'),
                                     ),
-                                    ElevatedButton(
-                                      onPressed: () {
-                                        // Update information in Firestore
-                                        updatePetInfo(widget.petId!, {
-                                          'name': _nameController.text,
-                                          'age': _ageController.text,
-                                          'sex': _sexController.text,
-                                          'sizeOrWeight': _sizeOrWeightController.text,
-                                          'breed': _breedController.text,
-                                        });
-                                        Navigator.pop(context);
-                                      },
-                                      child: Text('Save'),
+                                    TextField(
+                                      controller: _ageController,
+                                      keyboardType: TextInputType.number,
+                                      decoration: InputDecoration(labelText: 'Age'),
+                                    ),
+                                    TextField(
+                                      controller: _sexController,
+                                      decoration: InputDecoration(labelText: 'Sex'),
+                                    ),
+                                    TextField(
+                                      controller: _sizeOrWeightController,
+                                      keyboardType: TextInputType.number,
+                                      decoration: InputDecoration(labelText: 'Size or Weight'),
+                                    ),
+                                    TextField(
+                                      controller: _breedController,
+                                      decoration: InputDecoration(labelText: 'Breed'),
                                     ),
                                   ],
-                                );
-                              },
-                            );
-                          },
-                          child: Text(
-                            "Edit",
+                                ),
+                                actions: <Widget>[
+                                  TextButton(
+                                    onPressed: () {
+                                      Navigator.pop(context);
+                                    },
+                                    child: Text('Cancel'),
+                                  ),
+                                  ElevatedButton(
+                                    onPressed: () {
+                                      // Update information in Firestore
+                                      updatePetInfo(widget.petId!, {
+                                        'name': _nameController.text,
+                                        'age': _ageController.text,
+                                        'sex': _sexController.text,
+                                        'sizeOrWeight': _sizeOrWeightController.text,
+                                        'breed': _breedController.text,
+                                      });
+                                      Navigator.pop(context);
+                                    },
+                                    child: Text('Save'),
+                                  ),
+                                ],
+                              );
+                            },
+                          );
+                        },
+                        child: Text(
+                          "Edit",
+                          style: GoogleFonts.ubuntu(
+                            color: Colors.white,
+                            fontWeight: FontWeight.w500,
+                            fontSize: 16,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                  Container(
+                    child: SizedBox(
+                      height: 30,
+                      width: 100,
+                      child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.red, 
+                          
+                        ),
+                        onPressed: (){
+                           deletePet(widget.petId!);
+                           Navigator.pop(context);
+                        } ,
+                        child: 
+                          Text(
+                            "Delete",
                             style: GoogleFonts.ubuntu(
                               color: Colors.white,
                               fontWeight: FontWeight.w500,
                               fontSize: 16,
                             ),
-                          ),
-                        ),
-                      ),
+                          ),),
                     ),
-                    Container(
-                      child: SizedBox(
-                        height: 30,
-                        width: 100,
-                        child: ElevatedButton(
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.red, 
-                            
-                          ),
-                          onPressed: (){
-                             deletePet(widget.petId!);
-                             Navigator.pop(context);
-                          } ,
-                          child: 
-                            Text(
-                              "Delete",
-                              style: GoogleFonts.ubuntu(
-                                color: Colors.white,
-                                fontWeight: FontWeight.w500,
-                                fontSize: 16,
-                              ),
-                            ),),
-                      ),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-          );
+                  ),
+                ],
+              ),
+            ],
+          ),
+        );
   }
 
   Widget buildInfoCard(String title, String value, Color color) {
