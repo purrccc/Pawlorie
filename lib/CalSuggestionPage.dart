@@ -3,11 +3,12 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:pawlorie/constants/colors.dart';
 import 'package:pawlorie/CalTrackerPage.dart';
 
+// A stateless widget that shows calorie suggestions for a specific dog
 class CalSuggestionPage extends StatelessWidget {
-  final String dogId;
-  final String dogName;
-  final double requiredCalories;
-  final String imageUrl;
+  final String dogId; // ID of the dog
+  final String dogName; // Name of the dog
+  final double requiredCalories; // Required calorie intake for the dog
+  final String imageUrl; // URL of the dog's image
 
   CalSuggestionPage({
     required this.dogId,
@@ -19,17 +20,21 @@ class CalSuggestionPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      // Main container for the page
       body: Stack(
         children: [
+          // Background color container
           Container(
             color: AppColor.darkBlue,
           ),
+          // Main content centered in the screen
           Center(
             child: Padding(
               padding: const EdgeInsets.all(50.0),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
+                  // Informational text
                   Text(
                     "You've successfully added",
                     style: GoogleFonts.ubuntu(
@@ -37,6 +42,8 @@ class CalSuggestionPage extends StatelessWidget {
                       color: Colors.white,
                     ),
                   ),
+
+                  // Dog's name in a larger, bold font
                   Text(
                     dogName,
                     style: GoogleFonts.rubik(
@@ -46,6 +53,8 @@ class CalSuggestionPage extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(height: 10),
+
+                  // Explanation of the calorie goal
                   Text(
                     "Based on the size and weight, the required calorie goal of your dog is:",
                     textAlign: TextAlign.center,
@@ -55,6 +64,8 @@ class CalSuggestionPage extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(height: 30),
+
+                  // Display of the required calorie amount
                   Text(
                     requiredCalories.toString(),
                     style: GoogleFonts.rubik(
@@ -63,6 +74,8 @@ class CalSuggestionPage extends StatelessWidget {
                       color: AppColor.yellowGold,
                     ),
                   ),
+
+                  // Label "Calories" below the calorie amount
                   Text(
                     "Calories",
                     style: GoogleFonts.ubuntu(
@@ -72,6 +85,8 @@ class CalSuggestionPage extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(height: 30),
+
+                  // Continue button to navigate to the calorie tracker page
                   ElevatedButton(
                     onPressed: () => Navigator.push(
                       context,
