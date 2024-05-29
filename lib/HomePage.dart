@@ -74,13 +74,12 @@ class _HomePageState extends State<HomePage> {
     String formattedMonth = formatter.format(_currentDate);
 
     return Scaffold(
-      
       body: Stack(
         children: [
           Column(
             children: [
               Container(
-                height: 150,
+                height: 180,
                 width: double.infinity,
                 decoration: const BoxDecoration(
                   color: Color.fromARGB(255, 22, 21, 86),
@@ -90,13 +89,12 @@ class _HomePageState extends State<HomePage> {
                   ),
                 ),
                 child: Column(
-                  
                   children: [
                     Row(
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: [
                         Container(
-                          margin: const EdgeInsets.only(right:20.0, top:10.0),
+                          margin: const EdgeInsets.only(right:20.0, top:30.0),
                           child: IconButton(
                               icon: Icon(Icons.logout_rounded,
                               color: Colors.white),
@@ -104,8 +102,7 @@ class _HomePageState extends State<HomePage> {
                             ),
                         ),
                       ],
-                    ),
-                 
+                    ),   
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
@@ -144,7 +141,7 @@ class _HomePageState extends State<HomePage> {
           Padding(
             padding: const EdgeInsets.all(20.0),
             child: Container(
-              margin: const EdgeInsets.only(top: 150),
+              margin: const EdgeInsets.only(top: 200),
               child: Text(
                 'Your dogs',
                 style: GoogleFonts.rubik(

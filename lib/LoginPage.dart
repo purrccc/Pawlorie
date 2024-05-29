@@ -29,7 +29,54 @@ class _LoginPageState extends State<LoginPage> {
     UserWithUsername? userWithUsername = await _auth.signInWithEmailAndPassword(email, password);
 
     if (userWithUsername != null && userWithUsername.user != null) {
-      print("User logged in");
+      showDialog(
+                    context: context,
+                    builder: (context) {
+                      return AlertDialog(
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(15),
+                        ),
+                        title: Row(
+                          children: [
+                            SizedBox(width: 10),
+                            Text(
+                              "Success",
+                              style: GoogleFonts.rubik(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 20,
+                              ),
+                            ),
+                          ],
+                        ),
+                        content: Text(
+                          "Logged in successfully!",
+                          style: GoogleFonts.rubik(
+                            fontSize: 16,
+                          ),
+                        ),
+                        actions: [
+                          TextButton(
+                            style: TextButton.styleFrom(
+                              backgroundColor: AppColor.darkBlue,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                            ),
+                            onPressed: () {
+                              Navigator.of(context).pop();
+                            },
+                            child: Text(
+                              "OK",
+                              style: GoogleFonts.rubik(
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                        ],
+                      );
+                    },
+                  );
       Navigator.push(
         context,
         MaterialPageRoute(
@@ -37,6 +84,53 @@ class _LoginPageState extends State<LoginPage> {
         ),
       );
     } else {
+      showDialog(
+                    context: context,
+                    builder: (context) {
+                      return AlertDialog(
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(15),
+                        ),
+                        title: Row(
+                          children: [
+                            Text(
+                              "Login Failed",
+                              style: GoogleFonts.rubik(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 20,
+                              ),
+                            ),
+                          ],
+                        ),
+                        content: Text(
+                          "Please double-check your email and password and try again.",
+                          style: GoogleFonts.rubik(
+                            fontSize: 16,
+                          ),
+                        ),
+                        actions: [
+                          TextButton(
+                            style: TextButton.styleFrom(
+                              backgroundColor: AppColor.darkBlue,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                            ),
+                            onPressed: () {
+                              Navigator.of(context).pop();
+                            },
+                            child: Text(
+                              "OK",
+                              style: GoogleFonts.rubik(
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                        ],
+                      );
+                    },
+                  );
       print("Failed to log in");
     }
   }

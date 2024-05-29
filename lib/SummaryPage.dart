@@ -46,7 +46,7 @@ class SummaryPage extends StatelessWidget {
                     Text(
                       _formatDateWithDay(date),
                       style: GoogleFonts.rubik(
-                        fontSize: 18, // Slightly smaller font size for the date
+                        fontSize: 18, 
                         fontWeight: FontWeight.bold,
                         color: Colors.white,
                       ),
@@ -54,7 +54,7 @@ class SummaryPage extends StatelessWidget {
                     Text(
                       'Summary',
                       style: GoogleFonts.rubik(
-                        fontSize: 34, // Increased font size for "Summary"
+                        fontSize: 34,
                         fontWeight: FontWeight.bold,
                         color: AppColor.yellowGold,
                       ),

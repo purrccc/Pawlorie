@@ -86,60 +86,6 @@ class LoginForm extends StatelessWidget {
                 if (formKey.currentState!.validate()) {
                   // Call the login callback
                   loginCallback();
-
-                  // Show the AlertDialog
-                  showDialog(
-                    context: context,
-                    builder: (context) {
-                      return AlertDialog(
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(15),
-                        ),
-                        title: Row(
-                          children: [
-                            Icon(
-                              Icons.check_box,
-                              color: Colors.green,
-                            ),
-                            SizedBox(width: 10),
-                            Text(
-                              "Success",
-                              style: GoogleFonts.rubik(
-                                fontWeight: FontWeight.bold,
-                                fontSize: 20,
-                              ),
-                            ),
-                          ],
-                        ),
-                        content: Text(
-                          "Logged in successfully!",
-                          style: GoogleFonts.rubik(
-                            fontSize: 16,
-                          ),
-                        ),
-                        actions: [
-                          TextButton(
-                            style: TextButton.styleFrom(
-                              backgroundColor: AppColor.darkBlue,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(10),
-                              ),
-                            ),
-                            onPressed: () {
-                              Navigator.of(context).pop();
-                            },
-                            child: Text(
-                              "OK",
-                              style: GoogleFonts.rubik(
-                                color: Colors.white,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ),
-                        ],
-                      );
-                    },
-                  );
                 }
               },
               style: ElevatedButton.styleFrom(
