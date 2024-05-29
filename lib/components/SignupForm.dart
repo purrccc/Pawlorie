@@ -1,7 +1,11 @@
+// Signup form
+
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:pawlorie/constants/colors.dart'; 
+
 import 'package:pawlorie/LoginPage.dart';
-import 'package:pawlorie/constants/colors.dart'; // Adjust this import based on your file structure
 
 class SignUpForm extends StatelessWidget {
   final GlobalKey<FormState> formKey;
@@ -10,7 +14,6 @@ class SignUpForm extends StatelessWidget {
   final TextEditingController passwordController;
   final TextEditingController retypePasswordController;
   final VoidCallback signUpCallback;
-  var _lengthLimitingFormatter = new LengthLimitingTextInputFormatter(10);
 
   SignUpForm({
     required this.formKey,
@@ -36,7 +39,7 @@ class SignUpForm extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             TextFormField(
-              controller: emailController,
+              controller: emailController,        // email input field
               decoration: InputDecoration(
                 prefixIcon: Icon(Icons.mail),
                 prefixIconColor: Color.fromARGB(255, 22, 21, 86),
@@ -63,9 +66,11 @@ class SignUpForm extends StatelessWidget {
                 return null;
               },
             ),
+
             SizedBox(height: 20),
-            TextFormField(
-              inputFormatters: [_lengthLimitingFormatter],
+
+            TextFormField(            // name input field
+              inputFormatters: [LengthLimitingTextInputFormatter(10)],
               controller: nameController,
               decoration: InputDecoration(
                 prefixIcon: Icon(Icons.person),
@@ -90,8 +95,10 @@ class SignUpForm extends StatelessWidget {
                 return null;
               },
             ),
+
             SizedBox(height: 20),
-            TextFormField(
+
+            TextFormField(              // password input field
               controller: passwordController,
               obscureText: true,
               decoration: InputDecoration(
@@ -117,8 +124,10 @@ class SignUpForm extends StatelessWidget {
                 return null;
               },
             ),
+
             SizedBox(height: 20),
-            TextFormField(
+
+            TextFormField(            // retype password field
               controller: retypePasswordController,
               obscureText: true,
               decoration: InputDecoration(
@@ -147,12 +156,14 @@ class SignUpForm extends StatelessWidget {
                 return null;
               },
             ),
+
             SizedBox(height: 20),
-            ElevatedButton(
+
+            ElevatedButton(         // Signup button
               onPressed: () {
                 if (formKey.currentState!.validate()) {
                   signUpCallback();
-                  showDialog(
+                  showDialog(       // Show dialog box that signup is successful
                     context: context,
                     builder: (context) {
                       return AlertDialog(
@@ -161,10 +172,6 @@ class SignUpForm extends StatelessWidget {
                         ),
                         title: Row(
                           children: [
-                            Icon(
-                              Icons.check_box,
-                              color: Colors.green,
-                            ),
                             SizedBox(width: 10),
                             Text(
                               "Success",
@@ -224,6 +231,8 @@ class SignUpForm extends StatelessWidget {
                 ),
               ),
             ),
+
+            // Login link
             Container(
               margin: const EdgeInsets.only(top: 15.0),
               child: Row(
