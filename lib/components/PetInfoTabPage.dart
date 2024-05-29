@@ -161,8 +161,43 @@ class _PetInfoTabContentState extends State<PetInfoTabContent> {
                             backgroundColor: Colors.red,
                           ),
                           onPressed: () {
-                            deletePet(widget.petId!);
-                            Navigator.pop(context);
+                            showDialog(
+                              context: context,
+                              builder: (BuildContext context) {
+                                return AlertDialog(
+                                  title: Text('Confirm Deletion',
+                                         style: GoogleFonts.rubik(
+                                          fontWeight: FontWeight.w600
+                                         ),),
+                                  content: Text(
+                                      'Are you sure you want to delete this pet?'),
+                                  actions: <Widget>[
+                                    TextButton(
+                                      onPressed: () {
+                                        Navigator.of(context).pop();
+                                      },
+                                      child: Text('Cancel', 
+                                              style: TextStyle(
+                                                color: AppColor.darkBlue
+                                              ),),
+                                    ),
+                                    ElevatedButton(
+                                      onPressed: () {
+                                        deletePet(widget.petId!);
+                                        Navigator.of(context).pop();
+                                      },
+                                      child: Text('Delete',
+                                      style: TextStyle(
+                                        color: Colors.white
+                                      )),
+                                      style: ElevatedButton.styleFrom(
+                                        backgroundColor:AppColor.darkBlue,
+                                      ),
+                                    ),
+                                  ],
+                                );
+                              },
+                            );
                           },
                           child: Text(
                             "Delete",
@@ -242,7 +277,8 @@ class _PetInfoTabContentState extends State<PetInfoTabContent> {
     if (user != null) {
       // Delete the document in the "dogs" collection
       await FirebaseFirestore.instance.collection('dogs').doc(dogId).delete();
-      // Optionally, you can show a confirmation or redirect the user after deletion
+      
+      // Show a confirmation or redirect the user after deletion
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Pet deleted successfully')),
       );
