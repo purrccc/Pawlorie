@@ -1,19 +1,20 @@
+// HomePage
+
 import 'dart:async';
 import 'dart:core';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_core/firebase_core.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:intl/intl.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:pawlorie/constants/colors.dart';
+
+// Import pages
 import 'package:pawlorie/AddDogPage.dart';
 import 'package:pawlorie/CalTrackerPage.dart';
 import 'package:pawlorie/LoginPage.dart';
-import 'package:pawlorie/constants/colors.dart';
 import 'package:pawlorie/components/DogCard.dart';
-import 'package:intl/intl.dart';
-import 'package:pawlorie/user_auth/firebase_auth_services.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
+
 
 class HomePage extends StatefulWidget {
   @override
@@ -21,31 +22,34 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  late DateTime _currentDate;
-  late Timer _timer;
+  late DateTime currentDate;
+  late Timer timer;
   late String _currentUserDocumentId;
   String _username = '';
 
-  final FirebaseService _firebaseService = FirebaseService();
+  final FirebaseService firebaseService = FirebaseService();
 
   @override
   void initState() {
     super.initState();
-    _currentDate = DateTime.now();
-    _timer = Timer.periodic(Duration(minutes: 1), (Timer t) {
+
+    // Initialize current date and time
+    currentDate = DateTime.now();
+    timer = Timer.periodic(Duration(minutes: 1), (Timer t) {
       setState(() {
-        _currentDate = DateTime.now();
+        currentDate = DateTime.now();
       });
     });
 
-    _firebaseService.getCurrentUserDocumentId().then((documentId) {
+    // Fetch current user document id and username
+    firebaseService.getCurrentUserDocumentId().then((documentId) {
       setState(() {
         _currentUserDocumentId = documentId ?? '';
         print("Current user document ID: $_currentUserDocumentId");
       });
 
       // Fetch the username once we have the user document ID
-      _firebaseService.getCurrentUsername(documentId).then((username) {
+      firebaseService.getCurrentUsername(documentId).then((username) {
         setState(() {
           _username = username ?? '';
         });
@@ -53,24 +57,24 @@ class _HomePageState extends State<HomePage> {
     });
   }
 
-  final FirebaseAuth auth = FirebaseAuth.instance;
   // signout function
+  final FirebaseAuth auth = FirebaseAuth.instance;
   signOut() async {
     await auth.signOut();
-    Navigator.pushReplacement(
+    Navigator.push(
         context, MaterialPageRoute(builder: (context) => LoginPage()));
   }
 
   @override
   void dispose() {
-    _timer.cancel();
+    timer.cancel();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     var formatter = DateFormat('MMMM');
-    String formattedMonth = formatter.format(_currentDate);
+    String formattedMonth = formatter.format(currentDate);
 
     return Scaffold(
       body: Stack(
@@ -92,11 +96,13 @@ class _HomePageState extends State<HomePage> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: [
-                        Container(
+                        Container(    // Logout button
                           margin: const EdgeInsets.only(right: 20.0, top: 30.0),
                           child: IconButton(
                             icon:
-                                Icon(Icons.logout_rounded, color: Colors.white),
+                                Icon(
+                                  Icons.logout_rounded, 
+                                  color: Colors.white),
                             onPressed: signOut,
                           ),
                         ),
@@ -125,7 +131,7 @@ class _HomePageState extends State<HomePage> {
                     ),
                     SizedBox(height: 8),
                     Text(
-                      "Today is $formattedMonth ${_currentDate.day}, ${_currentDate.year}",
+                      "Today is $formattedMonth ${currentDate.day}, ${currentDate.year}",
                       style: GoogleFonts.ubuntu(
                         fontSize: 20,
                         color: Colors.white,
@@ -159,8 +165,9 @@ class _HomePageState extends State<HomePage> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
+                    // Listen for changes in the list of dogs
                     StreamBuilder<List<Dog>>(
-                        stream: _firebaseService.getDogs(),
+                        stream: firebaseService.getDogs(),
                         builder: (context, snapshot) {
                           if (snapshot.connectionState ==
                               ConnectionState.waiting) {
@@ -174,11 +181,13 @@ class _HomePageState extends State<HomePage> {
                             return Center(child: Text('No dogs found'));
                           }
 
+                          // Filter dogs list to show only the current user's dogs
                           final dogs = snapshot.data!
                               .where(
                                   (dog) => dog.userId == _currentUserDocumentId)
                               .toList();
 
+                          // If user has no dogs, display message and image suggesting adding a dog
                           if (dogs.isEmpty) {
                             return Column(
                               children: [
@@ -190,6 +199,7 @@ class _HomePageState extends State<HomePage> {
                                     ),
                                   ),
                                 ),
+                                // Message suggesting user to add a dog
                                 Center(
                                   child: Padding(
                                     padding: const EdgeInsets.all(20),
@@ -214,6 +224,7 @@ class _HomePageState extends State<HomePage> {
                             );
                           }
 
+                          // If user has dogs, display them using a ListView
                           return ListView.builder(
                             shrinkWrap: true,
                             physics: NeverScrollableScrollPhysics(),
@@ -306,13 +317,14 @@ class FirebaseService {
   final FirebaseFirestore _db = FirebaseFirestore.instance;
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
+   // Retrieves the current user's document ID
   Future<String?> getCurrentUserDocumentId() async {
     try {
       User? user = _auth.currentUser;
       if (user != null) {
         DocumentSnapshot snapshot =
             await _db.collection('users').doc(user.uid).get();
-        return snapshot.id;
+        return snapshot.id;     // Return the document ID
       }
     } catch (error) {
       print("Error getting current user document ID: $error");
@@ -320,6 +332,7 @@ class FirebaseService {
     return null;
   }
 
+  // Retrieves the username associated with a given document ID
   Future<String?> getCurrentUsername(String? documentId) async {
     if (documentId != null) {
       try {
@@ -332,12 +345,12 @@ class FirebaseService {
     }
     return null;
   }
-
+  // Retrieves a stream of dogs from the 'dogs' collection
   Stream<List<Dog>> getDogs() {
     return _db.collection('dogs').snapshots().map((snapshot) =>
         snapshot.docs.map((doc) => Dog.fromFirestore(doc)).toList());
   }
-
+  // Signs the current user out
   Future<void> signOut() async {
     try {
       await _auth.signOut();
@@ -362,6 +375,7 @@ class Dog {
     required this.imageUrl,
   });
 
+  // Factory method to create a Dog object from a Firestore 
   factory Dog.fromFirestore(DocumentSnapshot doc) {
     Map data = doc.data() as Map<String, dynamic>;
     return Dog(

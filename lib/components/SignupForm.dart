@@ -28,10 +28,10 @@ class SignUpForm extends StatelessWidget {
   Widget build(BuildContext context) {
     return SingleChildScrollView(
       padding: EdgeInsets.only(
-        left: 30.0,
-        right: 30.0,
-        top: 30.0,
-        bottom: MediaQuery.of(context).viewInsets.bottom + 30.0,
+        left: 20.0,
+        right: 20.0,
+        top: 20.0,
+        bottom: MediaQuery.of(context).viewInsets.bottom + 20.0,
       ),
       child: Form(
         key: formKey,
@@ -122,6 +122,8 @@ class SignUpForm extends StatelessWidget {
               validator: (value) {
                 if (value == null || value.isEmpty) {
                   return 'Please enter your password';
+                } else if (value.length < 6) {
+                    return 'Password must be at least 6 characters';
                 }
                 return null;
               },
