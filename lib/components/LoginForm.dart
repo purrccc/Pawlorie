@@ -1,7 +1,10 @@
+// Login Form Component
+
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+// Import pages
 import 'package:pawlorie/SignupPage.dart';
-import 'package:pawlorie/constants/colors.dart'; // Adjust this import based on your file structure
+
 
 class LoginForm extends StatelessWidget {
   final GlobalKey<FormState> formKey;
@@ -32,7 +35,7 @@ class LoginForm extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              TextFormField(
+              TextFormField(                  // Input field for email
                 controller: emailController,
                 decoration: InputDecoration(
                   prefixIcon: Icon(Icons.mail),
@@ -61,7 +64,7 @@ class LoginForm extends StatelessWidget {
                 },
               ),
               SizedBox(height: 20),
-              TextFormField(
+              TextFormField(                      // Input field for password
                 controller: passwordController,
                 obscureText: true,
                 decoration: InputDecoration(
@@ -88,7 +91,8 @@ class LoginForm extends StatelessWidget {
                 },
               ),
               SizedBox(height: 20),
-              ElevatedButton(
+
+              ElevatedButton(         // Login Button
                 onPressed: () {
                   if (formKey.currentState!.validate()) {
                     // Call the login callback
@@ -113,6 +117,7 @@ class LoginForm extends StatelessWidget {
                   ),
                 ),
               ),
+              // Sign up link
               Container(
                 margin: const EdgeInsets.only(top: 15.0),
                 child: Row(

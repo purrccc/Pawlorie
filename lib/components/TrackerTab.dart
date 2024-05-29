@@ -202,7 +202,7 @@ class _TrackerTabContentState extends State<TrackerTabContent> {
       );
     }
 
-    // Update firestore with new intake and remaininh calories
+    // Update firestore with new intake and remaining calories
     FirebaseFirestore.instance.collection('dogs').doc(widget.petId).update({
       'totalIntake': totalIntake,
       'remainingCalories': remainingCalories == 0 ? 0 : remainingCalories,
