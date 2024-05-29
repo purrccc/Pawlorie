@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:pawlorie/Loginpage.dart'; // Adjust this import based on your file structure
+import 'package:pawlorie/Loginpage.dart';
+import 'package:pawlorie/constants/colors.dart'; // Adjust this import based on your file structure
 
 class SignUpForm extends StatelessWidget {
   final GlobalKey<FormState> formKey;
@@ -75,7 +75,6 @@ class SignUpForm extends StatelessWidget {
                   borderRadius: BorderRadius.circular(15),
                 ),
               ),
-               inputFormatters: [LengthLimitingTextInputFormatter(10)],
               style: TextStyle(color: Color.fromARGB(255, 22, 21, 86)),
               validator: (value) {
                 if (value == null || value.isEmpty) {
@@ -148,11 +147,58 @@ class SignUpForm extends StatelessWidget {
                   // Call the sign-up callback
                   signUpCallback();
 
-                  // Show the SnackBar
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: Text('Signed in successfully!'),
-                    ),
+                  // Show the AlertDialog
+                  showDialog(
+                    context: context,
+                    builder: (context) {
+                      return AlertDialog(
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(15),
+                        ),
+                        title: Row(
+                          children: [
+                            Icon(
+                              Icons.check_box,
+                              color: Colors.green,
+                            ),
+                            SizedBox(width: 10),
+                            Text(
+                              "Success",
+                              style: GoogleFonts.rubik(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 20,
+                              ),
+                            ),
+                          ],
+                        ),
+                        content: Text(
+                          "Signed in successfully!",
+                          style: GoogleFonts.rubik(
+                            fontSize: 16,
+                          ),
+                        ),
+                        actions: [
+                          TextButton(
+                            style: TextButton.styleFrom(
+                              backgroundColor: AppColor.darkBlue,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                            ),
+                            onPressed: () {
+                              Navigator.of(context).pop();
+                            },
+                            child: Text(
+                              "OK",
+                              style: GoogleFonts.rubik(
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                        ],
+                      );
+                    },
                   );
                 }
               },
