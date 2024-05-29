@@ -8,12 +8,14 @@ class CalSuggestionPage extends StatelessWidget {
   final String dogId; // ID of the dog
   final String dogName; // Name of the dog
   final double requiredCalories; // Required calorie intake for the dog
+  final double minCalories; // Minimum calorie intake for the dog
   final String imageUrl; // URL of the dog's image
 
   CalSuggestionPage({
     required this.dogId,
     required this.dogName,
     required this.requiredCalories,
+    required this.minCalories,
     required this.imageUrl,
   });
 
@@ -59,7 +61,7 @@ class CalSuggestionPage extends StatelessWidget {
                     "Based on the size and weight, the required calorie goal of your dog is:",
                     textAlign: TextAlign.center,
                     style: GoogleFonts.ubuntu(
-                      fontSize: 18,
+                      fontSize: 16,
                       color: Colors.white,
                     ),
                   ),
@@ -85,6 +87,19 @@ class CalSuggestionPage extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(height: 30),
+
+                  Text(
+                    "Your dog should consume at least " +
+                        minCalories.round().toString() +
+                        " calories a day",
+                    textAlign: TextAlign.center,
+                    style: GoogleFonts.ubuntu(
+                      fontSize: 16,
+                      color: Colors.white,
+                    ),
+                  ),
+
+                  const SizedBox(height: 100),
 
                   // Continue button to navigate to the calorie tracker page
                   ElevatedButton(

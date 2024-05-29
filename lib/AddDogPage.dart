@@ -23,14 +23,13 @@ enum Sex {
   Female,
 }
 
-const String defaultImageUrl = 'https://mir-s3-cdn-cf.behance.net/project_modules/max_1200/65761296352685.5eac4787a4720.jpg'; 
+const String defaultImageUrl =
+    'https://mir-s3-cdn-cf.behance.net/project_modules/max_1200/65761296352685.5eac4787a4720.jpg';
 
 Future<List<Dog>> fetchDogs(String dogBreed) async {
   final response = await http.get(
     Uri.parse('https://api.api-ninjas.com/v1/dogs?name=${dogBreed}'),
-    headers: {
-      'X-Api-Key': '8Q3MlktFjNQCoIEhVK7DRQ==yizU5MkNU9iKPuwu'
-    },
+    headers: {'X-Api-Key': '8Q3MlktFjNQCoIEhVK7DRQ==yizU5MkNU9iKPuwu'},
   );
 
   if (response.statusCode == 200) {
@@ -44,9 +43,7 @@ Future<List<Dog>> fetchDogs(String dogBreed) async {
 Future<List<String>> fetchDogBreeds(String query) async {
   final response = await http.get(
     Uri.parse('https://api.api-ninjas.com/v1/dogs?name=${query}'),
-    headers: {
-      'X-Api-Key': '8Q3MlktFjNQCoIEhVK7DRQ==yizU5MkNU9iKPuwu'
-    },
+    headers: {'X-Api-Key': '8Q3MlktFjNQCoIEhVK7DRQ==yizU5MkNU9iKPuwu'},
   );
 
   if (response.statusCode == 200) {
@@ -101,8 +98,6 @@ class _AddDogPageState extends State<AddDogPage> {
   final TextEditingController _sizeOrWeightController = TextEditingController();
   File? _imageFile;
 
-
-
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
   Future<List<Dog>>? futureDogs;
@@ -112,133 +107,134 @@ class _AddDogPageState extends State<AddDogPage> {
 
   final ImagePicker _picker = ImagePicker();
 
-
   Future<void> _pickImage(ImageSource source) async {
-  final pickedFile = await _picker.pickImage(source: source);
-  if (pickedFile != null) {
-    setState(() {
-      _imageFile = File(pickedFile.path);
-    });
-  }
-}
-
-Future<void> _submitForm() async {
-  if (_formKey.currentState!.validate()) {
-    String name = _nameController.text.trim();
-    int age = int.parse(_ageController.text.trim());
-    String breed = _breedController.text.trim();
-    double sizeOrWeight = double.parse(_sizeOrWeightController.text.trim());
-
-    double minWeight;
-    double maxWeight;
-    double requiredCalories = pow(sizeOrWeight, 0.75) * 70;
-
-    String? userId = widget.userId;
-
-    if (selectedDogData != null) {
-      if (_selectedSex == Sex.Male) {
-        minWeight = selectedDogData!.minWeightMale * 0.45359237;
-        maxWeight = selectedDogData!.maxWeightMale * 0.45359237;
-      } else {
-        minWeight = selectedDogData!.minWeightFemale * 0.45359237;
-        maxWeight = selectedDogData!.maxWeightFemale * 0.45359237;
-      }
-
-      try {
-        String? imageUrl;
-        if (_imageFile != null) {
-          imageUrl = await _uploadImageToStorage(_imageFile!);
-        }else{
-          imageUrl = defaultImageUrl;
-        }
-
-        DocumentReference docRef = await _firestore.collection('dogs').add({
-          'name': name,
-          'age': age,
-          'breed': breed,
-          'sex': _selectedSex == Sex.Male ? 'Male' : 'Female',
-          'sizeOrWeight': sizeOrWeight,
-          'minWeight': minWeight,
-          'maxWeight': maxWeight,
-          'requiredCalories': requiredCalories.round().toDouble(),
-          'userId': userId,
-          'imageUrl': imageUrl,
-        });
-
-        // Fetching the added dog's data
-        DocumentSnapshot doc = await docRef.get();
-        String dogId = doc.id;
-        String dogName = doc['name'];
-        double requiredCal = doc['requiredCalories'];
-        String imageURL = doc['imageUrl'];
-
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('Dog added successfully'),
-          ),
-        );
-        _clearForm();
-
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => CalSuggestionPage(
-              dogId: dogId,
-              dogName: dogName,
-              requiredCalories: requiredCal,
-              imageUrl: imageURL,
-            ),
-          ),
-        );
-      } catch (e) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('Failed to add dog: $e'),
-          ),
-        );
-      }
-    } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Error: Could not fetch breed data. Please try again.'),
-        ),
-      );
+    final pickedFile = await _picker.pickImage(source: source);
+    if (pickedFile != null) {
+      setState(() {
+        _imageFile = File(pickedFile.path);
+      });
     }
   }
-}
 
+  Future<void> _submitForm() async {
+    if (_formKey.currentState!.validate()) {
+      String name = _nameController.text.trim();
+      int age = int.parse(_ageController.text.trim());
+      String breed = _breedController.text.trim();
+      double sizeOrWeight = double.parse(_sizeOrWeightController.text.trim());
 
-Future<String> _uploadImageToStorage(File imageFile) async {
-  firebase_storage.FirebaseStorage storage = firebase_storage.FirebaseStorage.instance;
+      double minWeight;
+      double maxWeight;
+      double requiredCalories = pow(sizeOrWeight, 0.75) * 70;
+      double minCalories = requiredCalories * 0.8;
 
-  try {
-    // Create a unique file name
-    String fileName = 'dogs/${DateTime.now().millisecondsSinceEpoch}_${imageFile.path.split('/').last}';
-    firebase_storage.Reference ref = storage.ref().child(fileName);
+      String? userId = widget.userId;
 
-    // Upload the file to Firebase Storage
-    await ref.putFile(imageFile);
+      if (selectedDogData != null) {
+        if (_selectedSex == Sex.Male) {
+          minWeight = selectedDogData!.minWeightMale * 0.45359237;
+          maxWeight = selectedDogData!.maxWeightMale * 0.45359237;
+        } else {
+          minWeight = selectedDogData!.minWeightFemale * 0.45359237;
+          maxWeight = selectedDogData!.maxWeightFemale * 0.45359237;
+        }
 
-    // Get the download URL
-    String downloadURL = await ref.getDownloadURL();
-    return downloadURL;
-  } catch (e) {
-    print('Failed to upload image: $e');
-    throw Exception('Failed to upload image');
+        try {
+          String? imageUrl;
+          if (_imageFile != null) {
+            imageUrl = await _uploadImageToStorage(_imageFile!);
+          } else {
+            imageUrl = defaultImageUrl;
+          }
+
+          DocumentReference docRef = await _firestore.collection('dogs').add({
+            'name': name,
+            'age': age,
+            'breed': breed,
+            'sex': _selectedSex == Sex.Male ? 'Male' : 'Female',
+            'sizeOrWeight': sizeOrWeight,
+            'minWeight': minWeight,
+            'maxWeight': maxWeight,
+            'requiredCalories': requiredCalories.round().toDouble(),
+            'minCalories': minCalories.round().toDouble(),
+            'userId': userId,
+            'imageUrl': imageUrl,
+          });
+
+          // Fetching the added dog's data
+          DocumentSnapshot doc = await docRef.get();
+          String dogId = doc.id;
+          String dogName = doc['name'];
+          double requiredCal = doc['requiredCalories'];
+          String imageURL = doc['imageUrl'];
+
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('Dog added successfully'),
+            ),
+          );
+          _clearForm();
+
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => CalSuggestionPage(
+                dogId: dogId,
+                dogName: dogName,
+                requiredCalories: requiredCal,
+                imageUrl: imageURL,
+                minCalories: minCalories,
+              ),
+            ),
+          );
+        } catch (e) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('Failed to add dog: $e'),
+            ),
+          );
+        }
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content:
+                Text('Error: Could not fetch breed data. Please try again.'),
+          ),
+        );
+      }
+    }
   }
-}
 
+  Future<String> _uploadImageToStorage(File imageFile) async {
+    firebase_storage.FirebaseStorage storage =
+        firebase_storage.FirebaseStorage.instance;
 
- @override
-void dispose() {
-  _nameController.dispose();
-  _ageController.dispose();
-  _breedController.dispose();
-  _sizeOrWeightController.dispose();
-  super.dispose();
-}
+    try {
+      // Create a unique file name
+      String fileName =
+          'dogs/${DateTime.now().millisecondsSinceEpoch}_${imageFile.path.split('/').last}';
+      firebase_storage.Reference ref = storage.ref().child(fileName);
 
+      // Upload the file to Firebase Storage
+      await ref.putFile(imageFile);
 
+      // Get the download URL
+      String downloadURL = await ref.getDownloadURL();
+      return downloadURL;
+    } catch (e) {
+      print('Failed to upload image: $e');
+      throw Exception('Failed to upload image');
+    }
+  }
+
+  @override
+  void dispose() {
+    _nameController.dispose();
+    _ageController.dispose();
+    _breedController.dispose();
+    _sizeOrWeightController.dispose();
+    super.dispose();
+  }
 
   @override
   void initState() {
@@ -282,7 +278,10 @@ void dispose() {
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
-          icon: Icon(Icons.arrow_back_ios, color: AppColor.darkBlue,),
+          icon: Icon(
+            Icons.arrow_back_ios,
+            color: AppColor.darkBlue,
+          ),
           onPressed: () {
             Navigator.pop(context);
           },
@@ -351,7 +350,7 @@ void dispose() {
                     controller: _nameController,
                     decoration: InputDecoration(
                       prefixIcon: Icon(Icons.pets),
-                      prefixIconColor:  AppColor.darkBlue,
+                      prefixIconColor: AppColor.darkBlue,
                       hintText: 'Name',
                       hintStyle: const TextStyle(
                         color: AppColor.darkBlue,
@@ -365,7 +364,7 @@ void dispose() {
                       ),
                     ),
                     inputFormatters: [LengthLimitingTextInputFormatter(10)],
-                    style: TextStyle(color:AppColor.darkBlue),
+                    style: TextStyle(color: AppColor.darkBlue),
                     validator: (value) {
                       if (value == null || value.isEmpty) {
                         return 'Please enter a name';
@@ -544,10 +543,9 @@ void dispose() {
                       child: Text(
                         'Add Dog',
                         style: GoogleFonts.ubuntu(
-                          color: AppColor.darkBlue,
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold
-                        ),
+                            color: AppColor.darkBlue,
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold),
                       ),
                     ),
                   ),
@@ -559,18 +557,18 @@ void dispose() {
       ],
     );
   }
-void _clearForm() {
-  _nameController.clear();
-  _ageController.clear();
-  _breedController.clear();
-  _sizeOrWeightController.clear();
-  setState(() {
-    _selectedSex = null;
-    _imageFile = null;
-    selectedDogBreed = '';
-    selectedDogData = null;
-    dogBreedSuggestions = [];
-  });
-}
-}
 
+  void _clearForm() {
+    _nameController.clear();
+    _ageController.clear();
+    _breedController.clear();
+    _sizeOrWeightController.clear();
+    setState(() {
+      _selectedSex = null;
+      _imageFile = null;
+      selectedDogBreed = '';
+      selectedDogData = null;
+      dogBreedSuggestions = [];
+    });
+  }
+}

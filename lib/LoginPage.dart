@@ -15,6 +15,7 @@ class LoginPage extends StatefulWidget {
 
 class _LoginPageState extends State<LoginPage> {
   final FirebaseAuthService _auth = FirebaseAuthService();
+  bool _isLoggedIn = false;
 
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _emailController = TextEditingController();
@@ -77,13 +78,9 @@ class _LoginPageState extends State<LoginPage> {
             );
           },
         );
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) =>
-                HomePage(username: userWithUsername.username ?? ""),
-          ),
-        );
+        setState(() {
+          _isLoggedIn = true;
+        });
       } else {
         showDialog(
           context: context,
@@ -146,64 +143,76 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Stack(
-        children: [
-          Container(
-            height: double.infinity,
-            width: double.infinity,
-            decoration: const BoxDecoration(color: AppColor.darkBlue),
-          ),
-          Container(
+    if (_isLoggedIn) {
+      // If the user is logged in, navigate to the HomePage
+      return HomePage();
+    } else {
+      // If the user is not logged in, display the login UI
+      return Scaffold(
+        body: Stack(
+          children: [
+            Container(
+              height: double.infinity,
+              width: double.infinity,
+              decoration: const BoxDecoration(color: AppColor.darkBlue),
+            ),
+            Container(
               margin: const EdgeInsets.all(50),
               child: Image.asset(
                 'lib/assets/login.png',
                 width: 300,
-              )),
-          Padding(
-            padding: const EdgeInsets.only(top: 320.0),
-            child: Container(
-              decoration: const BoxDecoration(
-                borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(50),
-                    topRight: Radius.circular(50)),
-                color: AppColor.yellowGold,
               ),
-              height: double.infinity,
-              width: double.infinity,
-              child: Center(
-                child: SingleChildScrollView(
-                  child: Column(
-                    children: [
-                      Container(
-                        margin: EdgeInsets.only(top: 30),
-                        child: Text(
-                          "Welcome Back!",
-                          style: GoogleFonts.rubik(
+            ),
+            Padding(
+              padding: const EdgeInsets.only(top: 320.0),
+              child: Container(
+                decoration: const BoxDecoration(
+                  borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(50),
+                    topRight: Radius.circular(50),
+                  ),
+                  color: AppColor.yellowGold,
+                ),
+                height: double.infinity,
+                width: double.infinity,
+                child: Center(
+                  child: SingleChildScrollView(
+                    child: Column(
+                      children: [
+                        Container(
+                          margin: EdgeInsets.only(top: 30),
+                          child: Text(
+                            "Welcome Back!",
+                            style: GoogleFonts.rubik(
                               fontSize: 45,
                               fontWeight: FontWeight.w600,
-                              color: AppColor.darkBlue),
+                              color: AppColor.darkBlue,
+                            ),
+                          ),
                         ),
-                      ),
-                      Text("Login to your Account",
+                        Text(
+                          "Login to your Account",
                           style: GoogleFonts.ubuntu(
-                              fontSize: 20,
-                              color: Colors.white,
-                              fontWeight: FontWeight.w500)),
-                      LoginForm(
-                        formKey: _formKey,
-                        emailController: _emailController,
-                        passwordController: _passwordController,
-                        loginCallback: _login,
-                      )
-                    ],
+                            fontSize: 20,
+                            color: Colors.white,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                        LoginForm(
+                          formKey: _formKey,
+                          emailController: _emailController,
+                          passwordController: _passwordController,
+                          loginCallback: _login,
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ),
             ),
-          ),
-        ],
-      ),
-    );
+          ],
+        ),
+      );
+    }
   }
 }

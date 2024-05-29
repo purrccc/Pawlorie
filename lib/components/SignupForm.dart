@@ -10,7 +10,6 @@ class SignUpForm extends StatelessWidget {
   final TextEditingController passwordController;
   final TextEditingController retypePasswordController;
   final VoidCallback signUpCallback;
-  var _lengthLimitingFormatter = new LengthLimitingTextInputFormatter(10);
 
   SignUpForm({
     required this.formKey,
@@ -65,7 +64,6 @@ class SignUpForm extends StatelessWidget {
             ),
             SizedBox(height: 20),
             TextFormField(
-              inputFormatters: [_lengthLimitingFormatter],
               controller: nameController,
               decoration: InputDecoration(
                 prefixIcon: Icon(Icons.person),

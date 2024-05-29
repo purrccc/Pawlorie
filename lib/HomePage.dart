@@ -95,8 +95,8 @@ class _HomePageState extends State<HomePage> {
                         Container(
                           margin: const EdgeInsets.only(right: 20.0, top: 30.0),
                           child: IconButton(
-                            icon: Icon(Icons.logout_rounded,
-                                color: Colors.white),
+                            icon:
+                                Icon(Icons.logout_rounded, color: Colors.white),
                             onPressed: signOut,
                           ),
                         ),
@@ -175,8 +175,8 @@ class _HomePageState extends State<HomePage> {
                           }
 
                           final dogs = snapshot.data!
-                              .where((dog) =>
-                                  dog.userId == _currentUserDocumentId)
+                              .where(
+                                  (dog) => dog.userId == _currentUserDocumentId)
                               .toList();
 
                           if (dogs.isEmpty) {
