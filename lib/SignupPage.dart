@@ -1,10 +1,13 @@
+// Signup page
+
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:pawlorie/LoginPage.dart';
-import 'package:pawlorie/components/SignupForm.dart';
 import 'package:pawlorie/constants/colors.dart';
 import 'package:pawlorie/user_auth/firebase_auth_services.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+
+import 'package:pawlorie/LoginPage.dart';
+import 'package:pawlorie/components/SignupForm.dart';
 
 class SignUpPage extends StatefulWidget {
   @override
@@ -24,7 +27,7 @@ class _SignUpPageState extends State<SignUpPage> {
       TextEditingController();
 
   // Function to handle sign-up logic
-  void _signUp() async {
+  void signUp() async {
     // Validate the form fields
     if (_formKey.currentState!.validate()) {
       String email = _emailController.text;
@@ -119,6 +122,7 @@ class _SignUpPageState extends State<SignUpPage> {
                                 color: Colors.white,
                               ),
                             ),
+                            // Display Sign up form
                             SignUpForm(
                               formKey: _formKey,
                               emailController: _emailController,
@@ -126,7 +130,7 @@ class _SignUpPageState extends State<SignUpPage> {
                               passwordController: _passwordController,
                               retypePasswordController:
                                   _retypePasswordController,
-                              signUpCallback: _signUp,
+                              signUpCallback: signUp,
                             ),
                           ],
                         ),

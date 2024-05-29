@@ -1,5 +1,4 @@
 // Login Form Component
-
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 // Import pages
@@ -23,10 +22,10 @@ class LoginForm extends StatelessWidget {
   Widget build(BuildContext context) {
     return SingleChildScrollView(
       padding: EdgeInsets.only(
-        left: 30.0,
-        right: 30.0,
-        top: 30.0,
-        bottom: MediaQuery.of(context).viewInsets.bottom + 30.0,
+        left:20.0,
+        right: 20.0,
+        top: 20.0,
+        bottom: MediaQuery.of(context).viewInsets.bottom + 20.0,
       ),
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 30.0),
