@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:cloud_firestore/cloud_firestore.dart'; // Added Firebase Firestore package
 import 'package:pawlorie/constants/colors.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -41,26 +42,38 @@ class _FoodIntakeFormState extends State<FoodIntakeForm> {
     }
   }
 
-  void submitForm() {
+  void submitForm() async {
     if (_formKey.currentState!.validate()) {
       final calories = int.parse(_caloriesController.text.trim());
       final foodName = _nameController.text.trim();
       final time = selectedTime;
 
-      widget.onSubmit(calories, foodName, time);
+      try {
+        // Add data to Firestore
+        await FirebaseFirestore.instance.collection('food_intake').add({
+          'petId': widget.petId,
+          'foodName': foodName,
+          'calories': calories,
+          'time': time.toString(),
+          // Add any other fields you want to save
+        });
 
-      // SnackBar
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Successfully added $foodName!'),
-        ),
-      );
+        // SnackBar
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Successfully added $foodName!'),
+          ),
+        );
 
-      // Clear form fields
-      _nameController.clear();
-      _caloriesController.clear();
-      _timeController.clear();
-      selectedTime = TimeOfDay.now();
+        // Clear form fields
+        _nameController.clear();
+        _caloriesController.clear();
+        _timeController.clear();
+        selectedTime = TimeOfDay.now();
+      } catch (error) {
+        // Handle errors here
+        print('Error adding food intake: $error');
+      }
     }
   }
 
