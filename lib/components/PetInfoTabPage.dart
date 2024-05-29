@@ -61,6 +61,7 @@ class _PetInfoTabContentState extends State<PetInfoTabContent> {
                   ),
                 ),
                 Container(
+                  padding: EdgeInsets.all(5),
                   child: SizedBox(
                     width: 100,
                     height: 30,
@@ -139,6 +140,30 @@ class _PetInfoTabContentState extends State<PetInfoTabContent> {
                     ),
                   ),
                 ),
+                Container(
+                  child: SizedBox(
+                    height: 30,
+                    width: 100,
+                    child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.red, 
+                        
+                      ),
+                      onPressed: (){
+                         deletePet(widget.petId!);
+                         Navigator.pop(context);
+                      } ,
+                      child: 
+                        Text(
+                          "Delete",
+                          style: GoogleFonts.ubuntu(
+                            color: Colors.white,
+                            fontWeight: FontWeight.w500,
+                            fontSize: 16,
+                          ),
+                        ),),
+                  ),
+                ),
               ],
             ),
           );
@@ -197,6 +222,20 @@ class _PetInfoTabContentState extends State<PetInfoTabContent> {
           .collection('dogs')
           .doc(dogId)
           .update(mergedData);
+    }
+  }
+
+   Future<void> deletePet(String dogId) async {
+    User? user = FirebaseAuth.instance.currentUser;
+    if (user != null) {
+      // Delete the document in the "dogs" collection
+      await FirebaseFirestore.instance.collection('dogs').doc(dogId).delete();
+      // Optionally, you can show a confirmation or redirect the user after deletion
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Pet deleted successfully')),
+      );
+      // Navigate back or update the state to remove the pet info
+      Navigator.of(context).pop();
     }
   }
 
