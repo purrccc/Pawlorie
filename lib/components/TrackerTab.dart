@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:intl/intl.dart';
 import 'package:pawlorie/constants/colors.dart';
 import 'package:pawlorie/components/FoodIntakeForm.dart';
 
@@ -15,8 +16,8 @@ class TrackerTabContent extends StatefulWidget {
 }
 
 class _TrackerTabContentState extends State<TrackerTabContent> {
-  int remainingCalories = 0;
-  int totalIntake = 0;
+  double remainingCalories = 0;
+  double totalIntake = 0;
 
   @override
   void initState() {
@@ -25,16 +26,15 @@ class _TrackerTabContentState extends State<TrackerTabContent> {
   }
 
   Future<void> fetchRemainingCalories() async {
-    final docRef =
-        FirebaseFirestore.instance.collection('dogs').doc(widget.petId);
+    final docRef = FirebaseFirestore.instance.collection('dogs').doc(widget.petId);
     final docSnapshot = await docRef.get();
 
     if (docSnapshot.exists) {
       final data = docSnapshot.data();
       if (data != null) {
         setState(() {
-          totalIntake = data['totalIntake'] ?? 0;
-          remainingCalories = data['remainingCalories'] ?? 0;
+          totalIntake = (data['totalIntake'] ?? 0).toDouble();
+          remainingCalories = (data['remainingCalories'] ?? 0).toDouble();
         });
       }
     } else {
@@ -42,12 +42,10 @@ class _TrackerTabContentState extends State<TrackerTabContent> {
     }
   }
 
-  void _handleFoodIntakeSubmission(
-      int calories, String foodName, TimeOfDay time) {
+  void _handleFoodIntakeSubmission(int calories, String foodName, TimeOfDay time) async {
     setState(() {
       totalIntake += calories;
-      remainingCalories =
-          (widget.petInfo?['requiredCalories'] ?? 0).toInt() - totalIntake;
+      remainingCalories = (widget.petInfo?['requiredCalories'] ?? 0).toDouble() - totalIntake;
     });
 
     FirebaseFirestore.instance.collection('dogs').doc(widget.petId).update({
@@ -55,12 +53,19 @@ class _TrackerTabContentState extends State<TrackerTabContent> {
       'remainingCalories': remainingCalories,
     });
 
-    // You can use foodName and time here if needed
+    // Save food intake details
+    await FirebaseFirestore.instance.collection('food_intake').add({
+      'petID': widget.petId,
+      'name': foodName,
+      'calories': calories,
+      'date': DateFormat('MMMM dd, yyyy').format(DateTime.now()),
+      'time': time.format(context),
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-    final int requiredCalories = widget.petInfo?['requiredCalories'] ?? 0;
+    final double requiredCalories = (widget.petInfo?['requiredCalories'] ?? 0).toDouble();
 
     if (totalIntake == 0) {
       remainingCalories = requiredCalories;
