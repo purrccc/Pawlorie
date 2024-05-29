@@ -36,37 +36,37 @@ class _PetInfoTabContentState extends State<PetInfoTabContent> {
   Widget build(BuildContext context) {
     return widget.petInfo == null
         ? Center(child: CircularProgressIndicator())
-        : SingleChildScrollView(
+        : Container(
             child: Column(
               children: [
                 SizedBox(
-                  height: 700,
-                  width: 700,
+                  height: 400,
+                  width: 400,
                   child: GridView.count(
                     primary: false,
-                    padding: const EdgeInsets.all(15),
+                    padding: const EdgeInsets.all(10),
                     crossAxisSpacing: 20,
                     mainAxisSpacing: 10,
                     crossAxisCount: 2,
                     children: <Widget>[
                       buildInfoCard(
-                          'Age', widget.petInfo!['age'].toString(), Colors.blue),
+                          'Age', widget.petInfo!['age'].toString(), AppColor.darkBlue),
                       buildInfoCard(
-                          'Sex', widget.petInfo!['sex'], Colors.green),
+                          'Sex', widget.petInfo!['sex'], AppColor.blue),
                       buildInfoCard(
-                          'Size or Weight', widget.petInfo!['sizeOrWeight'].toString(), Colors.orange),
+                          'Size or Weight', widget.petInfo!['sizeOrWeight'].toString(), Color.fromARGB(255, 35, 156, 255)),
                       buildInfoCard(
-                          'Breed', widget.petInfo!['breed'], Colors.purple),
+                          'Breed', widget.petInfo!['breed'], AppColor.yellowGold),
                     ],
                   ),
                 ),
                 Container(
                   child: SizedBox(
-                    width: 200,
-                    height: 50,
+                    width: 100,
+                    height: 30,
                     child: ElevatedButton(
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: AppColor.yellowGold, 
+                        backgroundColor: AppColor.blue, 
                         
                       ),
                       onPressed: () {
@@ -130,9 +130,10 @@ class _PetInfoTabContentState extends State<PetInfoTabContent> {
                       },
                       child: Text(
                         "Edit",
-                        style: TextStyle(
-                          fontWeight: FontWeight.w900,
-                          fontSize: 25,
+                        style: GoogleFonts.ubuntu(
+                          color: Colors.white,
+                          fontWeight: FontWeight.w500,
+                          fontSize: 20,
                         ),
                       ),
                     ),

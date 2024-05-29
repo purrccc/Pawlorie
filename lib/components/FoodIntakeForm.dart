@@ -2,11 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:pawlorie/constants/colors.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 
 class FoodIntakeForm extends StatefulWidget {
   final String petId;
-  final Function(int) onSubmit;
+  final Function(int, String, TimeOfDay) onSubmit;
 
   FoodIntakeForm({required this.petId, required this.onSubmit});
 
@@ -46,7 +45,9 @@ class _FoodIntakeFormState extends State<FoodIntakeForm> {
     if (_formKey.currentState!.validate()) {
       final calories = int.parse(_caloriesController.text.trim());
       final foodName = _nameController.text.trim();
-      widget.onSubmit(calories);
+      final time = selectedTime;
+
+      widget.onSubmit(calories, foodName, time);
 
       // SnackBar
       ScaffoldMessenger.of(context).showSnackBar(
