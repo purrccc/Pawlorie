@@ -9,7 +9,7 @@ class SummaryPage extends StatelessWidget {
   final String date; // Date for which the summary is displayed
   final String petId; // ID of the pet
 
-  SummaryPage({required this.date, required this.petId});
+  SummaryPage({required this.date, required this.petId}); // Constructor
 
   @override
   Widget build(BuildContext context) {

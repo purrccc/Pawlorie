@@ -5,15 +5,17 @@ import 'package:pawlorie/constants/colors.dart';
 import 'package:pawlorie/SummaryPage.dart';
 
 class SummaryTabContent extends StatefulWidget {
-  final String petId;
+  final String petId; // ID of the pet for which summary is displayed
 
-  SummaryTabContent({required this.petId});
+  SummaryTabContent({required this.petId}); // Constructor
 
   @override
-  _SummaryTabContentState createState() => _SummaryTabContentState();
+  _SummaryTabContentState createState() =>
+      _SummaryTabContentState(); // Create state
 }
 
 class _SummaryTabContentState extends State<SummaryTabContent> {
+  // Fetch data from Firestore
   Future<Map<String, double>> _fetchData() async {
     final QuerySnapshot snapshot = await FirebaseFirestore.instance
         .collection('food_intake')
@@ -22,11 +24,13 @@ class _SummaryTabContentState extends State<SummaryTabContent> {
 
     final Map<String, double> intakeData = {};
 
+    // Iterate over documents to collect intake data
     for (var doc in snapshot.docs) {
       final data = doc.data() as Map<String, dynamic>;
       final date = data['date'];
       final calories = (data['calories'] as num).toDouble();
 
+      // Update or add entry to intake data
       if (intakeData.containsKey(date)) {
         intakeData[date] = intakeData[date]! + calories;
       } else {
@@ -44,6 +48,7 @@ class _SummaryTabContentState extends State<SummaryTabContent> {
       child: SingleChildScrollView(
         child: Column(
           children: [
+            // FutureBuilder to handle asynchronous data fetching
             FutureBuilder<Map<String, double>>(
               future: _fetchData(),
               builder: (context, snapshot) {
@@ -55,6 +60,7 @@ class _SummaryTabContentState extends State<SummaryTabContent> {
                   return Text('No data available');
                 } else {
                   final Map<String, double> data = snapshot.data!;
+                  // Create summary cards from fetched data
                   final List<Widget> summaryCards = data.entries.map((entry) {
                     final date = entry.key;
                     final intake = entry.value.toString();
@@ -68,7 +74,7 @@ class _SummaryTabContentState extends State<SummaryTabContent> {
                       ),
                     );
                   }).toList();
-            
+
                   return Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: summaryCards,
@@ -83,6 +89,7 @@ class _SummaryTabContentState extends State<SummaryTabContent> {
   }
 }
 
+// Widget for summary card
 Widget summaryCard(BuildContext context, String date, String calories,
     Widget destinationPage) {
   return GestureDetector(
