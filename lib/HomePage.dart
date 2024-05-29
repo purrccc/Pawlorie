@@ -184,7 +184,7 @@ class _HomePageState extends State<HomePage> {
                               children: [
                                 Center(
                                   child: Padding(
-                                    padding: const EdgeInsets.all(30.0),
+                                    padding: const EdgeInsets.all(35.0),
                                     child: Image.asset(
                                       'lib/assets/no_dog.png',
                                     ),
@@ -192,7 +192,7 @@ class _HomePageState extends State<HomePage> {
                                 ),
                                 Center(
                                   child: Padding(
-                                    padding: const EdgeInsets.all(40),
+                                    padding: const EdgeInsets.all(20),
                                     child: Column(
                                       mainAxisAlignment:
                                           MainAxisAlignment.center,
@@ -201,7 +201,7 @@ class _HomePageState extends State<HomePage> {
                                           "You haven't added any dogs yet. Add one now!",
                                           textAlign: TextAlign.center,
                                           style: GoogleFonts.rubik(
-                                            fontSize: 22,
+                                            fontSize: 20,
                                             fontWeight: FontWeight.w600,
                                             color: AppColor.darkBlue,
                                           ),
