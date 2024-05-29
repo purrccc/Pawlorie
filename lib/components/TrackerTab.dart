@@ -44,27 +44,91 @@ class _TrackerTabContentState extends State<TrackerTabContent> {
   }
 
   void _handleFoodIntakeSubmission(
-      int calories, String foodName, TimeOfDay time) async {
+    int calories, String foodName, TimeOfDay time) async {
+  setState(() {
+    totalIntake += calories;
+    remainingCalories =
+        (widget.petInfo?['requiredCalories'] ?? 0).toDouble() - totalIntake;
+  });
+
+  final double requiredCalories =
+      (widget.petInfo?['requiredCalories'] ?? 0).toDouble();
+
+  if (totalIntake >= requiredCalories) {
     setState(() {
-      totalIntake += calories;
-      remainingCalories =
-          (widget.petInfo?['requiredCalories'] ?? 0).toDouble() - totalIntake;
+      remainingCalories = double.infinity; // Use a special value to represent "Max Reached"
     });
 
-    FirebaseFirestore.instance.collection('dogs').doc(widget.petId).update({
-      'totalIntake': totalIntake,
-      'remainingCalories': remainingCalories,
-    });
-
-    // Save food intake details
-    await FirebaseFirestore.instance.collection('food_intake').add({
-      'petID': widget.petId,
-      'name': foodName,
-      'calories': calories,
-      'date': DateFormat('MMMM dd, yyyy').format(DateTime.now()),
-      'time': time.format(context),
-    });
+    // Show alert dialog
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+  shape: RoundedRectangleBorder(
+    borderRadius: BorderRadius.circular(15),
+  ),
+  title: Row(
+    children: [
+      Icon(
+        Icons.warning,
+        color: Colors.red,
+      ),
+      SizedBox(width: 10),
+      Text(
+        "Calorie Limit Reached",
+        style: GoogleFonts.rubik(
+          fontWeight: FontWeight.bold,
+          fontSize: 20,
+        ),
+      ),
+    ],
+  ),
+  content: Text(
+    "The maximum calorie intake for the day has been reached.",
+    style: GoogleFonts.rubik(
+      fontSize: 16,
+    ),
+  ),
+  actions: [
+    TextButton(
+      style: TextButton.styleFrom(
+        backgroundColor: AppColor.darkBlue,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(10),
+        ),
+      ),
+      onPressed: () {
+        Navigator.of(context).pop();
+      },
+      child: Text(
+        "OK",
+        style: GoogleFonts.rubik(
+          color: Colors.white,
+          fontWeight: FontWeight.bold,
+        ),
+      ),
+    ),
+  ],
+);
+      },
+    );
   }
+
+  FirebaseFirestore.instance.collection('dogs').doc(widget.petId).update({
+    'totalIntake': totalIntake,
+    'remainingCalories': remainingCalories == double.infinity ? 0 : remainingCalories,
+  });
+
+  // Save food intake details
+  await FirebaseFirestore.instance.collection('food_intake').add({
+    'petID': widget.petId,
+    'name': foodName,
+    'calories': calories,
+    'date': DateFormat('MMMM dd, yyyy').format(DateTime.now()),
+    'time': time.format(context),
+  });
+}
+
 
   @override
   Widget build(BuildContext context) {
@@ -131,16 +195,16 @@ class _TrackerTabContentState extends State<TrackerTabContent> {
                               totalIntake.toString(),
                               textAlign: TextAlign.left,
                               style: GoogleFonts.rubik(
-                                fontSize: 35,
+                                fontSize: 30,
                                 color: AppColor.blue,
                                 fontWeight: FontWeight.w600,
                               ),
                             ),
                             Text(
-                              remainingCalories.toString(),
+                              remainingCalories == double.infinity ? "Max Reached" : remainingCalories.toString(),
                               textAlign: TextAlign.right,
                               style: GoogleFonts.rubik(
-                                fontSize: 35,
+                                fontSize: 30,
                                 color: AppColor.darkBlue,
                                 fontWeight: FontWeight.w600,
                               ),

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:pawlorie/Loginpage.dart'; // Adjust this import based on your file structure
 
@@ -74,6 +75,7 @@ class SignUpForm extends StatelessWidget {
                   borderRadius: BorderRadius.circular(15),
                 ),
               ),
+               inputFormatters: [LengthLimitingTextInputFormatter(10)],
               style: TextStyle(color: Color.fromARGB(255, 22, 21, 86)),
               validator: (value) {
                 if (value == null || value.isEmpty) {

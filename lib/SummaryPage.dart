@@ -13,87 +13,112 @@ class SummaryPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: PreferredSize(
-        preferredSize: Size.fromHeight(140),
-        child: ClipPath(
-          clipper: AppBarClipper(),
-          child: AppBar(
-            backgroundColor: AppColor.darkBlue,
-            leading: IconButton(
-              icon: Icon(Icons.arrow_back_ios, color: Colors.white),
-              onPressed: () {
-                Navigator.pop(context);
-              },
-            ),
-            title: Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    _formatDateWithDay(date),
-                    style: GoogleFonts.rubik(
-                      fontSize: 18, // Slightly smaller font size for the date
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white,
-                    ),
+      body: Stack(
+        children: [
+          Column(
+            children: [
+              Container(
+                height: 180,
+                width: double.infinity,
+                decoration: const BoxDecoration(
+                  color: Color.fromARGB(255, 22, 21, 86),
+                  borderRadius: BorderRadius.only(
+                    bottomLeft: Radius.circular(30),
+                    bottomRight: Radius.circular(30),
                   ),
-                  Text(
-                    'Summary',
-                    style: GoogleFonts.rubik(
-                      fontSize: 34, // Increased font size for "Summary"
-                      fontWeight: FontWeight.bold,
-                      color: AppColor.yellowGold,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            toolbarHeight: 140, // Increased app bar height
-            titleSpacing: 2,
-          ),
-        ),
-      ),
-      body: StreamBuilder(
-        stream: FirebaseFirestore.instance
-            .collection('food_intake')
-            .where('date', isEqualTo: date)
-            .where('petID', isEqualTo: petId)
-            .snapshots(),
-        builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
-          if (snapshot.hasError) {
-            return Center(
-              child: Text('Error: ${snapshot.error}'),
-            );
-          }
-
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(
-              child: CircularProgressIndicator(),
-            );
-          }
-
-          List<DocumentSnapshot> foodIntakeDocs = snapshot.data!.docs;
-          foodIntakeDocs
-              .sort((a, b) => a['time'].compareTo(b['time'])); // Sort by time
-
-          return ListView.builder(
-            itemCount: foodIntakeDocs.length,
-            itemBuilder: (context, index) {
-              var foodIntake =
-                  foodIntakeDocs[index].data() as Map<String, dynamic>;
-              return Padding(
-                padding: const EdgeInsets.all(10.0),
-                child: summaryFoodContainer(
-                  foodIntake['name']
-                      .toString()
-                      .toUpperCase(), // Convert to uppercase
-                  '${foodIntake['calories']} calories',
-                  foodIntake['time'],
                 ),
-              );
-            },
-          );
-        },
+                child: Column(
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        Container(
+                          margin: const EdgeInsets.only(right: 20.0, top: 30.0),
+                          child: IconButton(
+                            icon: Icon(Icons.arrow_back_ios, color: Colors.white),
+                            onPressed: () {
+                              Navigator.pop(context);
+                            },
+                          ),
+                        ),
+                      ],
+                    ),
+                    Text(
+                      _formatDateWithDay(date),
+                      style: GoogleFonts.rubik(
+                        fontSize: 18, // Slightly smaller font size for the date
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                      ),
+                    ),
+                    Text(
+                      'Summary',
+                      style: GoogleFonts.rubik(
+                        fontSize: 34, // Increased font size for "Summary"
+                        fontWeight: FontWeight.bold,
+                        color: AppColor.yellowGold,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              Padding(
+                padding: EdgeInsets.all(10),
+                child: Container(
+                  height: MediaQuery.of(context).size.height - 200, // Constrained height
+                  child: SingleChildScrollView(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        StreamBuilder(
+                          stream: FirebaseFirestore.instance
+                              .collection('food_intake')
+                              .where('date', isEqualTo: date)
+                              .where('petID', isEqualTo: petId)
+                              .snapshots(),
+                          builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
+                            if (snapshot.hasError) {
+                              return Center(
+                                child: Text('Error: ${snapshot.error}'),
+                              );
+                            }
+
+                            if (snapshot.connectionState == ConnectionState.waiting) {
+                              return Center(
+                                child: CircularProgressIndicator(),
+                              );
+                            }
+
+                            List<DocumentSnapshot> foodIntakeDocs = snapshot.data!.docs;
+                            foodIntakeDocs.sort((a, b) => a['time'].compareTo(b['time'])); // Sort by time
+
+                            return ListView.builder(
+                              physics: NeverScrollableScrollPhysics(), // Prevents nested scrolling
+                              shrinkWrap: true, // Ensures the ListView takes up only necessary space
+                              itemCount: foodIntakeDocs.length,
+                              itemBuilder: (context, index) {
+                                var foodIntake =
+                                    foodIntakeDocs[index].data() as Map<String, dynamic>;
+                                return Padding(
+                                  padding: const EdgeInsets.all(10.0),
+                                  child: summaryFoodContainer(
+                                    foodIntake['name'].toString().toUpperCase(), // Convert to uppercase
+                                    '${foodIntake['calories']} calories',
+                                    foodIntake['time'],
+                                  ),
+                                );
+                              },
+                            );
+                          },
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ],
       ),
     );
   }
@@ -103,25 +128,6 @@ class SummaryPage extends StatelessWidget {
     DateTime parsedDate = DateFormat('MMMM d, yyyy').parse(date);
     String formattedDate = DateFormat('EEEE, MMMM d').format(parsedDate);
     return formattedDate;
-  }
-}
-
-// Custom clipper to create soft rounded corners for the AppBar
-class AppBarClipper extends CustomClipper<Path> {
-  @override
-  Path getClip(Size size) {
-    Path path = Path();
-    path.lineTo(0, size.height - 20); // Adjust height for subtle rounding
-    path.quadraticBezierTo(
-        size.width / 2, size.height, size.width, size.height - 20);
-    path.lineTo(size.width, 0);
-    path.close();
-    return path;
-  }
-
-  @override
-  bool shouldReclip(CustomClipper<Path> oldClipper) {
-    return false;
   }
 }
 
