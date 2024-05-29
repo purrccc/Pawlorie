@@ -13,6 +13,7 @@ class InitialHomePage extends StatelessWidget {
         children: [
           Column(
             children: [
+              // Header container with greeting text
               Container(
                 height: 150,
                 width: double.infinity,
@@ -29,6 +30,7 @@ class InitialHomePage extends StatelessWidget {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
+                        // Greeting text "Hello, User!"
                         Text(
                           'Hello, ',
                           style: GoogleFonts.rubik(
@@ -46,6 +48,7 @@ class InitialHomePage extends StatelessWidget {
                       ],
                     ),
                     SizedBox(height: 8),
+                    // Placeholder for date text
                     Text(
                       "Insert Date",
                       style:
@@ -56,6 +59,7 @@ class InitialHomePage extends StatelessWidget {
               ),
             ],
           ),
+          // Positioned text "Your dogs" below the header
           Positioned(
             top: 180,
             left: 16,
@@ -69,10 +73,11 @@ class InitialHomePage extends StatelessWidget {
           ),
           Column(
             children: [
+              // Image container for "no dogs" illustration
               Container(
                 margin: const EdgeInsets.only(top: 300, left: 90, right: 80),
                 child: Image.asset(
-                  'lib/assets/no_dog.png',  //picture of dog sleeping
+                  'lib/assets/no_dog.png',  // Picture of a sleeping dog
                 ),
               ),
               Center(
@@ -81,6 +86,7 @@ class InitialHomePage extends StatelessWidget {
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
+                      // Text prompt to add a dog
                       Text(
                         "You haven't added any dogs yet. Add one now!",
                         textAlign: TextAlign.center,
@@ -96,6 +102,8 @@ class InitialHomePage extends StatelessWidget {
               )
             ],
           ),
+          
+          // Bottom container decoration
           Positioned(
             bottom: 0,
             left: 0,
@@ -112,6 +120,8 @@ class InitialHomePage extends StatelessWidget {
               ),
             ),
           ),
+          
+          // Positioned "Add Dog" button
           Positioned(
             bottom: 60,
             left: 0,
@@ -121,7 +131,7 @@ class InitialHomePage extends StatelessWidget {
                 onPressed: () => Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) => AddDogPage())), // anonymous route
+                        builder: (context) => AddDogPage())), // Navigate to AddDogPage
                 style: ElevatedButton.styleFrom(
                   backgroundColor: const Color.fromARGB(255, 255, 202, 27),
                   padding: const EdgeInsets.all(20),
@@ -131,7 +141,7 @@ class InitialHomePage extends StatelessWidget {
                       MainAxisSize.min, // Ensure the button fits its content
                   children: [
                     Icon(
-                      Icons.add, // The plus icon
+                      Icons.add, // Plus icon
                       color: Color.fromARGB(255, 22, 21, 86),
                     ),
                     SizedBox(width: 8), // Space between the icon and the text
@@ -154,7 +164,7 @@ class InitialHomePage extends StatelessWidget {
   }
 }
 
-// Function to display dogs
+// Function to display dog information in a container
 Widget buildDogContainer(String name, String breed) {
   return Container(
     decoration: BoxDecoration(
@@ -171,6 +181,7 @@ Widget buildDogContainer(String name, String breed) {
     ),
     child: Row(
       children: [
+        // Placeholder for dog's image
         Container(
           width: 180,
           height: 180,
@@ -179,6 +190,8 @@ Widget buildDogContainer(String name, String breed) {
             color: Colors.black,
           ),
         ),
+        
+        // Displaying dog's name and breed
         Padding(
           padding: const EdgeInsets.all(12.0),
           child: Column(

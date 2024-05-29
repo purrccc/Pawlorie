@@ -364,6 +364,7 @@ void dispose() {
                         borderRadius: BorderRadius.circular(25),
                       ),
                     ),
+                    inputFormatters: [LengthLimitingTextInputFormatter(10)],
                     style: TextStyle(color:AppColor.darkBlue),
                     validator: (value) {
                       if (value == null || value.isEmpty) {

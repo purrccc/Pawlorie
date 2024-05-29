@@ -1,27 +1,21 @@
 import 'dart:async';
-import 'dart:core'; 
+import 'dart:core';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:pawlorie/AddDogPage.dart';
 import 'package:pawlorie/CalTrackerPage.dart';
 import 'package:pawlorie/LoginPage.dart';
 import 'package:pawlorie/constants/colors.dart';
 import 'package:pawlorie/components/DogCard.dart';
-import 'package:intl/intl.dart'; 
+import 'package:intl/intl.dart';
 import 'package:pawlorie/user_auth/firebase_auth_services.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 
-
 class HomePage extends StatefulWidget {
-  final String username;
-
-  HomePage({this.username = ''});
-
   @override
   _HomePageState createState() => _HomePageState();
 }
@@ -30,6 +24,7 @@ class _HomePageState extends State<HomePage> {
   late DateTime _currentDate;
   late Timer _timer;
   late String _currentUserDocumentId;
+  String _username = '';
 
   final FirebaseService _firebaseService = FirebaseService();
 
@@ -42,25 +37,29 @@ class _HomePageState extends State<HomePage> {
         _currentDate = DateTime.now();
       });
     });
-    
-    _firebaseService.getCurrentUserDocumentId().then((documentId)
-    {
+
+    _firebaseService.getCurrentUserDocumentId().then((documentId) {
       setState(() {
         _currentUserDocumentId = documentId ?? '';
         print("Current user document ID: $_currentUserDocumentId");
       });
+
+      // Fetch the username once we have the user document ID
+      _firebaseService.getCurrentUsername(documentId).then((username) {
+        setState(() {
+          _username = username ?? '';
+        });
+      });
     });
   }
 
-   final FirebaseAuth auth = FirebaseAuth.instance;
-  //signout function 
+  final FirebaseAuth auth = FirebaseAuth.instance;
+  // signout function
   signOut() async {
     await auth.signOut();
     Navigator.pushReplacement(
         context, MaterialPageRoute(builder: (context) => LoginPage()));
   }
-
-  
 
   @override
   void dispose() {
@@ -94,15 +93,15 @@ class _HomePageState extends State<HomePage> {
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: [
                         Container(
-                          margin: const EdgeInsets.only(right:20.0, top:30.0),
+                          margin: const EdgeInsets.only(right: 20.0, top: 30.0),
                           child: IconButton(
-                              icon: Icon(Icons.logout_rounded,
-                              color: Colors.white),
-                              onPressed: signOut,
-                            ),
+                            icon: Icon(Icons.logout_rounded,
+                                color: Colors.white),
+                            onPressed: signOut,
+                          ),
                         ),
                       ],
-                    ),   
+                    ),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
@@ -115,8 +114,7 @@ class _HomePageState extends State<HomePage> {
                           ),
                         ),
                         Text(
-                          '${widget.username}!',
-                          // "Username",
+                          '$_username!',
                           style: GoogleFonts.rubik(
                             fontSize: 32,
                             fontWeight: FontWeight.w700,
@@ -162,28 +160,33 @@ class _HomePageState extends State<HomePage> {
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
                     StreamBuilder<List<Dog>>(
-                      stream: _firebaseService.getDogs(),
-                      builder: (context, snapshot) {
-                        if (snapshot.connectionState == ConnectionState.waiting) {
-                          return Center(child: CircularProgressIndicator());
-                        }
-                        if (snapshot.hasError) {
-                          return Center(child: Text('Error: ${snapshot.error}'));
-                        }
-                        if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                          return Center(child: Text('No dogs found'));
-                        }
+                        stream: _firebaseService.getDogs(),
+                        builder: (context, snapshot) {
+                          if (snapshot.connectionState ==
+                              ConnectionState.waiting) {
+                            return Center(child: CircularProgressIndicator());
+                          }
+                          if (snapshot.hasError) {
+                            return Center(
+                                child: Text('Error: ${snapshot.error}'));
+                          }
+                          if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                            return Center(child: Text('No dogs found'));
+                          }
 
-                        final dogs = snapshot.data!.where((dog) => dog.userId == _currentUserDocumentId).toList();
+                          final dogs = snapshot.data!
+                              .where((dog) =>
+                                  dog.userId == _currentUserDocumentId)
+                              .toList();
 
-                        if (dogs.isEmpty) {
-                          return Column(
+                          if (dogs.isEmpty) {
+                            return Column(
                               children: [
                                 Center(
                                   child: Padding(
                                     padding: const EdgeInsets.all(30.0),
                                     child: Image.asset(
-                                      'lib/assets/no_dog.png',  //picture of dog sleeping
+                                      'lib/assets/no_dog.png',
                                     ),
                                   ),
                                 ),
@@ -191,7 +194,8 @@ class _HomePageState extends State<HomePage> {
                                   child: Padding(
                                     padding: const EdgeInsets.all(40),
                                     child: Column(
-                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
                                       children: [
                                         Text(
                                           "You haven't added any dogs yet. Add one now!",
@@ -208,32 +212,32 @@ class _HomePageState extends State<HomePage> {
                                 )
                               ],
                             );
-                        }
+                          }
 
-                        return ListView.builder(
-                          shrinkWrap: true,
-                          physics: NeverScrollableScrollPhysics(),
-                          itemCount: dogs.length,
-                          itemBuilder: (context, index) {
-                            final dog = dogs[index];
-                            return Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: dogCard(
-                                context,
-                                dog.name,
-                                dog.breed,
-                                dog.imageUrl,
-                                CalTrackerPage(
-                                  petId: dog.id, 
-                                  petName: dog.name, 
-                                  username: widget.username, 
-                                  imageURL: dog.imageUrl,),
-                              ),
-                            );
-                          },
-                        );
-                      }
-                    ),
+                          return ListView.builder(
+                            shrinkWrap: true,
+                            physics: NeverScrollableScrollPhysics(),
+                            itemCount: dogs.length,
+                            itemBuilder: (context, index) {
+                              final dog = dogs[index];
+                              return Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: dogCard(
+                                  context,
+                                  dog.name,
+                                  dog.breed,
+                                  dog.imageUrl,
+                                  CalTrackerPage(
+                                    petId: dog.id,
+                                    petName: dog.name,
+                                    username: _username,
+                                    imageURL: dog.imageUrl,
+                                  ),
+                                ),
+                              );
+                            },
+                          );
+                        }),
                   ],
                 ),
               ),
@@ -263,7 +267,9 @@ class _HomePageState extends State<HomePage> {
               child: ElevatedButton(
                 onPressed: () => Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => AddDogPage(userId:_currentUserDocumentId)),
+                  MaterialPageRoute(
+                      builder: (context) =>
+                          AddDogPage(userId: _currentUserDocumentId)),
                 ),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: const Color.fromARGB(255, 255, 202, 27),
@@ -314,6 +320,19 @@ class FirebaseService {
     return null;
   }
 
+  Future<String?> getCurrentUsername(String? documentId) async {
+    if (documentId != null) {
+      try {
+        DocumentSnapshot snapshot =
+            await _db.collection('users').doc(documentId).get();
+        return snapshot['name'] as String?;
+      } catch (error) {
+        print("Error getting username: $error");
+      }
+    }
+    return null;
+  }
+
   Stream<List<Dog>> getDogs() {
     return _db.collection('dogs').snapshots().map((snapshot) =>
         snapshot.docs.map((doc) => Dog.fromFirestore(doc)).toList());
@@ -333,14 +352,14 @@ class Dog {
   final String name;
   final String breed;
   final String userId;
-  final String imageUrl; // Add imageUrl field
+  final String imageUrl;
 
   Dog({
     required this.id,
     required this.name,
     required this.breed,
     required this.userId,
-    required this.imageUrl, // Initialize the imageUrl field
+    required this.imageUrl,
   });
 
   factory Dog.fromFirestore(DocumentSnapshot doc) {
@@ -350,8 +369,7 @@ class Dog {
       name: data['name'] ?? '',
       breed: data['breed'] ?? '',
       userId: data['userId'] ?? '',
-      imageUrl: data['imageUrl'] ?? '', // Assign the value of imageUrl from Firestore
+      imageUrl: data['imageUrl'] ?? '',
     );
   }
 }
-
