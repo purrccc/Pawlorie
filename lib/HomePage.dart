@@ -118,8 +118,8 @@ class _HomePageState extends State<HomePage> {
                           ),
                         ),
                         Text(
-                          // '${widget.username}!',
-                          "Username",
+                          '${widget.username}!',
+                          // "Username",
                           style: GoogleFonts.rubik(
                             fontSize: 32,
                             fontWeight: FontWeight.w700,
