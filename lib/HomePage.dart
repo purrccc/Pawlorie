@@ -8,6 +8,7 @@ import 'package:flutter/widgets.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:pawlorie/AddDogPage.dart';
 import 'package:pawlorie/CalTrackerPage.dart';
+import 'package:pawlorie/LoginPage.dart';
 import 'package:pawlorie/constants/colors.dart';
 import 'package:pawlorie/components/DogCard.dart';
 import 'package:intl/intl.dart'; 
@@ -51,6 +52,14 @@ class _HomePageState extends State<HomePage> {
     });
   }
 
+   final FirebaseAuth auth = FirebaseAuth.instance;
+  //signout function 
+  signOut() async {
+    await auth.signOut();
+    Navigator.pushReplacement(
+        context, MaterialPageRoute(builder: (context) => LoginPage()));
+  }
+
   
 
   @override
@@ -65,6 +74,7 @@ class _HomePageState extends State<HomePage> {
     String formattedMonth = formatter.format(_currentDate);
 
     return Scaffold(
+      
       body: Stack(
         children: [
           Column(
@@ -80,8 +90,22 @@ class _HomePageState extends State<HomePage> {
                   ),
                 ),
                 child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
+                  
                   children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        Container(
+                          margin: const EdgeInsets.only(right:20.0, top:10.0),
+                          child: IconButton(
+                              icon: Icon(Icons.logout_rounded,
+                              color: Colors.white),
+                              onPressed: signOut,
+                            ),
+                        ),
+                      ],
+                    ),
+                 
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
@@ -94,7 +118,8 @@ class _HomePageState extends State<HomePage> {
                           ),
                         ),
                         Text(
-                          '${widget.username}!',
+                          // '${widget.username}!',
+                          "Username",
                           style: GoogleFonts.rubik(
                             fontSize: 32,
                             fontWeight: FontWeight.w700,
