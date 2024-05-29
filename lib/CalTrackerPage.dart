@@ -61,8 +61,16 @@ class _CalTrackerState extends State<CalTrackerPage>
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
-            icon: Icon(Icons.arrow_back_ios, color: AppColor.darkBlue),
-            onPressed: () => Navigator.pop(context)),
+          icon: Icon(Icons.arrow_back_ios, color: AppColor.darkBlue),
+          onPressed: () {
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(
+                builder: (context) => HomePage(),
+              ),
+            );
+          },
+        ),
       ),
       body: Column(
         children: [

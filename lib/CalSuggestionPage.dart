@@ -40,8 +40,8 @@ class CalSuggestionPage extends StatelessWidget {
                   Text(
                     dogName,
                     style: GoogleFonts.rubik(
-                      fontSize: 50,
-                      fontWeight: FontWeight.bold,
+                      fontSize: 45,
+                      fontWeight: FontWeight.w600,
                       color: Colors.lightBlueAccent,
                     ),
                   ),
