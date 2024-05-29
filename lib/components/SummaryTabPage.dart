@@ -60,7 +60,10 @@ class _SummaryTabContentState extends State<SummaryTabContent> {
                   context,
                   date,
                   intake,
-                  SummaryPage(date: date),
+                  SummaryPage(
+                    date: date,
+                    petId: widget.petId,
+                  ),
                 );
               }).toList();
 
@@ -76,7 +79,8 @@ class _SummaryTabContentState extends State<SummaryTabContent> {
   }
 }
 
-Widget summaryCard(BuildContext context, String date, String calories, Widget destinationPage) {
+Widget summaryCard(BuildContext context, String date, String calories,
+    Widget destinationPage) {
   return GestureDetector(
     onTap: () {
       Navigator.push(

@@ -26,7 +26,8 @@ class _TrackerTabContentState extends State<TrackerTabContent> {
   }
 
   Future<void> fetchRemainingCalories() async {
-    final docRef = FirebaseFirestore.instance.collection('dogs').doc(widget.petId);
+    final docRef =
+        FirebaseFirestore.instance.collection('dogs').doc(widget.petId);
     final docSnapshot = await docRef.get();
 
     if (docSnapshot.exists) {
@@ -42,10 +43,12 @@ class _TrackerTabContentState extends State<TrackerTabContent> {
     }
   }
 
-  void _handleFoodIntakeSubmission(int calories, String foodName, TimeOfDay time) async {
+  void _handleFoodIntakeSubmission(
+      int calories, String foodName, TimeOfDay time) async {
     setState(() {
       totalIntake += calories;
-      remainingCalories = (widget.petInfo?['requiredCalories'] ?? 0).toDouble() - totalIntake;
+      remainingCalories =
+          (widget.petInfo?['requiredCalories'] ?? 0).toDouble() - totalIntake;
     });
 
     FirebaseFirestore.instance.collection('dogs').doc(widget.petId).update({
@@ -65,7 +68,8 @@ class _TrackerTabContentState extends State<TrackerTabContent> {
 
   @override
   Widget build(BuildContext context) {
-    final double requiredCalories = (widget.petInfo?['requiredCalories'] ?? 0).toDouble();
+    final double requiredCalories =
+        (widget.petInfo?['requiredCalories'] ?? 0).toDouble();
 
     if (totalIntake == 0) {
       remainingCalories = requiredCalories;
