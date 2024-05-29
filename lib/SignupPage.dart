@@ -12,15 +12,20 @@ class SignUpPage extends StatefulWidget {
 }
 
 class _SignUpPageState extends State<SignUpPage> {
+  // Initialize the FirebaseAuthService instance
   final FirebaseAuthService _authService = FirebaseAuthService();
+  // Key to identify the form and validate it
   final _formKey = GlobalKey<FormState>();
+  // Controllers for the text fields
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _retypePasswordController =
       TextEditingController();
 
+  // Function to handle sign-up logic
   void _signUp() async {
+    // Validate the form fields
     if (_formKey.currentState!.validate()) {
       String email = _emailController.text;
       String password = _passwordController.text;
@@ -31,19 +36,22 @@ class _SignUpPageState extends State<SignUpPage> {
           await _authService.signUpWithEmailAndPassword(email, password, name);
 
       if (user != null) {
+        // If user is created, navigate to LoginPage
         print("User created");
         Navigator.push(
           context,
           MaterialPageRoute(builder: (context) => LoginPage()),
         );
       } else {
-        print("dipota indi ka sign up");
+        // Print error message if sign-up fails
+        print("Sign-up failed");
       }
     }
   }
 
   @override
   void dispose() {
+    // Dispose the controllers when the widget is removed
     _emailController.dispose();
     _nameController.dispose();
     _passwordController.dispose();
