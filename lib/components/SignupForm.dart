@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:pawlorie/Loginpage.dart';
-import 'package:pawlorie/constants/colors.dart'; // Adjust this import based on your file structure
+import 'package:pawlorie/constants/colors.dart'; 
+import 'package:flutter/services.dart';  // Adjust this import based on your file structure
 
 class SignUpForm extends StatelessWidget {
   final GlobalKey<FormState> formKey;
@@ -10,6 +11,7 @@ class SignUpForm extends StatelessWidget {
   final TextEditingController passwordController;
   final TextEditingController retypePasswordController;
   final VoidCallback signUpCallback;
+  var _lengthLimitingFormatter = new LengthLimitingTextInputFormatter(10);
 
   SignUpForm({
     required this.formKey,
@@ -59,6 +61,7 @@ class SignUpForm extends StatelessWidget {
             ),
             SizedBox(height: 20),
             TextFormField(
+              inputFormatters: [_lengthLimitingFormatter],
               controller: nameController,
               decoration: InputDecoration(
                 prefixIcon: Icon(Icons.person),
