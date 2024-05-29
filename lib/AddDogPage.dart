@@ -3,26 +3,21 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:math';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:flutter/services.dart';
-
-import 'package:pawlorie/CalSuggestionPage.dart';
 import 'package:pawlorie/constants/colors.dart';
 import 'package:google_fonts/google_fonts.dart';
-
-import 'package:pawlorie/user_auth/firebase_auth_services.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
-import 'package:pawlorie/utils.dart';
+
+import 'package:pawlorie/CalSuggestionPage.dart';
 
 enum Sex {
   Male,
   Female,
 }
-
+// Default Image URL
 const String defaultImageUrl =
     'https://mir-s3-cdn-cf.behance.net/project_modules/max_1200/65761296352685.5eac4787a4720.jpg';
 
@@ -120,12 +115,12 @@ class _AddDogPageState extends State<AddDogPage> {
     }
   }
 
-  Future<void> _submitForm() async {
+  Future<void> submitForm() async {
     if (_formKey.currentState!.validate()) {
-      String name = _nameController.text.trim();
-      int age = int.parse(_ageController.text.trim());
-      String breed = _breedController.text.trim();
-      double sizeOrWeight = double.parse(_sizeOrWeightController.text.trim());
+      String name = _nameController.text;
+      int age = int.parse(_ageController.text);
+      String breed = _breedController.text;
+      double sizeOrWeight = double.parse(_sizeOrWeightController.text);
 
       double minWeight;
       double maxWeight;
@@ -180,7 +175,7 @@ class _AddDogPageState extends State<AddDogPage> {
               content: Text('Dog added successfully'),
             ),
           );
-          _clearForm();
+          clearForm();  // Clear form after adding dog
 
           //pop up navigator page after adding dog
           Navigator.push(
@@ -248,11 +243,11 @@ class _AddDogPageState extends State<AddDogPage> {
   @override
   void initState() {
     super.initState();
-    _breedController.addListener(_onSearchChanged); // add listener to breed controller to handle changes while user types dog breed (for search suggestions)
+    _breedController.addListener(onSearchChanged); // add listener to breed controller to handle changes while user types dog breed (for search suggestions)
   }
 
   // function that displays dog breed suggestions depending on user input
-  void _onSearchChanged() {
+  void onSearchChanged() {
     if (_breedController.text.isNotEmpty) {
       fetchDogBreeds(_breedController.text).then((suggestions) {  
         setState(() {
@@ -322,12 +317,13 @@ class _AddDogPageState extends State<AddDogPage> {
               width: double.infinity,
             ),
           ),
-          addDogForm(),
+          addDogForm(), // Display form 
         ],
       ),
     );
   }
 
+  // Add Dog form
   Widget addDogForm() {
     return ListView(
       children: [
@@ -433,7 +429,7 @@ class _AddDogPageState extends State<AddDogPage> {
                     ),
                     style: TextStyle(color: AppColor.darkBlue),
                     onChanged: (value) {
-                      _onSearchChanged();
+                      onSearchChanged();
                     },
                     validator: (value) {
                       if (value == null || value.isEmpty) {
@@ -542,7 +538,7 @@ class _AddDogPageState extends State<AddDogPage> {
                   ),
                   SizedBox(height: 20),
                   ElevatedButton(
-                    onPressed: _submitForm,
+                    onPressed: submitForm,
                     style: ElevatedButton.styleFrom(
                       backgroundColor: AppColor.yellowGold,
                       shape: RoundedRectangleBorder(
@@ -569,7 +565,9 @@ class _AddDogPageState extends State<AddDogPage> {
     );
   }
 
-  void _clearForm() {
+
+  // function to clear form after submission
+  void clearForm() {
     _nameController.clear();
     _ageController.clear();
     _breedController.clear();

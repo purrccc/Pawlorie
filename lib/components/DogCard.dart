@@ -1,3 +1,5 @@
+// DogCard component - will display dog info in homepage
+
 import 'package:flutter/material.dart';
 
 Widget dogCard (BuildContext context, String name, String breed, String imageUrl, Widget destinationPage) {
@@ -8,7 +10,7 @@ Widget dogCard (BuildContext context, String name, String breed, String imageUrl
         MaterialPageRoute(builder: (context) => destinationPage),
       );
     },
-    child: Container(
+    child: Container(     // Main container
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(16),
@@ -22,6 +24,7 @@ Widget dogCard (BuildContext context, String name, String breed, String imageUrl
         ],
       ),
       child: Row(
+        // row containing the image and info
         children: [
           Container(
             width: 120,

@@ -1,3 +1,5 @@
+// TrackerDogCard - will display dog image and name of the tracker oage
+
 import 'package:flutter/material.dart';
 import 'package:pawlorie/constants/colors.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -14,12 +16,11 @@ Widget trackerDogCard(BuildContext context, String petName, String imageUrl) {
       width: double.infinity,
       child: Column(
         children: [
-          Container(
+          Container(    // Container for image
             width: 120,
             height: 120,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              // borderRadius: BorderRadius.circular(16),
               image: imageUrl.isNotEmpty
                   ? DecorationImage(
                       image: NetworkImage(imageUrl),
@@ -28,7 +29,7 @@ Widget trackerDogCard(BuildContext context, String petName, String imageUrl) {
                   : null,
             ),
           ),
-          Padding(
+          Padding(      // Container for name
             padding: EdgeInsets.only(top: 10.0),
             child: Text(
               petName,

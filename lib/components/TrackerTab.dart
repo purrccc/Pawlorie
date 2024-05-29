@@ -330,7 +330,7 @@ class _TrackerTabContentState extends State<TrackerTabContent> {
               ),
             ),
             SizedBox(height: 16),
-            FoodIntakeForm(         // Display
+            FoodIntakeForm(         // Display form
               petId: widget.petId,
               onSubmit: handleFoodIntakeSubmission,
             ),

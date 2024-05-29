@@ -61,7 +61,7 @@ class _HomePageState extends State<HomePage> {
   final FirebaseAuth auth = FirebaseAuth.instance;
   signOut() async {
     await auth.signOut();
-    Navigator.push(
+    Navigator.push(   // Navigate to Login Page after signout
         context, MaterialPageRoute(builder: (context) => LoginPage()));
   }
 
@@ -222,7 +222,7 @@ class _HomePageState extends State<HomePage> {
                               ],
                             );
                           }
-
+                          // Return list of dogs
                           return ListView.builder(
                             shrinkWrap: true,
                             physics: NeverScrollableScrollPhysics(),
@@ -315,9 +315,10 @@ class FirebaseService {
   final FirebaseFirestore _db = FirebaseFirestore.instance;
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
+  // function to get the current user
   Future<String?> getCurrentUserDocumentId() async {
     try {
-      User? user = _auth.currentUser;
+      User? user = _auth.currentUser;   
       if (user != null) {
         DocumentSnapshot snapshot =
             await _db.collection('users').doc(user.uid).get();
@@ -328,13 +329,14 @@ class FirebaseService {
     }
     return null;
   }
-
+  // get the current user's username from firebase
   Future<String?> getCurrentUsername(String? documentId) async {
     if (documentId != null) {
       try {
         DocumentSnapshot snapshot =
-            await _db.collection('users').doc(documentId).get();
-        return snapshot['name'] as String?;
+          await _db.collection('users').doc(documentId).get();
+          // return the name field from the users collection
+          return snapshot['name'] as String?; 
       } catch (error) {
         print("Error getting username: $error");
       }
@@ -342,10 +344,12 @@ class FirebaseService {
     return null;
   }
 
+  // get a list of dog objects
   Stream<List<Dog>> getDogs() {
     return _db.collection('dogs').snapshots().map((snapshot) =>
         snapshot.docs.map((doc) => Dog.fromFirestore(doc)).toList());
   }
+
   // Signs the current user out
   Future<void> signOut() async {
     try {
@@ -373,7 +377,7 @@ class Dog {
     required this.imageUrl,
   });
 
-  // Factory method to create a Dog object from a Firestore 
+  //  method to create a Dog object from a Firestore 
   factory Dog.fromFirestore(DocumentSnapshot doc) {
     Map data = doc.data() as Map<String, dynamic>;
     return Dog(

@@ -1,3 +1,4 @@
+// Custom Tab Indicator
 
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -32,8 +33,9 @@ class _CustomPainter extends BoxPainter {
     final double xOffset = (configuration.size!.width / 2) - (width / 2);
     final double yOffset = configuration.size!.height - height;
 
+    // rectangle that represents the tab indicator
     final Rect rect = Offset(offset.dx + xOffset, offset.dy + yOffset) & Size(width, height);
-    final RRect rrect = RRect.fromRectAndRadius(rect, Radius.circular(3.0));
+    final RRect rrect = RRect.fromRectAndRadius(rect, Radius.circular(3.0)); // Rounded rectangle
     canvas.drawRRect(rrect, paint);
   }
 }
