@@ -24,8 +24,8 @@ Widget dogCard (BuildContext context, String name, String breed, String imageUrl
       child: Row(
         children: [
           Container(
-            width: 180,
-            height: 180,
+            width: 120,
+            height: 120,
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(16),
               image: imageUrl.isNotEmpty
