@@ -174,7 +174,7 @@ Widget summaryFoodContainer(String food, String calorie, String time) {
               Text(
                 food,
                 style: GoogleFonts.rubik(
-                  fontSize: 24,
+                  fontSize: 20,
                   fontWeight: FontWeight.bold,
                   color: AppColor.darkBlue,
                 ),
@@ -183,7 +183,7 @@ Widget summaryFoodContainer(String food, String calorie, String time) {
                 calorie,
                 style: GoogleFonts.rubik(
                   fontSize: 18,
-                  fontWeight: FontWeight.w600,
+                  fontWeight: FontWeight.w500,
                   color: AppColor.darkBlue,
                 ),
               ),

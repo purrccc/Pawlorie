@@ -39,40 +39,44 @@ class _SummaryTabContentState extends State<SummaryTabContent> {
 
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: Padding(
-        padding: const EdgeInsets.all(20.0),
-        child: FutureBuilder<Map<String, double>>(
-          future: _fetchData(),
-          builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              return CircularProgressIndicator();
-            } else if (snapshot.hasError) {
-              return Text('Error: ${snapshot.error}');
-            } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-              return Text('No data available');
-            } else {
-              final Map<String, double> data = snapshot.data!;
-              final List<Widget> summaryCards = data.entries.map((entry) {
-                final date = entry.key;
-                final intake = entry.value.toString();
-                return summaryCard(
-                  context,
-                  date,
-                  intake,
-                  SummaryPage(
-                    date: date,
-                    petId: widget.petId,
-                  ),
-                );
-              }).toList();
-
-              return Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: summaryCards,
-              );
-            }
-          },
+    return Padding(
+      padding: const EdgeInsets.all(20.0),
+      child: SingleChildScrollView(
+        child: Column(
+          children: [
+            FutureBuilder<Map<String, double>>(
+              future: _fetchData(),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return CircularProgressIndicator();
+                } else if (snapshot.hasError) {
+                  return Text('Error: ${snapshot.error}');
+                } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                  return Text('No data available');
+                } else {
+                  final Map<String, double> data = snapshot.data!;
+                  final List<Widget> summaryCards = data.entries.map((entry) {
+                    final date = entry.key;
+                    final intake = entry.value.toString();
+                    return summaryCard(
+                      context,
+                      date,
+                      intake,
+                      SummaryPage(
+                        date: date,
+                        petId: widget.petId,
+                      ),
+                    );
+                  }).toList();
+            
+                  return Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: summaryCards,
+                  );
+                }
+              },
+            ),
+          ],
         ),
       ),
     );
