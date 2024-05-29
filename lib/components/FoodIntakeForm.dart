@@ -1,6 +1,7 @@
+// Food Intake Form
+
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
-import 'package:pawlorie/constants/colors.dart';
+import 'package:pawlorie/constants/colors.dart';    
 import 'package:google_fonts/google_fonts.dart';
 
 class FoodIntakeForm extends StatefulWidget {
@@ -28,36 +29,34 @@ class _FoodIntakeFormState extends State<FoodIntakeForm> {
     super.dispose();
   }
 
+  // Function show time picker 
   void selectTime(BuildContext context) async {
     final TimeOfDay? picked = await showTimePicker(
       context: context,
-      initialTime: selectedTime,
+      initialTime: selectedTime,  // Initial time
     );
     if (picked != null && picked != selectedTime) {
       setState(() {
-        selectedTime = picked;
+        selectedTime = picked;    // Update if user picked a new time
         _timeController.text = picked.format(context);
       });
     }
   }
 
+  // Function to submit form
   void submitForm() {
-    if (_formKey.currentState!.validate()) {
+    if (_formKey.currentState!.validate()) {          // validate form fields
       final calories = double.parse(_caloriesController.text.trim());
-      final foodName = _nameController.text.trim();
-      final time = selectedTime;
+      final foodName = _nameController.text.trim();   // get foodname input
+      final time = selectedTime;                      // get input for time
 
       widget.onSubmit(calories, foodName, time);
-
-      // Show the AlertDialog
-      
-      
 
       // Clear form fields
       _nameController.clear();
       _caloriesController.clear();
       _timeController.clear();
-      selectedTime = TimeOfDay.now();
+      selectedTime = TimeOfDay.now(); 
     }
   }
 
@@ -76,7 +75,7 @@ class _FoodIntakeFormState extends State<FoodIntakeForm> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Center(
-                child: Text(
+                child: Text(                      // Add food intake label
                   "Add Food Intake",
                   style: GoogleFonts.ubuntu(
                     color: Colors.white,
@@ -85,7 +84,7 @@ class _FoodIntakeFormState extends State<FoodIntakeForm> {
                   ),
                 ),
               ),
-              SizedBox(height: 16),
+              SizedBox(height: 16),             // Food name input field
               TextFormField(
                 controller: _nameController,
                 decoration: InputDecoration(
@@ -109,7 +108,7 @@ class _FoodIntakeFormState extends State<FoodIntakeForm> {
               Row(
                 children: [
                   Expanded(
-                    child: TextFormField(
+                    child: TextFormField(              // Calories input field
                       controller: _caloriesController,
                       decoration: InputDecoration(
                         hintText: 'Amount of Calories',
@@ -131,7 +130,7 @@ class _FoodIntakeFormState extends State<FoodIntakeForm> {
                   ),
                   SizedBox(width: 16),
                   Expanded(
-                    child: TextFormField(
+                    child: TextFormField(            // Time Input Field
                       controller: _timeController,
                       readOnly: true,
                       decoration: InputDecoration(
@@ -155,7 +154,8 @@ class _FoodIntakeFormState extends State<FoodIntakeForm> {
                 ],
               ),
               SizedBox(height: 20),
-              Center(
+
+              Center(                             // Submit Button
                 child: ElevatedButton(
                   onPressed: submitForm,
                   style: ElevatedButton.styleFrom(

@@ -1,3 +1,5 @@
+// Tracker Tab COontent
+
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -18,6 +20,7 @@ class TrackerTabContent extends StatefulWidget {
 class _TrackerTabContentState extends State<TrackerTabContent> {
   double remainingCalories = 0;
   double totalIntake = 0;
+  String? lastUpdateDate;
 
   @override
   void initState() {
@@ -25,100 +28,131 @@ class _TrackerTabContentState extends State<TrackerTabContent> {
     fetchRemainingCalories();
   }
 
+  // Function to get remaining calories
   Future<void> fetchRemainingCalories() async {
-    final docRef =
-        FirebaseFirestore.instance.collection('dogs').doc(widget.petId);
+
+    // Get reference to the document for the dog
+    final docRef = FirebaseFirestore.instance.collection('dogs').doc(widget.petId);
     final docSnapshot = await docRef.get();
 
+    // Check if data exists
     if (docSnapshot.exists) {
       final data = docSnapshot.data();
       if (data != null) {
         setState(() {
           totalIntake = (data['totalIntake'] ?? 0).toDouble();
           remainingCalories = (data['remainingCalories'] ?? 0).toDouble();
+          lastUpdateDate = data['lastUpdateDate'];
         });
+        // Check if it is necessary to reset intake
+        checkAndResetIntake();
       }
     } else {
       print('Document does not exist');
     }
   }
 
-  void _handleFoodIntakeSubmission(
-    double calories, String foodName, TimeOfDay time) async {
-  setState(() {
-    totalIntake += calories;
-    remainingCalories =
-        (widget.petInfo?['requiredCalories'] ?? 0).toDouble() - totalIntake;
-  });
+  // Function to check the date
+  void checkAndResetIntake() {
 
-  final double requiredCalories =
-      (widget.petInfo?['requiredCalories'] ?? 0).toDouble();
+    // Get date today
+    String today = DateFormat('yyyy-MM-dd').format(DateTime.now());
 
-  if (totalIntake >= requiredCalories) {
+    // Check if the last date that is updated is different from today
+    if (lastUpdateDate != today) {
+      // If new day, reset total intake and remaining calories
+      setState(() {
+        totalIntake = 0;
+        remainingCalories = (widget.petInfo?['requiredCalories'] ?? 0).toDouble();
+        lastUpdateDate = today;
+      });
+      // Update firestore with reset values and updated date
+      FirebaseFirestore.instance.collection('dogs').doc(widget.petId).update({
+        'totalIntake': 0,
+        'remainingCalories': (widget.petInfo?['requiredCalories'] ?? 0).toDouble(),
+        'lastUpdateDate': today,
+      });
+    }
+  }
+
+  // Function for Food Intake Submission
+  void handleFoodIntakeSubmission(double calories, String foodName, TimeOfDay time) async {
+   
+    // Get today's date
+    String today = DateFormat('yyyy-MM-dd').format(DateTime.now());
+
+    // Update state with new intake
     setState(() {
-      remainingCalories = double.infinity;
+      totalIntake += calories;
+      remainingCalories = (widget.petInfo?['requiredCalories'] ?? 0).toDouble() - totalIntake;
+      lastUpdateDate = today;
     });
 
-    // Show alert dialog
-    showDialog(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(15),
-              ),
-              title: Row(
-                children: [
-                  Icon(
-                    Icons.warning,
-                    color: Colors.red,
-                  ),
-                  SizedBox(width: 10),
-                  Text(
-                    "Calorie Limit Reached",
-                    style: GoogleFonts.rubik(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 20,
-                    ),
-                  ),
-                ],
-              ),
-              content: Text(
-                "The maximum calorie intake for the day has been reached.",
-                style: GoogleFonts.rubik(
-                  fontSize: 16,
+    // Get required calories for the pet
+    final double requiredCalories = (widget.petInfo?['requiredCalories'] ?? 0).toDouble();
+
+    // Check if total intake exceeds or meets the required calories
+    if (totalIntake >= requiredCalories) {
+      // If
+      setState(() {
+        remainingCalories = 0;
+      });
+
+      // Show alert indicating limit has been reached
+      showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(15),
+            ),
+            title: Row(
+              children: [
+                Icon(
+                  Icons.warning,
+                  color: Colors.red,
                 ),
-              ),
-              actions: [
-                TextButton(
-                  style: TextButton.styleFrom(
-                    backgroundColor: AppColor.darkBlue,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                  ),
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                  child: Text(
-                    "OK",
-                    style: GoogleFonts.rubik(
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
-                    ),
+                SizedBox(width: 10),
+                Text(
+                  "Calorie Limit Reached",
+                  style: GoogleFonts.rubik(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 20,
                   ),
                 ),
               ],
-            );
-
-
-
-
-
-      },
-    );
-  }else{
-    showDialog(
+            ),
+            content: Text(
+              "The maximum calorie intake for the day has been reached.",
+              style: GoogleFonts.rubik(
+                fontSize: 16,
+              ),
+            ),
+            actions: [
+              TextButton(
+                style: TextButton.styleFrom(
+                  backgroundColor: AppColor.darkBlue,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                ),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                child: Text(
+                  "OK",
+                  style: GoogleFonts.rubik(
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+            ],
+          );
+        },
+      );
+    } else {
+      showDialog(
         context: context,
         builder: (context) {
           return AlertDialog(
@@ -164,31 +198,32 @@ class _TrackerTabContentState extends State<TrackerTabContent> {
               ),
             ],
           );
-        }
-    );
+        },
+      );
+    }
+
+    // Update firestore with new intake and remaininh calories
+    FirebaseFirestore.instance.collection('dogs').doc(widget.petId).update({
+      'totalIntake': totalIntake,
+      'remainingCalories': remainingCalories == 0 ? 0 : remainingCalories,
+      'lastUpdateDate': today,
+    });
+
+    // Save details to the firebase
+    await FirebaseFirestore.instance.collection('food_intake').add({
+      'petID': widget.petId,
+      'name': foodName,
+      'calories': calories,
+      'date': DateFormat('MMMM dd, yyyy').format(DateTime.now()),
+      'time': time.format(context),
+    });
   }
-
-  FirebaseFirestore.instance.collection('dogs').doc(widget.petId).update({
-    'totalIntake': totalIntake,
-    'remainingCalories': remainingCalories == double.infinity ? 0 : remainingCalories,
-  });
-
-  // Save food intake details
-  await FirebaseFirestore.instance.collection('food_intake').add({
-    'petID': widget.petId,
-    'name': foodName,
-    'calories': calories,
-    'date': DateFormat('MMMM dd, yyyy').format(DateTime.now()),
-    'time': time.format(context),
-  });
-}
-
 
   @override
   Widget build(BuildContext context) {
-    final double requiredCalories =
-        (widget.petInfo?['requiredCalories'] ?? 0).toDouble();
+    final double requiredCalories = (widget.petInfo?['requiredCalories'] ?? 0).toDouble();
 
+    // Initial state
     if (totalIntake == 0) {
       remainingCalories = requiredCalories;
     }
@@ -206,7 +241,7 @@ class _TrackerTabContentState extends State<TrackerTabContent> {
                 color: AppColor.darkBlue,
               ),
             ),
-            Padding(
+            Padding(  // Container to display the calories
               padding: const EdgeInsets.only(top: 18.0),
               child: Container(
                 height: 140,
@@ -295,9 +330,9 @@ class _TrackerTabContentState extends State<TrackerTabContent> {
               ),
             ),
             SizedBox(height: 16),
-            FoodIntakeForm(
+            FoodIntakeForm(         // Display
               petId: widget.petId,
-              onSubmit: _handleFoodIntakeSubmission,
+              onSubmit: handleFoodIntakeSubmission,
             ),
           ],
         ),
